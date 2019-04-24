@@ -79,8 +79,8 @@ public class EthKeyManager : MonoBehaviour {
         if (string.IsNullOrEmpty(RpcUrl))
         {
             //RpcUrl = "http://localhost:9545";
-            //RpcUrl = "http://116.203.118.82:8545";
-            RpcUrl = "https://rpc.tau1.artis.network";
+            RpcUrl = "http://116.203.118.82:8545";
+            //RpcUrl = "https://rpc.tau1.artis.network";
         }
 
         if (!string.IsNullOrEmpty(PreselectedPrivateKey))
@@ -155,7 +155,7 @@ public class EthKeyManager : MonoBehaviour {
             Debug.Log("Balance: " + getBalanceRequest.Result.Value.ToString());
         }
 
-        var requestDeployment = new TransactionSignedUnityRequest(RpcUrl, privateKey, Address);
+        var requestDeployment = new TransactionSignedUnityRequest(RpcUrl, privateKey);
         message.GasPrice = 1000000000;
         message.Gas = 8000000;
         yield return requestDeployment.SignAndSendDeploymentContractTransaction(message);
@@ -260,7 +260,7 @@ public class EthKeyManager : MonoBehaviour {
 
     private TransactionSignedUnityRequest CreateSignedRequest()
     {
-        return new TransactionSignedUnityRequest(RpcUrl, privateKey, Address);
+        return new TransactionSignedUnityRequest(RpcUrl, privateKey);
     }
 
     public void CreateNewRandomPrivateKey()
