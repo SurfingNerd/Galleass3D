@@ -79,8 +79,8 @@ public class EthKeyManager : MonoBehaviour {
         if (string.IsNullOrEmpty(RpcUrl))
         {
             //RpcUrl = "http://localhost:9545";
-            RpcUrl = "http://116.203.118.82:8545";
-            //RpcUrl = "https://rpc.tau1.artis.network";
+            //RpcUrl = "http://116.203.118.82:8545";
+            RpcUrl = "https://rpc.tau1.artis.network";
         }
 
         if (!string.IsNullOrEmpty(PreselectedPrivateKey))
@@ -144,11 +144,20 @@ public class EthKeyManager : MonoBehaviour {
             Debug.Log("Latest Block Number: " + blockNumberRequest.Result.HexValue);
         }
 
-        //EthGetBalanceUnityRequest getBalanceRequest = new EthGetBalanceUnityRequest(RpcUrl);
-
-
+        EthGetBalanceUnityRequest getBalanceRequest = new EthGetBalanceUnityRequest(RpcUrl);
+        yield return getBalanceRequest.SendRequest(Address, Nethereum.RPC.Eth.DTOs.BlockParameter.CreateLatest());
+        if (getBalanceRequest.Exception != null)
+        {
+            LogErrorException("Unable to get Balance:", getBalanceRequest.Exception);
+        }
+        else
+        {
+            Debug.Log("Balance: " + getBalanceRequest.Result.Value.ToString());
+        }
 
         var requestDeployment = new TransactionSignedUnityRequest(RpcUrl, privateKey, Address);
+        message.GasPrice = 1000000000;
+        message.Gas = 8000000;
         yield return requestDeployment.SignAndSendDeploymentContractTransaction(message);
 
 
