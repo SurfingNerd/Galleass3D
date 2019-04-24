@@ -7,6 +7,7 @@ using Nethereum.JsonRpc.UnityClient;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Contracts;
 using System.Numerics;
+using System;
 
 public class EthKeyManager : MonoBehaviour {
 
@@ -77,7 +78,9 @@ public class EthKeyManager : MonoBehaviour {
 
         if (string.IsNullOrEmpty(RpcUrl))
         {
-            RpcUrl = "http://localhost:9545";
+            //RpcUrl = "http://localhost:9545";
+            RpcUrl = "http://116.203.118.82:8545";
+            //RpcUrl = "https://rpc.tau1.artis.network";
         }
 
         if (!string.IsNullOrEmpty(PreselectedPrivateKey))
@@ -112,14 +115,46 @@ public class EthKeyManager : MonoBehaviour {
         yield return SendDeployMessage(deployMessage);
     }
 
+    private void LogErrorException(string message, Exception exception)
+    {
+        Debug.LogError(message +":" + exception);
+        LogErrorRecursive(exception.InnerException);
+    }
+
+    private void LogErrorRecursive(Exception exception)
+    {
+        if (exception != null)
+        {
+            Debug.LogError("InnerException: " + exception);
+            LogErrorRecursive(exception.InnerException);
+        }
+    }
+
     public IEnumerator SendDeployMessage(Nethereum.Contracts.ContractDeploymentMessage message)
     {
+        EthBlockNumberUnityRequest blockNumberRequest = new EthBlockNumberUnityRequest(RpcUrl);
+        yield return blockNumberRequest.SendRequest();
+
+        if (blockNumberRequest.Exception != null)
+        {
+            LogErrorException("Failed To get Block Number: ", blockNumberRequest.Exception);
+        } 
+        else
+        {
+            Debug.Log("Latest Block Number: " + blockNumberRequest.Result.HexValue);
+        }
+
+        //EthGetBalanceUnityRequest getBalanceRequest = new EthGetBalanceUnityRequest(RpcUrl);
+
+
+
         var requestDeployment = new TransactionSignedUnityRequest(RpcUrl, privateKey, Address);
         yield return requestDeployment.SignAndSendDeploymentContractTransaction(message);
 
+
         if (requestDeployment.Exception != null)
         {
-            Debug.LogError("Error Deploying Contract:" + requestDeployment.Exception);
+            LogErrorException("Error Deploying Contract:", requestDeployment.Exception);
             yield break;
         } 
         else
