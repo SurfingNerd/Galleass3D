@@ -1,6 +1,10 @@
 pragma solidity ^0.4.24;
 
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import './Galleass.sol';
+import './StandardTokenInterface.sol';
+import './Staged.sol';
+
 
 contract Galleasset is Ownable {
 
@@ -60,23 +64,8 @@ contract Galleasset is Ownable {
 
   modifier isBuilding() {
     Galleass galleassContract = Galleass(galleass);
-    require(galleassContract.stagedMode() == Galleass.StagedMode.BUILD);
+    require(galleassContract.stagedMode() == Staged.StagedMode.BUILD);
     _;
   }
 
-}
-
-
-contract Galleass {
-  function getContract(bytes32 _name) public constant returns (address) { }
-  function hasPermission(address _contract, bytes32 _permission) public view returns (bool) { }
-  enum StagedMode {PAUSED,BUILD,STAGE,PRODUCTION}
-  StagedMode public stagedMode;
-}
-
-contract StandardTokenInterface {
-  function transferFrom(address _from, address _to, uint256 _value) public returns (bool) { }
-  function galleassTransferFrom(address _from, address _to, uint256 _value) public returns (bool) { }
-  function transfer(address _to, uint256 _value) public returns (bool) { }
-  function approve(address _spender, uint256 _value) public returns (bool) { }
 }

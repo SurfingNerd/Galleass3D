@@ -52,7 +52,7 @@ contract Dogger is Galleasset, NFT {
       uint16 speed = 512;
       uint8 luck = 1;
 
-      Build(msg.sender,strength,speed,luck);
+      emit Build(msg.sender,strength,speed,luck);
       return _create(msg.sender,strength,speed,luck);
     }
     event Build(address _sender,uint16 strength,uint16 speed,uint8 luck);

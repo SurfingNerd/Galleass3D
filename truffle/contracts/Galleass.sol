@@ -25,6 +25,9 @@ pragma solidity ^0.4.18;
 import 'openzeppelin-solidity/contracts/ownership/Contactable.sol';
 import './Staged.sol';
 import './Predecessor.sol';
+import './Galleasset.sol';
+import './StandardTokenInterface.sol';
+
 
 contract Galleass is Staged, Contactable, Predecessor{
 
@@ -38,23 +41,23 @@ contract Galleass is Staged, Contactable, Predecessor{
   mapping(bytes32 => address) contracts;
   mapping(address => mapping(bytes32 => bool)) permission;
 
-  function Galleass(string _contact) public { setContactInformation(_contact); }
+  constructor(string _contact) public { setContactInformation(_contact); }
 
   function upgradeContract(address _contract) onlyOwner isBuilding public returns (bool) {
     Galleasset(_contract).upgradeGalleass(descendant);
-    UpgradeContract(_contract,descendant,msg.sender);
+    emit UpgradeContract(_contract,descendant,msg.sender);
     return true;
   }
 
   function setContract(bytes32 _name,address _contract) onlyOwner isBuilding public returns (bool) {
     contracts[_name]=_contract;
-    SetContract(_name,_contract,msg.sender);
+    emit SetContract(_name,_contract,msg.sender);
     return true;
   }
 
   function setPermission(address _contract, bytes32 _permission, bool _value) onlyOwner isBuilding public returns (bool) {
     permission[_contract][_permission]=_value;
-    SetPermission(_contract,_permission,_value);
+    emit SetPermission(_contract,_permission,_value);
     return true;
   }
 
@@ -85,12 +88,4 @@ contract Galleass is Staged, Contactable, Predecessor{
     return true;
   }
 
-}
-
-contract Galleasset {
-  function upgradeGalleass(address _galleass) public returns (bool) { }
-}
-
-contract StandardTokenInterface {
-  function transfer(address _to, uint256 _value) public returns (bool) { }
 }

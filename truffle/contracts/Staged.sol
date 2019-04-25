@@ -14,7 +14,7 @@ contract Staged is Ownable {
 
   StagedMode public stagedMode;
 
-  function Staged() public {
+  constructor() public {
     stagedMode=StagedMode.BUILD;
   }
 

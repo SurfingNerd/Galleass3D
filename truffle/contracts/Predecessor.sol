@@ -5,7 +5,7 @@ import './Staged.sol';
 
 
 contract Predecessor is Ownable, Staged{
-    function Predecessor() public {}
+    constructor () public {}
     address public descendant;
     function setDescendant(address _descendant) onlyOwner isNotProduction public {
       descendant=_descendant;

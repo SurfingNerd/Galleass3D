@@ -5,7 +5,7 @@ pragma solidity ^0.4.15;
 
 contract NFT {
 
-  function NFT() public { }
+  constructor() public { }
 
   mapping (uint256 => address) public tokenIndexToOwner;
   mapping (address => uint256) ownershipTokenCount;

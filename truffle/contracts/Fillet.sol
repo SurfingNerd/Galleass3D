@@ -31,8 +31,8 @@ contract Fillet is Galleasset, MintableToken, ERC677Token {
     require(hasPermission(msg.sender,"mintFillet"));
     totalSupply_ = totalSupply_.add(_amount);
     balances[_to] = balances[_to].add(_amount);
-    Mint(_to, _amount);
-    Transfer(address(0), _to, _amount);
+    emit Mint(_to, _amount);
+    emit Transfer(address(0), _to, _amount);
     return true;
   }
 
@@ -43,7 +43,7 @@ contract Fillet is Galleasset, MintableToken, ERC677Token {
 
     balances[_from] = balances[_from].sub(_value);
     balances[_to] = balances[_to].add(_value);
-    Transfer(_from, _to, _value);
+    emit Transfer(_from, _to, _value);
     return true;
   }
 
