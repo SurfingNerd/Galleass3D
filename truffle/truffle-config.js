@@ -46,7 +46,17 @@ module.exports = {
      host: "127.0.0.1",     // Localhost (default: none)
      port: 9545,            
      network_id: "*",       // Any network (default: none)
-    }
+     //gas: 7999999,
+     gasPrice: 1000000000
+    },
+
+    production: {
+      host: "116.203.118.82",     // Localhost (default: none)
+      port: 8545,            
+      network_id: "*",       // Any network (default: none)
+      //gas: 7999999,
+      gasPrice: 1000000000
+     }
 
     // Another network with more advanced options...
     // advanced: {
