@@ -24,13 +24,14 @@ contract ERC677Token is StandardToken {
   function contractFallback(address _to, uint _value, bytes _data)
     validRecipient(_to)
     private
+    view
   {
     ERC677Receiver receiver = ERC677Receiver(_to);
     require(receiver.onTokenTransfer(msg.sender, _value, _data));
   }
 
   function isContract(address _addr)
-    private
+    private view
     returns (bool hasCode)
   {
     uint length;
@@ -48,5 +49,5 @@ contract ERC677Token is StandardToken {
 }
 
 contract ERC677Receiver {
-  function onTokenTransfer(address _sender, uint _value, bytes _data) returns (bool){}
+  function onTokenTransfer(address /*_sender*/, uint /*_value*/, bytes /*_data*/) public pure returns (bool){}
 }
