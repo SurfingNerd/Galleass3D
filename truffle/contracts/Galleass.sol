@@ -29,7 +29,7 @@ import './Predecessor.sol';
 contract Galleass is Staged, Contactable, Predecessor{
 
   string public constant name = "Galleass";
-  string public constant author = "Austin Thomas Griffith austin@concurrence.io";
+  string public constant author = "Thomas Haller thomas.haller@lab10.io";
 
   event UpgradeContract(address _contractAddress,address _descendant,address _whoDid);
   event SetContract(bytes32 _name,address _contractAddress,address _whoDid);
