@@ -41,7 +41,7 @@ contract CitizensLib is Galleasset {
     //genes will at first be random but then maybe they will be mixed... like you might need
     //to not only have food, but a couple citizens in the village too and you would use
     //their existing genes to mix for the new genes
-    bytes32 genes = keccak256(nonce++,block.blockhash(block.number-1));
+    bytes32 genes = keccak256(nonce++,blockhash(block.number-1));
 
     //internal function to reduce stack size
     _createCitizen(owner,_x,_y,_tile,genes,characteristics);

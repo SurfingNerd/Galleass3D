@@ -61,7 +61,7 @@ contract LandLib is Galleasset, DataParser {
   function generateLand() onlyOwner isBuilding public returns (bool) {
     Land landContract = Land(getContract("Land"));
     //islands are procedurally generated based on a randomish hash
-    bytes32 id = keccak256(nonce++,block.blockhash(block.number-1));
+    bytes32 id = keccak256(nonce++,blockhash(block.number-1));
     uint16 x = uint16(id[0]) << 8 | uint16(id[1]);
     uint16 y = uint16(id[2]) << 8 | uint16(id[3]);
     bytes32 landParts1 = keccak256(id);

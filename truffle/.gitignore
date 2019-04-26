@@ -16,3 +16,5 @@ config/test/contracts.json
 #We keep the build directory so we store the latest build. aybe referencing it out of the Unity project.
 #build
 dist
+
+.mnemonic

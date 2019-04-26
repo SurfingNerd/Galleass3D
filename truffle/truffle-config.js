@@ -18,11 +18,19 @@
  *
  */
 
-// const HDWalletProvider = require('truffle-hdwallet-provider');
+ const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
-// const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+
+var PrivateKeyProvider = require("truffle-privatekey-provider");
+
+const fs = require('fs');
+//var prototype93provider = new PrivateKeyProvider(pk, "http://116.203.118.82:8545");
+//var prototype93provider = new PrivateKeyProvider(pk, "http://rpc.tau1.artis.network");
+ 
+const mnemonic = fs.readFileSync(".mnemonic").toString().trim();
+const pk = '0xdee6e14d77620a7112746915641bed0bcba77066c9d943a7c884d5b763fcf8d9';
+const address = '0x527DFBb2c4E02F83716f3e92022e46836d807e29';
 
 module.exports = {
   /**
@@ -43,16 +51,35 @@ module.exports = {
     // options below to some value.
     //
     development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 9545,            
-     network_id: "*",       // Any network (default: none)
-     //gas: 7999999,
-     gasPrice: 1000000000
-    },
+      //provider: () => new HDWalletProvider(mnemonic, `http://116.203.118.82:8545`),
+      //host: "116.203.118.82",     // Localhost (default: none)
+      host: "127.0.0.1",
+      port: 9545,            
+      network_id: "*",       // Any network (default: none)
+      //gas: 7999999,
+      gasPrice: 1000000000
+     },
 
     production: {
       host: "116.203.118.82",     // Localhost (default: none)
       port: 8545,            
+      network_id: "*",       // Any network (default: none)
+      //gas: 7999999,
+      gasPrice: 1000000000
+     },
+
+     prototype93_hd: {
+      provider: () => new HDWalletProvider(mnemonic, `http://116.203.118.82:8545`),       
+      network_id: "*",       // Any network (default: none)
+      gas: 799999900,
+      gasPrice: 1000000000
+     },
+
+     artistau1: {
+      provider: () => new HDWalletProvider(mnemonic, `https://rpc.tau1.artis.network`),
+      //host: "116.203.118.82",     // Localhost (default: none)
+      host: "127.0.0.1",
+      port: 9545,            
       network_id: "*",       // Any network (default: none)
       //gas: 7999999,
       gasPrice: 1000000000

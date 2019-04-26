@@ -84,7 +84,7 @@ contract Bay is Galleasset {
     StandardTokenInterface fishContract = StandardTokenInterface(_species);
     require( fishContract.transferFrom(msg.sender,address(this),_amount) );
     while(_amount-->0){
-      bytes32 id = keccak256(nonce++,block.blockhash(block.number-1),msg.sender);
+      bytes32 id = keccak256(nonce++,blockhash(block.number-1),msg.sender);
       //watch for collisions that should never happen
       require(fish[_x][_y][id]==address(0));
       //set fish _species
@@ -355,8 +355,8 @@ contract Bay is Galleasset {
   //
   function _catchFish(Ship thisShip,bytes32 _fish, bytes32 bait) internal returns (bool) {
 
-    bytes32 catchHash = keccak256(bait,block.blockhash(thisShip.blockNumber));
-    bytes32 depthHash = keccak256(bait,catchHash,block.blockhash(thisShip.blockNumber));
+    bytes32 catchHash = keccak256(bait,blockhash(thisShip.blockNumber));
+    bytes32 depthHash = keccak256(bait,catchHash,blockhash(thisShip.blockNumber));
     uint randomishWidthNumber = uint16( uint(catchHash) % width/5 );
     uint depthPlus = depth;
     depthPlus+=depth/3;
