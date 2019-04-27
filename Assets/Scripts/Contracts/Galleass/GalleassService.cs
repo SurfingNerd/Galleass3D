@@ -68,12 +68,9 @@ namespace Galleass3D.Contracts.Galleass
         }
 
         
-        public Task<string> NameQueryAsync(byte[] name, BlockParameter blockParameter = null)
+        public Task<string> NameQueryAsync(BlockParameter blockParameter = null)
         {
-            var nameFunction = new NameFunction();
-                nameFunction.Name = name;
-            
-            return ContractHandler.QueryAsync<NameFunction, string>(nameFunction, blockParameter);
+            return ContractHandler.QueryAsync<NameFunction, string>(null, blockParameter);
         }
 
         public Task<string> DestructRequestAsync(DestructFunction destructFunction)
@@ -81,27 +78,19 @@ namespace Galleass3D.Contracts.Galleass
              return ContractHandler.SendRequestAsync(destructFunction);
         }
 
+        public Task<string> DestructRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<DestructFunction>();
+        }
+
         public Task<TransactionReceipt> DestructRequestAndWaitForReceiptAsync(DestructFunction destructFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(destructFunction, cancellationToken);
         }
 
-        public Task<string> DestructRequestAsync(string contract, byte[] permission)
+        public Task<TransactionReceipt> DestructRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
-            var destructFunction = new DestructFunction();
-                destructFunction.Contract = contract;
-                destructFunction.Permission = permission;
-            
-             return ContractHandler.SendRequestAsync(destructFunction);
-        }
-
-        public Task<TransactionReceipt> DestructRequestAndWaitForReceiptAsync(string contract, byte[] permission, CancellationTokenSource cancellationToken = null)
-        {
-            var destructFunction = new DestructFunction();
-                destructFunction.Contract = contract;
-                destructFunction.Permission = permission;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(destructFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<DestructFunction>(null, cancellationToken);
         }
 
         public Task<string> ContactInformationQueryAsync(ContactInformationFunction contactInformationFunction, BlockParameter blockParameter = null)

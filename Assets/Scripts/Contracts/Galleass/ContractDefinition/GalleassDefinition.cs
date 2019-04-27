@@ -42,8 +42,7 @@ namespace Galleass3D.Contracts.Galleass.ContractDefinition
     [Function("name", "string")]
     public class NameFunctionBase : FunctionMessage
     {
-        [Parameter("bytes32", "_name", 1)]
-        public virtual byte[] Name { get; set; }
+
     }
 
     public partial class DestructFunction : DestructFunctionBase { }
@@ -51,10 +50,7 @@ namespace Galleass3D.Contracts.Galleass.ContractDefinition
     [Function("destruct", "bool")]
     public class DestructFunctionBase : FunctionMessage
     {
-        [Parameter("address", "_contract", 1)]
-        public virtual string Contract { get; set; }
-        [Parameter("bytes32", "_permission", 2)]
-        public virtual byte[] Permission { get; set; }
+
     }
 
     public partial class ContactInformationFunction : ContactInformationFunctionBase { }

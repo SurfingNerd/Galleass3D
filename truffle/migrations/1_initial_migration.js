@@ -73,6 +73,7 @@ module.exports = async function(deployer) {
   const village = await deployContract('Village');
   const market = await deployContract('Market');
   const sea = await deployContract('Sea');
+  const catfish = await deployContract('Catfish');
 
   setPermission(bay, 'transferDogger');
   setPermission(bay, 'updateExperience');
@@ -122,5 +123,16 @@ module.exports = async function(deployer) {
   
   var balance = await timber.balanceOf.call(deploymentAccount);
   console.log('minted: ' + balance);
+
+  const fs = require('fs');
+
+  fs.writeFile("./build/latestGalleasAddress.txt", galleas.address, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+
+    console.log("latest Galleass address written to: build/latestGalleasAddress.txt");
+}); 
+  // galleas.address
 
 };

@@ -10,33 +10,33 @@ using Nethereum.Contracts.CQS;
 using Nethereum.Contracts.ContractHandlers;
 using Nethereum.Contracts;
 using System.Threading;
-using Galleass3D.Contracts.ERC20.ContractDefinition;
+using Galleass3D.Contracts.StandardToken.ContractDefinition;
 
-namespace Galleass3D.Contracts.ERC20
+namespace Galleass3D.Contracts.StandardToken
 {
-    public partial class ERC20Service
+    public partial class StandardTokenService
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, ERC20Deployment eRC20Deployment, CancellationTokenSource cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, StandardTokenDeployment standardTokenDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
-            return web3.Eth.GetContractDeploymentHandler<ERC20Deployment>().SendRequestAndWaitForReceiptAsync(eRC20Deployment, cancellationTokenSource);
+            return web3.Eth.GetContractDeploymentHandler<StandardTokenDeployment>().SendRequestAndWaitForReceiptAsync(standardTokenDeployment, cancellationTokenSource);
         }
 
-        public static Task<string> DeployContractAsync(Nethereum.Web3.Web3 web3, ERC20Deployment eRC20Deployment)
+        public static Task<string> DeployContractAsync(Nethereum.Web3.Web3 web3, StandardTokenDeployment standardTokenDeployment)
         {
-            return web3.Eth.GetContractDeploymentHandler<ERC20Deployment>().SendRequestAsync(eRC20Deployment);
+            return web3.Eth.GetContractDeploymentHandler<StandardTokenDeployment>().SendRequestAsync(standardTokenDeployment);
         }
 
-        public static async Task<ERC20Service> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, ERC20Deployment eRC20Deployment, CancellationTokenSource cancellationTokenSource = null)
+        public static async Task<StandardTokenService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, StandardTokenDeployment standardTokenDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
-            var receipt = await DeployContractAndWaitForReceiptAsync(web3, eRC20Deployment, cancellationTokenSource);
-            return new ERC20Service(web3, receipt.ContractAddress);
+            var receipt = await DeployContractAndWaitForReceiptAsync(web3, standardTokenDeployment, cancellationTokenSource);
+            return new StandardTokenService(web3, receipt.ContractAddress);
         }
 
         protected Nethereum.Web3.Web3 Web3{ get; }
 
         public ContractHandler ContractHandler { get; }
 
-        public ERC20Service(Nethereum.Web3.Web3 web3, string contractAddress)
+        public StandardTokenService(Nethereum.Web3.Web3 web3, string contractAddress)
         {
             Web3 = web3;
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
@@ -59,10 +59,10 @@ namespace Galleass3D.Contracts.ERC20
         }
 
         
-        public Task<BigInteger> BalanceOfQueryAsync(string who, BlockParameter blockParameter = null)
+        public Task<BigInteger> BalanceOfQueryAsync(string owner, BlockParameter blockParameter = null)
         {
             var balanceOfFunction = new BalanceOfFunction();
-                balanceOfFunction.Who = who;
+                balanceOfFunction.Owner = owner;
             
             return ContractHandler.QueryAsync<BalanceOfFunction, BigInteger>(balanceOfFunction, blockParameter);
         }
@@ -93,21 +93,6 @@ namespace Galleass3D.Contracts.ERC20
                 transferFunction.Value = value;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferFunction, cancellationToken);
-        }
-
-        public Task<BigInteger> AllowanceQueryAsync(AllowanceFunction allowanceFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<AllowanceFunction, BigInteger>(allowanceFunction, blockParameter);
-        }
-
-        
-        public Task<BigInteger> AllowanceQueryAsync(string owner, string spender, BlockParameter blockParameter = null)
-        {
-            var allowanceFunction = new AllowanceFunction();
-                allowanceFunction.Owner = owner;
-                allowanceFunction.Spender = spender;
-            
-            return ContractHandler.QueryAsync<AllowanceFunction, BigInteger>(allowanceFunction, blockParameter);
         }
 
         public Task<string> TransferFromRequestAsync(TransferFromFunction transferFromFunction)
@@ -166,6 +151,77 @@ namespace Galleass3D.Contracts.ERC20
                 approveFunction.Value = value;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
+        }
+
+        public Task<BigInteger> AllowanceQueryAsync(AllowanceFunction allowanceFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<AllowanceFunction, BigInteger>(allowanceFunction, blockParameter);
+        }
+
+        
+        public Task<BigInteger> AllowanceQueryAsync(string owner, string spender, BlockParameter blockParameter = null)
+        {
+            var allowanceFunction = new AllowanceFunction();
+                allowanceFunction.Owner = owner;
+                allowanceFunction.Spender = spender;
+            
+            return ContractHandler.QueryAsync<AllowanceFunction, BigInteger>(allowanceFunction, blockParameter);
+        }
+
+        public Task<string> IncreaseApprovalRequestAsync(IncreaseApprovalFunction increaseApprovalFunction)
+        {
+             return ContractHandler.SendRequestAsync(increaseApprovalFunction);
+        }
+
+        public Task<TransactionReceipt> IncreaseApprovalRequestAndWaitForReceiptAsync(IncreaseApprovalFunction increaseApprovalFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(increaseApprovalFunction, cancellationToken);
+        }
+
+        public Task<string> IncreaseApprovalRequestAsync(string spender, BigInteger addedValue)
+        {
+            var increaseApprovalFunction = new IncreaseApprovalFunction();
+                increaseApprovalFunction.Spender = spender;
+                increaseApprovalFunction.AddedValue = addedValue;
+            
+             return ContractHandler.SendRequestAsync(increaseApprovalFunction);
+        }
+
+        public Task<TransactionReceipt> IncreaseApprovalRequestAndWaitForReceiptAsync(string spender, BigInteger addedValue, CancellationTokenSource cancellationToken = null)
+        {
+            var increaseApprovalFunction = new IncreaseApprovalFunction();
+                increaseApprovalFunction.Spender = spender;
+                increaseApprovalFunction.AddedValue = addedValue;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(increaseApprovalFunction, cancellationToken);
+        }
+
+        public Task<string> DecreaseApprovalRequestAsync(DecreaseApprovalFunction decreaseApprovalFunction)
+        {
+             return ContractHandler.SendRequestAsync(decreaseApprovalFunction);
+        }
+
+        public Task<TransactionReceipt> DecreaseApprovalRequestAndWaitForReceiptAsync(DecreaseApprovalFunction decreaseApprovalFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(decreaseApprovalFunction, cancellationToken);
+        }
+
+        public Task<string> DecreaseApprovalRequestAsync(string spender, BigInteger subtractedValue)
+        {
+            var decreaseApprovalFunction = new DecreaseApprovalFunction();
+                decreaseApprovalFunction.Spender = spender;
+                decreaseApprovalFunction.SubtractedValue = subtractedValue;
+            
+             return ContractHandler.SendRequestAsync(decreaseApprovalFunction);
+        }
+
+        public Task<TransactionReceipt> DecreaseApprovalRequestAndWaitForReceiptAsync(string spender, BigInteger subtractedValue, CancellationTokenSource cancellationToken = null)
+        {
+            var decreaseApprovalFunction = new DecreaseApprovalFunction();
+                decreaseApprovalFunction.Spender = spender;
+                decreaseApprovalFunction.SubtractedValue = subtractedValue;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(decreaseApprovalFunction, cancellationToken);
         }
     }
 }

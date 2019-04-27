@@ -12,6 +12,7 @@ using System.Text;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3.Accounts;
 using System.Threading.Tasks;
+using Galleass3D.Contracts;
 
 public class EthKeyManager : MonoBehaviour {
 
@@ -22,6 +23,25 @@ public class EthKeyManager : MonoBehaviour {
     private Nethereum.Web3.Web3 Web3;
     private Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService WorldsRegistry;
 
+    private Galleass3D.Contracts.Galleass.GalleassService Galleass;
+    private Galleass3D.Contracts.Timber.TimberService Timber;
+    private Galleass3D.Contracts.Fillet.FilletService Fillet;
+    private Galleass3D.Contracts.Dogger.DoggerService Dogger;
+    private Galleass3D.Contracts.Bay.BayService Bay;
+    private Galleass3D.Contracts.Citizens.CitizensService Citizens;
+    private Galleass3D.Contracts.CitizensLib.CitizensLibService CitizensLib;
+    private Galleass3D.Contracts.Land.LandService Land;
+    private Galleass3D.Contracts.TimberCamp.TimberCampService TimberCamp;
+    private Galleass3D.Contracts.LandLib.LandLibService LandLib;
+    private Galleass3D.Contracts.Harbor.HarborService Harbor;
+    private Galleass3D.Contracts.Fishmonger.FishmongerService Fishmonger;
+    private Galleass3D.Contracts.Village.VillageService Village;
+    private Galleass3D.Contracts.Market.MarketService Market;
+    private Galleass3D.Contracts.Sea.SeaService Sea;
+
+    //fishes.
+    private Galleass3D.Contracts.Catfish.CatfishService Catfish;
+
     //&& account = Wallet.GetAccount(0);
     //var toAddress = "0x13f022d72158410433cbd66f5dd8bf6d2d129924";
     //var web3 = new Web3(account);
@@ -29,6 +49,54 @@ public class EthKeyManager : MonoBehaviour {
     // Nethereum.Web3.Web3 web3 = new Nethereum.Web3.Web3(new Nethereum.HdWallet.Wallet("", ""));
 
     private string WorldsRegistryAddress = "0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16";
+
+    private string LastKnownGalleassAddress = "0xDaCAAcC9A3893f94e1a3d5Da240CE95C649Fb748";
+
+
+    private async Task<bool> StartBlockchainCommunication()
+    {
+        Debug.Log("Starting Blockchain Communication");
+        //byte[] bytes = new byte[32];
+        //string x = await WorldsRegistry.WorldsQueryAsync(null);
+
+
+
+
+        Galleass = new Galleass3D.Contracts.Galleass.GalleassService(Web3, LastKnownGalleassAddress);
+        Timber = await GetContract<Galleass3D.Contracts.Timber.TimberService>();
+        Fillet = await GetContract<Galleass3D.Contracts.Fillet.FilletService>();
+        Dogger = await GetContract < Galleass3D.Contracts.Dogger.DoggerService>();
+        Bay =   await GetContract<Galleass3D.Contracts.Bay.BayService>();
+        Citizens = await GetContract<Galleass3D.Contracts.Citizens.CitizensService>();
+        CitizensLib = await GetContract<Galleass3D.Contracts.CitizensLib.CitizensLibService>();
+        Land = await GetContract<Galleass3D.Contracts.Land.LandService>();
+        TimberCamp = await GetContract<Galleass3D.Contracts.TimberCamp.TimberCampService>();
+        LandLib = await GetContract<Galleass3D.Contracts.LandLib.LandLibService>();
+        Harbor = await GetContract<Galleass3D.Contracts.Harbor.HarborService>();
+        Fishmonger = await GetContract<Galleass3D.Contracts.Fishmonger.FishmongerService>();
+        Village = await GetContract < Galleass3D.Contracts.Village.VillageService>();
+        Market = await GetContract<Galleass3D.Contracts.Market.MarketService>();
+        Sea = await GetContract<Galleass3D.Contracts.Sea.SeaService>();
+
+        //fishes
+        Catfish = await GetContract<Galleass3D.Contracts.Catfish.CatfishService>();
+
+        return true;
+    }
+
+    private async Task<T> GetContract<T>()
+    {
+        string contractName = typeof(T).Name.Trim();
+        contractName = contractName.Substring(0, contractName.Length - "Service".Length);
+        Debug.Log("Getting Contract address:" + contractName);
+        string contractAddress = await Galleass.GetContractQueryAsync(Encoding.ASCII.GetBytes(contractName));
+        Debug.Log("Getting Contract:" + contractName + " at address " + contractAddress);
+        T result = (T)Activator.CreateInstance(typeof(T), Web3, contractAddress);
+
+        return result;
+    }
+
+
 
     [Function("changeVendingMachine")]
     public class ChangeVendingMachineFunction : FunctionMessage
@@ -121,7 +189,10 @@ public class EthKeyManager : MonoBehaviour {
 
         WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
 
-        StartBlockchainCommunication().Start();
+        //TODO: find out how to call a async function on purpose.
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        StartBlockchainCommunication();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 
 
@@ -143,18 +214,6 @@ public class EthKeyManager : MonoBehaviour {
 
     }
 
-    private async Task<bool> StartBlockchainCommunication()
-    {
-        Debug.Log("Starting Blockchain Communication");
-        byte[] bytes = new byte[32];
-        string x = await WorldsRegistry.WorldsQueryAsync(null);
-
-
-
-        //Debug.Log("QueryWorldsAsync: " + x);
-
-        return true;
-    }
 
     private void DeployTest() 
     {

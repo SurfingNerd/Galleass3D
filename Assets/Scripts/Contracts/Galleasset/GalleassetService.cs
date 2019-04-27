@@ -48,12 +48,9 @@ namespace Galleass3D.Contracts.Galleasset
         }
 
         
-        public Task<string> GalleassQueryAsync(string galleass, BlockParameter blockParameter = null)
+        public Task<string> GalleassQueryAsync(BlockParameter blockParameter = null)
         {
-            var galleassFunction = new GalleassFunction();
-                galleassFunction.Galleass = galleass;
-            
-            return ContractHandler.QueryAsync<GalleassFunction, string>(galleassFunction, blockParameter);
+            return ContractHandler.QueryAsync<GalleassFunction, string>(null, blockParameter);
         }
 
         public Task<string> RenounceOwnershipRequestAsync(RenounceOwnershipFunction renounceOwnershipFunction)

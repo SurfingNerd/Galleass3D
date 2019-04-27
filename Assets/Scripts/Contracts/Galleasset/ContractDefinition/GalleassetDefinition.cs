@@ -34,8 +34,7 @@ namespace Galleass3D.Contracts.Galleasset.ContractDefinition
     [Function("galleass", "address")]
     public class GalleassFunctionBase : FunctionMessage
     {
-        [Parameter("address", "_galleass", 1)]
-        public virtual string Galleass { get; set; }
+
     }
 
     public partial class RenounceOwnershipFunction : RenounceOwnershipFunctionBase { }
