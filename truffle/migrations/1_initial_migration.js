@@ -1,5 +1,7 @@
 //const Migrations = artifacts.require("Migrations");
 
+const process = require('process');
+const Registry = artifacts.require("WorldsRegistry");
 const Galleass =  artifacts.require("Galleass");
 
 module.exports = async function(deployer) {
@@ -8,11 +10,26 @@ module.exports = async function(deployer) {
   const __deployer = deployer;
 
   
+
+  
   var accounts = await web3.eth.getAccounts();
   var deploymentAccount = accounts[0];
   console.log('deploying main contract with account:' + deploymentAccount); 
+
+
+  var registry = await Registry.at('0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16');
+  //var registry = await deployer.deploy(Registry);
+
   var galleas = await deployer.deploy(Galleass, 'Thomas Haller');
   console.log('main account deployed!'); 
+
+  var seconds = Math.round(new Date() / 1000);
+
+  var secondsSinceGameBirth = seconds - 1556310063;
+
+  console.log('seconds: ' + seconds);
+
+  await registry.registerGalleasWorld.sendTransaction(galleas.address, deploymentAccount, web3.utils.fromAscii('test - world sec:' + secondsSinceGameBirth));
   //const __mainContract = galleas;
   //const var gallAddr = Galleass.address;
 
@@ -30,8 +47,15 @@ module.exports = async function(deployer) {
   }
 
   async function setPermission(contract, permissionName) {
+    
+    console.log("setting " + contract.address + " " + contract.contractName + " permission:" + permissionName);
+
     // function setPermission(address _contract, bytes32 _permission, bool _value) 
-    await galleas.setPermission(contract.address, web3.utils.fromAscii(permissionName), true);
+    var setPermissionResult = await galleas.setPermission(contract.address, web3.utils.fromAscii(permissionName), true);
+   
+    if (!setPermissionResult.receipt.status) {
+      console.error("FAILED: setting " + contract.address + " " + contract.contractName + " permission:" + permissionName);
+    }
   }
 
   const timber = await deployContract('Timber');
@@ -82,7 +106,10 @@ module.exports = async function(deployer) {
 
   setPermission(market, 'transferTimber');
 
-  
+  console.log(copper);
+
+  console.log('Generating  Land...');
+  await landLib.generateLand.sendTransaction();
 
   //console.log('gal: ' +gallAddr);
   // var timber = await deployer.deploy(Timber, gallAddr);

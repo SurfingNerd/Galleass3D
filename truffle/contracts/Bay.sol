@@ -373,7 +373,7 @@ contract Bay is Galleasset {
       distanceToFish+=fishx-thisShip.location;
     }
     bool result = ( distanceToFish < randomishWidthNumber && fishy < randomishDepthNumber);
-    Attempt(msg.sender,randomishWidthNumber, randomishDepthNumber, fishx, fishy, distanceToFish, result);
+    emit Attempt(msg.sender,randomishWidthNumber, randomishDepthNumber, fishx, fishy, distanceToFish, result);
     return result;
   }
   event Attempt(address account,uint randomishWidthNumber,uint randomishDepthNumber,uint16 fishx,uint16 fishy,uint16 distanceToFish,bool result);

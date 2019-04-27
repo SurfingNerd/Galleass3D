@@ -68,7 +68,7 @@ module.exports = {
       gasPrice: 1000000000
      },
 
-     prototype93_hd: {
+     prototype93: {
       provider: () => new HDWalletProvider(mnemonic, `http://116.203.118.82:8545`),       
       network_id: "*",       // Any network (default: none)
       gas: 799999900,
