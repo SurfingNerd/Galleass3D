@@ -20,9 +20,7 @@
 
  const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
-//
 
-var PrivateKeyProvider = require("truffle-privatekey-provider");
 
 const fs = require('fs');
 //var prototype93provider = new PrivateKeyProvider(pk, "http://116.203.118.82:8545");
