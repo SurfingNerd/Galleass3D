@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -11,7 +11,7 @@ pragma solidity ^0.4.15;
 
 import './Galleasset.sol';
 import './ERC677Token.sol';
-import 'openzeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
+import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol';
 
 contract Timber is Galleasset, MintableToken, ERC677Token {
 

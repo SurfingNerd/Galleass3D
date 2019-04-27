@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -31,7 +31,8 @@ contract Land is Galleasset {
 
   mapping (uint16 => mapping (uint16 => uint16)) public totalWidth;
 
-  function Land(address _galleass) public Galleasset(_galleass) { }
+  constructor(address _galleass) public Galleasset(_galleass) { }
+
   function () public {revert();}
 
   function editTile(uint16 _x, uint16 _y,uint8 _tile,uint16 _update,address _contract) onlyOwner isBuilding public returns (bool) {
@@ -67,7 +68,7 @@ contract Land is Galleasset {
   event BuyTile(uint16 _x,uint16 _y,uint8 _tile,address _owner,uint _price,address _contract);
 
   //erc677 receiver
-  function onTokenTransfer(address _sender, uint _amount, bytes _data) public isGalleasset("Land") returns (bool) {
+  function onTokenTransfer(address _sender, uint _amount, bytes memory _data) public isGalleasset("Land") returns (bool) {
     TokenTransfer(msg.sender,_sender,_amount,_data);
     //THIS HAS MOVED TO LANDLIB FOR FASTER DEV LOOP/UPGRADABILITY
     //LandLib landLib = LandLib(getContract("LandLib"));
@@ -110,7 +111,7 @@ contract Land is Galleasset {
     mainY=_mainY;
     return true;
   }
-  function signalGenerateLand(uint16 _x,uint16 _y,uint8[9] islands) public returns (bool) {
+  function signalGenerateLand(uint16 _x,uint16 _y,uint8[9] memory islands) public returns (bool) {
     require(msg.sender==getContract("LandLib"));
     emit LandGenerated(now,_x,_y,islands[0],islands[1],islands[2],islands[3],islands[4],islands[5],islands[6],islands[7],islands[8]);
   }
@@ -137,11 +138,11 @@ contract Land is Galleasset {
     return true;
   }
 
-  function getTile(uint16 _x,uint16 _y,uint8 _index) public constant returns (uint16 _tile,address _contract,address _owner,uint256 _price) {
+  function getTile(uint16 _x,uint16 _y,uint8 _index) public view returns (uint16 _tile,address _contract,address _owner,uint256 _price) {
     return (tileTypeAt[_x][_y][_index],contractAt[_x][_y][_index],ownerAt[_x][_y][_index],priceAt[_x][_y][_index]);
   }
 
-  function getTileLocation(uint16 _x,uint16 _y,address _address) public constant returns (uint16) {
+  function getTileLocation(uint16 _x,uint16 _y,address _address) public view returns (uint16) {
     LandLib landLib = LandLib(getContract("LandLib"));
     uint8 tileIndex = findTileByAddress(_x,_y,_address);
     if(tileIndex==255) return 0;
@@ -166,7 +167,7 @@ contract Land is Galleasset {
     return 2000 - halfTotalWidth + widthOffset;
   }
 
-  function findTile(uint16 _x,uint16 _y,uint16 _lookingForType) public constant returns (uint8) {
+  function findTile(uint16 _x,uint16 _y,uint16 _lookingForType) public view returns (uint8) {
     uint8 index = 0;
     while(tileTypeAt[_x][_y][index]!=_lookingForType){
       index++;
@@ -175,7 +176,7 @@ contract Land is Galleasset {
     return index;
   }
 
-  function findTileByAddress(uint16 _x,uint16 _y,address _address) public constant returns (uint8) {
+  function findTileByAddress(uint16 _x,uint16 _y,address _address) public view returns (uint8) {
     uint8 index = 0;
     while(contractAt[_x][_y][index]!=_address){
       index++;

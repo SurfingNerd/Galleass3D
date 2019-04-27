@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -214,7 +214,7 @@ contract Harbor is StandardTile {
     return false;
   }
 
-  function countShips(uint16 _x,uint16 _y,uint8 _tile,bytes32 _model) public constant returns (uint256) {
+  function countShips(uint16 _x,uint16 _y,uint8 _tile,bytes32 _model) public view returns (uint256) {
     uint256 count = 0;
     uint256 index = 0;
     while(index<shipStorage[_x][_y][_tile][_model].length){

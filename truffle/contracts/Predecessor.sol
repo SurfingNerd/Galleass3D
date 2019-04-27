@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import './Staged.sol';

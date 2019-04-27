@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -104,7 +104,9 @@ contract LandLib is Galleasset, DataParser {
     landContract.setTotalWidth(x,y,getTotalWidth(x,y));
   }
 
-  function setTilesAndOwners(uint16 x,uint16 y,Land landContract,bytes32 landParts1, bytes32 landParts2){
+  function setTilesAndOwners(uint16 x,uint16 y,Land landContract,bytes32 landParts1, bytes32 landParts2)
+  public
+  {
     uint8[9] memory islands;
     uint8 tileCountPerIsland = 0;
     uint8 currentIslandCount = 0;
@@ -133,7 +135,7 @@ contract LandLib is Galleasset, DataParser {
   event Debug(uint8 currentIslandCount,uint8 tileCountPerIsland);
 
 
-  function getTotalWidth(uint16 _x,uint16 _y) public constant returns (uint16){
+  function getTotalWidth(uint16 _x,uint16 _y) public view returns (uint16){
     Land landContract = Land(getContract("Land"));
     uint16 totalWidth = 0;
     bool foundLand = false;
@@ -153,7 +155,7 @@ contract LandLib is Galleasset, DataParser {
   }
 
   //erc677 receiver
-  function onTokenTransfer(address _sender, uint _amount, bytes _data) public isGalleasset("LandLib") returns (bool) {
+  function onTokenTransfer(address _sender, uint _amount, bytes memory _data) public isGalleasset("LandLib") returns (bool) {
     TokenTransfer(msg.sender,_sender,_amount,_data);
     uint8 action = uint8(_data[0]);
     if(action==1){
@@ -169,7 +171,7 @@ contract LandLib is Galleasset, DataParser {
   }
   event TokenTransfer(address token,address sender,uint amount,bytes data);
 
-  function _buyTile(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _buyTile(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     Land landContract = Land(getContract("Land"));
     address copperContractAddress = getContract("Copper");
     require(msg.sender == copperContractAddress);
@@ -248,7 +250,7 @@ contract LandLib is Galleasset, DataParser {
     }
   }
 
-  function _buildTimberCamp(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _buildTimberCamp(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     Land landContract = Land(getContract("Land"));
     //build timber camp
     address copperContractAddress = getContract("Copper");
@@ -318,7 +320,7 @@ contract LandLib is Galleasset, DataParser {
     return true;
   }
 
-  function _extractRawResource(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _extractRawResource(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     Land landContract = Land(getContract("Land"));
     address copperContractAddress = getContract("Copper");
     require(msg.sender == copperContractAddress);
@@ -357,7 +359,7 @@ contract LandLib is Galleasset, DataParser {
     }
   }
 
-  function translateTileToWidth(uint16 _tileType) public constant returns (uint16) {
+  function translateTileToWidth(uint16 _tileType) public view returns (uint16) {
     if(_tileType==tileTypes["Water"]){
       return 95;
     }else if (_tileType>=1&&_tileType<50){
@@ -373,7 +375,7 @@ contract LandLib is Galleasset, DataParser {
     }
   }
 
-  function translateToStartingTile(uint16 tilepart) public constant returns (uint16) {
+  function translateToStartingTile(uint16 tilepart) public view returns (uint16) {
     if(tilepart<12850){
       return tileTypes["Water"];
     }else if(tilepart<19275){

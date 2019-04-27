@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -40,7 +40,7 @@ contract TimberCamp is StandardTile {
   }
 
 
-  function canCollect(uint16 _x,uint16 _y,uint8 _tile) public constant returns (uint8 amount) {
+  function canCollect(uint16 _x,uint16 _y,uint8 _tile) public view returns (uint8 amount) {
     amount=0;
     uint16 minNumber = uint16(min);
     uint16 maxNumber = uint16(max);

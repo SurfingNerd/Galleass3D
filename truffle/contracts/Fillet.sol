@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -12,10 +12,10 @@ pragma solidity ^0.4.15;
 
 import './Galleasset.sol';
 import './ERC677Token.sol';
-import 'openzeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
+import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol';
 
 
-contract Fillet is Galleasset, MintableToken, ERC677Token {
+contract Fillet is Galleasset, ERC20Mintable, ERC677Token {
 
   string public constant name = "Galleass Fillet";
   string public constant symbol = "G_FILLET";
@@ -24,12 +24,12 @@ contract Fillet is Galleasset, MintableToken, ERC677Token {
   uint256 public constant INITIAL_SUPPLY = 0;
 
   constructor(address _galleass) Galleasset(_galleass) public {
-    totalSupply_ = INITIAL_SUPPLY;
+    totalSupply = INITIAL_SUPPLY;
   }
 
-  function galleassMint(address _to, uint256 _amount) canMint public returns (bool) {
+  function galleassMint(address _to, uint256 _amount) onlyMinter public returns (bool) {
     require(hasPermission(msg.sender,"mintFillet"));
-    totalSupply_ = totalSupply_.add(_amount);
+    totalSupply = totalSupply.add(_amount);
     balances[_to] = balances[_to].add(_amount);
     emit Mint(_to, _amount);
     emit Transfer(address(0), _to, _amount);

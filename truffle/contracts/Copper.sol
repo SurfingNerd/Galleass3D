@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -15,9 +15,9 @@ pragma solidity ^0.4.15;
 
 import './Galleasset.sol';
 import './ERC677Token.sol';
-import 'openzeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
+import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol';
 
-contract Copper is Galleasset, MintableToken, ERC677Token {
+contract Copper is Galleasset, ERC20Mintable, ERC677Token {
 
   string public constant name = "Galleass Copper";
   string public constant symbol = "G_COPPER";
@@ -26,7 +26,7 @@ contract Copper is Galleasset, MintableToken, ERC677Token {
   uint256 public constant INITIAL_SUPPLY = 0;
 
   constructor(address _galleass) Galleasset(_galleass) public {
-    totalSupply_ = INITIAL_SUPPLY;
+    totalSupply = INITIAL_SUPPLY;
   }
 
 }

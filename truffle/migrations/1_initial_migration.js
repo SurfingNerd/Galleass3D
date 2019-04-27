@@ -16,11 +16,15 @@ module.exports = async function(deployer) {
   var deploymentAccount = accounts[0];
   console.log('deploying main contract with account:' + deploymentAccount); 
 
+  //await web3.eth.sendTransaction({from: deploymentAccount,to: '0x4e369221b38805336272023b784e0c0d93210281',amount: 1000000000});
+  
+  await web3.eth.sendTransaction({from: deploymentAccount,to: '0x7b380660b3e857971Ffc04a7adA5ce563aCf9f31',amount: 1000000000});
+ 
 
   var registry = await Registry.at('0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16');
   //var registry = await deployer.deploy(Registry);
 
-  var galleas = await deployer.deploy(Galleass, 'Thomas Haller');
+  var galleas = await deployer.deploy(Galleass);
   console.log('main account deployed!'); 
 
   var seconds = Math.round(new Date() / 1000);

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -20,16 +20,13 @@ pragma solidity ^0.4.18;
 
 */
 
-
-
-import 'openzeppelin-solidity/contracts/ownership/Contactable.sol';
 import './Staged.sol';
 import './Predecessor.sol';
 import './Galleasset.sol';
 import './StandardTokenInterface.sol';
 
 
-contract Galleass is Staged, Contactable, Predecessor{
+contract Galleass is Staged, Predecessor{
 
   string public constant name = "Galleass";
   string public constant author = "Thomas Haller thomas.haller@lab10.io";
@@ -41,7 +38,7 @@ contract Galleass is Staged, Contactable, Predecessor{
   mapping(bytes32 => address) contracts;
   mapping(address => mapping(bytes32 => bool)) permission;
 
-  constructor(string _contact) public { setContactInformation(_contact); }
+  constructor() public {}
 
   function upgradeContract(address _contract) onlyOwner isBuilding public returns (bool) {
     Galleasset(_contract).upgradeGalleass(descendant);

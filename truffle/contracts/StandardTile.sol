@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -39,7 +39,7 @@ contract StandardTile is Galleasset, DataParser{
   }
 
   //the owner of the tile will need to stock it with copper to pay fishermen for their fillets
-  function _sendToken(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _sendToken(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
     uint8 _tile = getTile(_data);

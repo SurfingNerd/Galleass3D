@@ -1,15 +1,15 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.5.7;
 
-import 'openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
+import 'openzeppelin-solidity/contracts/token/ERC20/ERC20.sol';
 
 // adapted from https://github.com/ethereum/EIPs/issues/677
 //    big thanks to Steve Ellis
 
-contract ERC677Token is StandardToken {
+contract ERC677Token is ERC20 {
 
   event TransferAndCall(address indexed from, address indexed to, uint value, bytes data);
 
-  function transferAndCall(address _to, uint _value, bytes _data)
+  function transferAndCall(address _to, uint _value, bytes memory _data)
     public
     validRecipient(_to)
     returns (bool success)
@@ -21,7 +21,7 @@ contract ERC677Token is StandardToken {
     }
     return true;
   }
-  function contractFallback(address _to, uint _value, bytes _data)
+  function contractFallback(address _to, uint _value, bytes memory _data)
     validRecipient(_to)
     private
     view
@@ -49,5 +49,5 @@ contract ERC677Token is StandardToken {
 }
 
 contract ERC677Receiver {
-  function onTokenTransfer(address /*_sender*/, uint /*_value*/, bytes /*_data*/) public pure returns (bool){}
+  function onTokenTransfer(address /*_sender*/, uint /*_value*/, bytes memory /*_data*/) public pure returns (bool){}
 }

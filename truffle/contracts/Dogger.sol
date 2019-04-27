@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -92,7 +92,7 @@ contract Dogger is Galleasset, NFT, BuildableInterface {
         );
     }
 
-    function tokensOfOwner(address _owner) external view returns(uint256[]) {
+    function tokensOfOwner(address _owner) external view returns(uint256[] memory) {
         uint256 tokenCount = balanceOf(_owner);
         if (tokenCount == 0) {
             return new uint256[](0);

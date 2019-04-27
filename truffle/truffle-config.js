@@ -22,7 +22,7 @@
 // const infuraKey = "fj4jll3k.....";
 //
 
-var PrivateKeyProvider = require("truffle-privatekey-provider");
+//var PrivateKeyProvider = require("truffle-privatekey-provider");
 
 const fs = require('fs');
 //var prototype93provider = new PrivateKeyProvider(pk, "http://116.203.118.82:8545");
@@ -122,7 +122,8 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-       version: "0.4.25",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.5.7",
+       //version: "0.4.25",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       settings: {          // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
