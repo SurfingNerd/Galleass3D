@@ -11,6 +11,7 @@ using System;
 using System.Text;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3.Accounts;
+using System.Threading.Tasks;
 
 public class EthKeyManager : MonoBehaviour {
 
@@ -18,6 +19,8 @@ public class EthKeyManager : MonoBehaviour {
     string Password = "password";
     Nethereum.HdWallet.Wallet Wallet; // = new Nethereum.HdWallet.Wallet(Words, Password);
     private Account Account;
+    private Nethereum.Web3.Web3 Web3;
+    private Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService WorldsRegistry;
 
     //&& account = Wallet.GetAccount(0);
     //var toAddress = "0x13f022d72158410433cbd66f5dd8bf6d2d129924";
@@ -25,7 +28,7 @@ public class EthKeyManager : MonoBehaviour {
 
     // Nethereum.Web3.Web3 web3 = new Nethereum.Web3.Web3(new Nethereum.HdWallet.Wallet("", ""));
 
-    private string worldsRegistry = "0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16";
+    private string WorldsRegistryAddress = "0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16";
 
     [Function("changeVendingMachine")]
     public class ChangeVendingMachineFunction : FunctionMessage
@@ -106,12 +109,19 @@ public class EthKeyManager : MonoBehaviour {
 
 
         Wallet = new Nethereum.HdWallet.Wallet(Words, Password);
+
         Account = Wallet.GetAccount(0);
 
 
         Debug.Log("Address: " + Account.Address);
         //Wallet.GetAccount(0);
         //todo: find out how to create Key Pair
+        Web3 = new Nethereum.Web3.Web3(Account, RpcUrl);
+
+
+        WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
+
+        StartBlockchainCommunication().Start();
 
 
 
@@ -119,7 +129,7 @@ public class EthKeyManager : MonoBehaviour {
         //privateKey = "B65C0964709083440649EB86F795D9DAB6FA14D28FECDEFC4C0A74189573FD65";
 
 
-       // Address = Account.Address;
+        // Address = Account.Address;
 
         //
         ///var url = ;
@@ -131,6 +141,19 @@ public class EthKeyManager : MonoBehaviour {
 
 
 
+    }
+
+    private async Task<bool> StartBlockchainCommunication()
+    {
+        Debug.Log("Starting Blockchain Communication");
+        byte[] bytes = new byte[32];
+        string x = await WorldsRegistry.WorldsQueryAsync(null);
+
+
+
+        //Debug.Log("QueryWorldsAsync: " + x);
+
+        return true;
     }
 
     private void DeployTest() 
