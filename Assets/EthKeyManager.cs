@@ -13,6 +13,7 @@ using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3.Accounts;
 using System.Threading.Tasks;
 using Galleass3D.Contracts;
+using System.Threading;
 
 public class EthKeyManager : MonoBehaviour {
 
@@ -58,6 +59,8 @@ public class EthKeyManager : MonoBehaviour {
 
     private ulong LastBlockNumber;
 
+    private string LatestBlockInformation; 
+
 
     //event Handlers.
     Event<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO> Bay_FishEventHandler;
@@ -74,6 +77,7 @@ public class EthKeyManager : MonoBehaviour {
 
     private string LastKnownGalleassAddress = "0xDaCAAcC9A3893f94e1a3d5Da240CE95C649Fb748";
 
+    bool ShallRun = true;
 
     private async Task<bool> StartBlockchainCommunication()
     {
@@ -81,7 +85,12 @@ public class EthKeyManager : MonoBehaviour {
         //byte[] bytes = new byte[32];
         //string x = await WorldsRegistry.WorldsQueryAsync(null);
 
+        //Task updatePanelTask = UpdateUIPanel();
+        //updatePanelTask.Start();
 
+
+        System.Threading.Thread thread = new System.Threading.Thread(new ThreadStart(UpdateUIPanel));
+        thread.Start();
 
 
         Galleass = new Galleass3D.Contracts.Galleass.GalleassService(Web3, LastKnownGalleassAddress);
@@ -118,9 +127,14 @@ public class EthKeyManager : MonoBehaviour {
 
 
 
-        StartCoroutine(ParseEvents());
+        //StartCoroutine(ParseEvents());
 
+        //ParseEventsAsync();
+        //System.Threading.Tasks.Task parseEvents = new Task(() => ParseEventsRaw());
+        //parseEvents.Start();
 
+        //System.Threading.Thread thread = new System.Threading.Thread(new ThreadStart(ParseEventsRaw));
+        //thread.Start();
 
 
         //ulong currentBlock = 1;
@@ -144,6 +158,11 @@ public class EthKeyManager : MonoBehaviour {
 
         return true;
     }
+
+    void HandleParameterizedThreadStart(object obj)
+    {
+    }
+
 
     private void DebugTransactionReceipt(TransactionReceipt receipt)
     {
@@ -169,20 +188,30 @@ public class EthKeyManager : MonoBehaviour {
         return ulong.Parse(task.Result.Value.ToString());
     }
 
-    private IEnumerator ParseEvents()
+    private void ParseEventsRaw()
     {
-        Debug.Log("Starting Parsing Events");
-        while(true)
+        while (ShallRun)
         {
             ulong startBlockNumber = GetCurrentBlockNumber() - 1;
-            HandleFishEvents(startBlockNumber);
+           //HandleFishEvents(startBlockNumber);
+
             System.Threading.Thread.Sleep(BlockTimeMs);
-             Web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
-            yield return startBlockNumber;
         }
 
-
     }
+
+    //private IEnumerator ParseEvents()
+    //{
+    //    Debug.Log("Starting Parsing Events");
+    //    while(ShallRun)
+    //    {
+    //        ulong startBlockNumber = GetCurrentBlockNumber() - 1;
+    //        HandleFishEvents(startBlockNumber);
+    //        System.Threading.Thread.Sleep(BlockTimeMs);
+    //         Web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
+    //        yield return startBlockNumber;
+    //    }
+    //}
 
     private async Task HandleFishEvents(ulong startBlockNumber)
     {
@@ -294,8 +323,9 @@ public class EthKeyManager : MonoBehaviour {
 
         WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
 
+        
 
-        StartCoroutine(UpdateUIPanel());
+        //StartCoroutine(UpdateUIPanel());
 
         //TODO: find out how to call a async function on purpose.
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -322,7 +352,7 @@ public class EthKeyManager : MonoBehaviour {
 
     }
 
-    IEnumerator UpdateUIPanel()
+    void UpdateUIPanel()
     {
         LastBlockNumber = GetCurrentBlockNumber();
         while (true) 
@@ -332,29 +362,33 @@ public class EthKeyManager : MonoBehaviour {
             //Web3.Eth.Blocks.GetBlockNumber();
             if (newBlockNumber > LastBlockNumber)
             {
-                var block = Web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(new Nethereum.Hex.HexTypes.HexBigInteger(new BigInteger( newBlockNumber)));
+                var blockNumber = new Nethereum.Hex.HexTypes.HexBigInteger(new BigInteger(newBlockNumber));
+
+                var block = Web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(blockNumber);
                 block.Wait();
+                var result = block.Result;
+
+               // var result = Web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(blockNumber);
+
                 StringBuilder txInfos = new StringBuilder();
                 txInfos.AppendLine(newBlockNumber.ToString());
-                txInfos.AppendLine(block.Result.BlockHash);
-                foreach(var tx in block.Result.Transactions)
+                txInfos.AppendLine(result.BlockHash);
+                foreach(var tx in result.Transactions)
                 {
-
                     txInfos.AppendLine(" - " + tx.TransactionHash);
                     //tx.TransactionHash;
                     //tx.
                     //tx.
                 }
-                //block.Result.Transactions
-                SetText(BlockInfoText, txInfos.ToString());
 
+                LatestBlockInformation = txInfos.ToString();
+                //block.Result.Transactions
             }
 
 
 
             System.Threading.Thread.Sleep(BlockTimeMs);
         }
-
     }
 
     private void SetText(GameObject textHostObject, string text)
@@ -568,7 +602,8 @@ public class EthKeyManager : MonoBehaviour {
     //}
 
     // Update is called once per frame
-    void Update () {
-		
-	}
+    void Update () 
+    {
+        SetText(BlockInfoText, LatestBlockInformation);
+    }
 }
