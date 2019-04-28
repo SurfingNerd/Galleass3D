@@ -16,8 +16,11 @@ using Galleass3D.Contracts;
 
 public class EthKeyManager : MonoBehaviour {
 
-    string Words = "ripple scissors kick mammal hire column oak again sun offer wealth tomorrow wagon turn fatal";
-    string Password = "password";
+    string Words = "visit require silent museum allow awesome cook topple gauge lend rain mixed";
+    string Password = "";
+
+    //string Words = "ripple scissors kick mammal hire column oak again sun offer wealth tomorrow wagon turn fatal";
+    //string Password = "password";
     Nethereum.HdWallet.Wallet Wallet; // = new Nethereum.HdWallet.Wallet(Words, Password);
     private Account Account;
     private Nethereum.Web3.Web3 Web3;
@@ -41,6 +44,13 @@ public class EthKeyManager : MonoBehaviour {
 
     //fishes.
     private Galleass3D.Contracts.Catfish.CatfishService Catfish;
+
+
+
+    //event Handlers.
+    Event<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO> Bay_FishEventHandler;
+
+    int BlockTimeMs = 1000;
 
     //&& account = Wallet.GetAccount(0);
     //var toAddress = "0x13f022d72158410433cbd66f5dd8bf6d2d129924";
@@ -81,7 +91,97 @@ public class EthKeyManager : MonoBehaviour {
         //fishes
         Catfish = await GetContract<Galleass3D.Contracts.Catfish.CatfishService>();
 
+
+
+        //Web3.Eth.GetContract(Galleass3D.Contracts.Bay.ContractDefinition )
+
+        //register events
+        //Bay.Fish
+        //Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO fishEvent = new Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO();
+
+
+        //var fishEventHandler = Web3.Eth.GetEvent<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>(Bay.ContractHandler.ContractAddress);
+
+        Bay_FishEventHandler = Bay.ContractHandler.GetEvent<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
+
+
+
+        StartCoroutine(ParseEvents());
+
+
+
+
+        //ulong currentBlock = 1;
+        //StartCoroutine(ParseEvents(currentBlock));
+
+
+        //blockWithTransactions.
+        //Web3.Eth.GetContract()
+
+        Debug.Log("Minting Catfish");
+        TransactionReceipt mintedCatfish = await  Catfish.MintRequestAndWaitForReceiptAsync(Account.Address, 10);
+
+        Debug.Log("Allowing Catfish in Bay");
+        TransactionReceipt allowCatfishInBay = await Bay.AllowSpeciesRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress);
+
+        Debug.Log("Stocking Catfish in Bay");
+        TransactionReceipt stockCatfishInBay = await Bay.StockRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress, 5);
+        Debug.Log("Stocking Catfish in Bay -finished!");
+        DebugTransactionReceipt(stockCatfishInBay);
+        //Bay.FishQueryAsync()
+
         return true;
+    }
+
+    private void DebugTransactionReceipt(TransactionReceipt receipt)
+    {
+        string hasErrors = receipt.HasErrors().HasValue ? receipt.HasErrors().Value.ToString() : "???";
+
+        Debug.Log("TransactionHash: " + receipt.TransactionHash);
+        Debug.Log("HasErrors: " + hasErrors);
+        Debug.Log("Status: " + receipt.Status.Value.ToString());
+
+        Debug.Log("Logs: " + receipt.Logs);
+        //foreach(var log in receipt.Logs)
+
+
+    }
+
+    private ulong GetCurrentBlockNumber() 
+    {
+        var task = Web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
+        //task.RunSynchronously();
+        //task.Start();
+        task.Wait();
+        //Debug.Log("Current Block Number = " + task.Result.Value.ToString());
+        return ulong.Parse(task.Result.Value.ToString());
+    }
+
+    private IEnumerator ParseEvents()
+    {
+        Debug.Log("Starting Parsing Events");
+        while(true)
+        {
+            ulong startBlockNumber = GetCurrentBlockNumber() - 1;
+            HandleFishEvents(startBlockNumber);
+            System.Threading.Thread.Sleep(BlockTimeMs);
+             Web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
+            yield return startBlockNumber;
+        }
+
+
+    }
+
+    private async Task HandleFishEvents(ulong startBlockNumber)
+    {
+        //Debug.Log("Parsing events starting at Block " + startBlockNumber.ToString());
+        var fishEvents = await Bay_FishEventHandler.GetAllChanges(new NewFilterInput() { FromBlock = new BlockParameter(startBlockNumber) });
+
+        foreach(var fishEvent in fishEvents)
+        {
+            //DateTime ts = new DateTime(fishEvent.Event.Timestamp);
+            Debug.Log("Found a fish at" + fishEvent.Event.X + " " + fishEvent.Event.Y + " ID" + fishEvent.Event.Id + " ts: " + fishEvent.Event.Timestamp + "species: " + fishEvent.Event.Species);
+        }
     }
 
     private async Task<T> GetContract<T>()

@@ -107,7 +107,10 @@ module.exports = async function(deployer) {
 
   setPermission(market, 'transferTimber');
 
-  console.log(copper);
+  catfish.mint.sendTransaction(deploymentAccount, 10);
+  
+
+  //console.log(copper);
 
   console.log('Generating  Land...');
   await landLib.generateLand.sendTransaction();
