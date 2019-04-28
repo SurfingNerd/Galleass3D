@@ -41,18 +41,21 @@ public class TransactionDetailsHolder : MonoBehaviour
             //todo: Maybe delete children - or are they garbage collected ??
             //scrollTransform.DetachChildren();
 
-            UnityEngine.UI.Text infoText = scrollTransform.gameObject.GetComponent<UnityEngine.UI.Text>();
 
-            if (infoText == null)
-            {
-                infoText = scrollTransform.gameObject.AddComponent<UnityEngine.UI.Text>();
-            }
+            UnityEngine.UI.InputField infoText = scrollTransform.gameObject.GetComponentInChildren<UnityEngine.UI.InputField>();
+
+            
+
+            //if (infoText == null)
+            //{
+            //    infoText = scrollTransform.gameObject.AddComponent<UnityEngine.UI.InputField>();
+            //}
 
 
-            Font ArialFont = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
-            infoText.font = ArialFont;
-            infoText.material = ArialFont.material;
-            infoText.material.color = new Color(0, 0, 0);
+           //Font ArialFont = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
+           // infoText.font = ArialFont;
+           // infoText.material = ArialFont.material;
+           // infoText.material.color = new Color(0, 0, 0);
 
             infoText.text = details.GetDescriptiveText();
             currentDisplayedDetails = details;

@@ -87,7 +87,7 @@ public class EthKeyManager : MonoBehaviour {
     string Password = "";
 
 
-    private Dictionary<string, string> ContractMappingAddressToName = new Dictionary<string, string>();
+    private Dictionary<string, string> ContractMappingAddressToName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     private Dictionary<string, string> ContractMappingNameToAddress = new Dictionary<string, string>();
 
     //string Words = "ripple scissors kick mammal hire column oak again sun offer wealth tomorrow wagon turn fatal";
