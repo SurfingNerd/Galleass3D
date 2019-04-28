@@ -219,6 +219,9 @@ public class EthKeyManager : MonoBehaviour {
         Debug.Log("Minting Catfish");
         TransactionReceipt mintedCatfish = await  Catfish.MintRequestAndWaitForReceiptAsync(Account.Address, 10);
 
+        var catFishBalance = await Catfish.BalanceOfQueryAsync(Account.Address);
+        Debug.Log("CatfishBalance:" + catFishBalance.ToString());
+
         Debug.Log("Allowing Catfish in Bay");
         TransactionReceipt allowCatfishInBay = await Bay.AllowSpeciesRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress);
 
