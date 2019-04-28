@@ -32,7 +32,7 @@ public class TransactionDetailsHolder : MonoBehaviour
         if (currentDisplayedDetails == details) return;
         if (details == null) return;
 
-        Debug.Log("holder:: SetTransactionDetails");
+        //Debug.Log("holder:: SetTransactionDetails");
         TransactionHash = details.TransactionReceipt.TransactionHash;
 
         if (ScrollContentForDetails != null)

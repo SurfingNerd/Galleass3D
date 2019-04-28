@@ -183,52 +183,51 @@ public class EthKeyManager : MonoBehaviour {
         //fishes
         Catfish = await GetContract<Galleass3D.Contracts.Catfish.CatfishService>();
 
-
-
-
-        //Web3.Eth.GetContract(Galleass3D.Contracts.Bay.ContractDefinition )
-
-        //register events
-        //Bay.Fish
-        //Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO fishEvent = new Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO();
-
-
-        //var fishEventHandler = Web3.Eth.GetEvent<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>(Bay.ContractHandler.ContractAddress);
-
         Bay_FishEventHandler = Bay.ContractHandler.GetEvent<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
 
 
+        bool stockCatfish = false; 
 
-        //StartCoroutine(ParseEvents());
+        if (stockCatfish)
+        {
+            Debug.Log("Minting Catfish");
+            TransactionReceipt mintedCatfish = await Catfish.MintRequestAndWaitForReceiptAsync(Account.Address, 10);
 
-        //ParseEventsAsync();
-        //System.Threading.Tasks.Task parseEvents = new Task(() => ParseEventsRaw());
-        //parseEvents.Start();
+            var catFishBalance = await Catfish.BalanceOfQueryAsync(Account.Address);
+            Debug.Log("CatfishBalance:" + catFishBalance.ToString());
 
-        //System.Threading.Thread thread = new System.Threading.Thread(new ThreadStart(ParseEventsRaw));
-        //thread.Start();
+            Debug.Log("Allowing Catfish in Bay");
+            TransactionReceipt allowCatfishInBay = await Bay.AllowSpeciesRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress);
+            Debug.Log("Stocking Catfish in Bay");
+            TransactionReceipt stockCatfishInBay = await Bay.StockRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress, 5);
+            Debug.Log("Stocking Catfish in Bay -finished!");
+            DebugTransactionReceipt(stockCatfishInBay);
+        }
+
+        Debug.Log("Minting Timber");
+        var timberReceipt = await Timber.MintRequestAndWaitForReceiptAsync(Account.Address, new BigInteger(100));
+
+        var doggerSupply = await Dogger.TotalSupplyQueryAsync();
+        Debug.Log("Total Supply Doggers:" + doggerSupply.ToString());
 
 
-        //ulong currentBlock = 1;
-        //StartCoroutine(ParseEvents(currentBlock));
+        var hasOernussuib = await Galleass.HasPermissionQueryAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"));
+        Debug.Log("Has Permission: " + hasOernussuib);
+
+        var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
 
 
-        //blockWithTransactions.
-        //Web3.Eth.GetContract()
 
-        Debug.Log("Minting Catfish");
-        TransactionReceipt mintedCatfish = await  Catfish.MintRequestAndWaitForReceiptAsync(Account.Address, 10);
+        //CancellationTokenSource s = new CancellationTokenSource(1500); 
+        Debug.Log("Building Dogger");
+        var buildDoggerReceipt = await Dogger.BuildRequestAndWaitForReceiptAsync();
 
-        var catFishBalance = await Catfish.BalanceOfQueryAsync(Account.Address);
-        Debug.Log("CatfishBalance:" + catFishBalance.ToString());
+        Debug.Log("Dogger: <<");
+        DebugTransactionReceipt(buildDoggerReceipt);
 
-        Debug.Log("Allowing Catfish in Bay");
-        TransactionReceipt allowCatfishInBay = await Bay.AllowSpeciesRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress);
+        //TODO: for some reason, for this Reiceipt we have to wait forever!!
+        //but it seems to go throught.
 
-        Debug.Log("Stocking Catfish in Bay");
-        TransactionReceipt stockCatfishInBay = await Bay.StockRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress, 5);
-        Debug.Log("Stocking Catfish in Bay -finished!");
-        DebugTransactionReceipt(stockCatfishInBay);
         //Bay.FishQueryAsync()
 
         return true;
@@ -390,10 +389,6 @@ public class EthKeyManager : MonoBehaviour {
         //var account = "0x12890d2cce102216644c59daE5baed380d84830c";
 
         //DeployTest();
-
-
-
-
     }
 
     void UpdateUIPanel()
@@ -439,8 +434,6 @@ public class EthKeyManager : MonoBehaviour {
                     transactionReceiptTasks.Add(receiptTask);
                 }
 
-
-
                 TimeSpan timeout = TimeSpan.FromSeconds(10);
                 foreach(var task in transactionReceiptTasks)
                 {
@@ -475,10 +468,7 @@ public class EthKeyManager : MonoBehaviour {
                     }
 
                     //var fishEvents = details.TransactionReceipt.DecodeAllEvents<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
-
-
                     //details.
-
                     //task.Result
                 }
 
@@ -491,11 +481,7 @@ public class EthKeyManager : MonoBehaviour {
 
                 LastBlockNumber = newBlockNumber;
                 //block.Result.Transactions
-
-
             }
-
-
 
             System.Threading.Thread.Sleep(BlockTimeMs);
         }
@@ -553,7 +539,7 @@ public class EthKeyManager : MonoBehaviour {
 
     public void SelectTransactionDetail(TransactionDetails details)
     {
-        Debug.Log("ethkeymanager:: SetTransactionDetails");
+        //Debug.Log("ethkeymanager:: SetTransactionDetails");
         if (this.TransactionDetailsObject != null)
         {
             TransactionDetailsHolder detailHolder = this.TransactionDetailsObject.GetComponent<TransactionDetailsHolder>();
@@ -564,7 +550,7 @@ public class EthKeyManager : MonoBehaviour {
     public void SetAutoUpdateToLatestBlock(UnityEngine.UI.Toggle change)
     {
         AutoUpdateToLatestBlock = change.isOn;
-        Debug.Log("AutoUpdateToLatestBlock:" + AutoUpdateToLatestBlock);
+        //Debug.Log("AutoUpdateToLatestBlock:" + AutoUpdateToLatestBlock);
     }
 
     public void IncreaseCurrentBlockNumberDisplayed()
@@ -583,180 +569,6 @@ public class EthKeyManager : MonoBehaviour {
             CurrentBlockNumberDisplayed--;
         }
     }
-
-
-
-    //public IEnumerator SendDeployMessage(Nethereum.Contracts.ContractDeploymentMessage message)
-    //{
-    //    EthBlockNumberUnityRequest blockNumberRequest = new EthBlockNumberUnityRequest(RpcUrl);
-    //    yield return blockNumberRequest.SendRequest();
-
-    //    if (blockNumberRequest.Exception != null)
-    //    {
-    //        LogErrorException("Failed To get Block Number: ", blockNumberRequest.Exception);
-    //    } 
-    //    else
-    //    {
-    //        Debug.Log("Latest Block Number: " + blockNumberRequest.Result.HexValue);
-    //    }
-
-    //    EthGetBalanceUnityRequest getBalanceRequest = new EthGetBalanceUnityRequest(RpcUrl);
-    //    yield return getBalanceRequest.SendRequest(Address, Nethereum.RPC.Eth.DTOs.BlockParameter.CreateLatest());
-    //    if (getBalanceRequest.Exception != null)
-    //    {
-    //        LogErrorException("Unable to get Balance:", getBalanceRequest.Exception);
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("Balance: " + getBalanceRequest.Result.Value.ToString());
-    //    }
-
-    //    var requestDeployment = new TransactionSignedUnityRequest(RpcUrl, privateKey);
-    //    message.GasPrice = 1000000000;
-    //    //message.Gas = 8000000;
-    //    yield return requestDeployment.SignAndSendDeploymentContractTransaction(message);
-
-
-    //    if (requestDeployment.Exception != null)
-    //    {
-    //        LogErrorException("Error Deploying Contract:", requestDeployment.Exception);
-    //        yield break;
-    //    } 
-    //    else
-    //    {
-
-    //        Debug.Log("Success:" + requestDeployment.Result);
-
-    //        //EthGetTransactionByHashUnityRequest requestDeployTransactionDetails =
-    //        //    new EthGetTransactionByHashUnityRequest(RpcUrl);
-
-    //        //yield return requestDeployTransactionDetails.SendRequest(requestDeployment.Result);
-
-    //        //string contractAdress = "";
-    //        //if (requestDeployTransactionDetails.Exception != null)
-    //        //{
-    //        //    Debug.LogError("Retrieving transaction Details ran into a Error:" + requestDeployTransactionDetails.Exception);
-    //        //}
-    //        //else
-    //        //{
-    //        //    Debug.Log("Deployment success:" + requestDeployTransactionDetails.Result.);
-    //        //contractAdress = requestDeployTransactionDetails.Result
-    //        //}
-
-    //        TransactionReceipt deploymentReceipt = GetReceipt(requestDeployment.Result, "Deployment contract");
-
-    //        Debug.Log("Deployment contract address:" + deploymentReceipt.ContractAddress);
-
-    //        MintFunction mint = new MintFunction();
-    //        mint.ToAddress = Address;
-    //        mint.Amount = 1000000;
-    //        mint.Gas = 1353239;
-
-    //        TransactionSignedUnityRequest requestMint = CreateSignedRequest();
-    //        yield return requestMint.SignAndSendTransaction(mint, deploymentReceipt.ContractAddress);
-
-    //        if (requestMint.Exception != null)
-    //        {
-    //            Debug.LogError("ignoring Minting Error: " + requestMint.Exception);
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("Mint sent!" + requestMint.Result);
-
-    //            GetReceipt(requestMint.Result, "Minting");
-    //        }
-
-
-    //        //Query request using our acccount and the contracts address (no parameters needed and default values)
-    //        var queryRequest = new QueryUnityRequest<BalanceOfFunction, BalanceOfFunctionOutput>(RpcUrl, Address);
-
-    //        yield return queryRequest.Query(new BalanceOfFunction() { Owner = Address }, deploymentReceipt.ContractAddress);
-
-
-    //        if (queryRequest.Exception != null)
-    //        {
-    //            Debug.LogError("Error getting Balance: " + queryRequest.Exception);
-    //        }
-    //        else
-    //        {
-    //            //Getting the dto response already decoded
-    //            var dtoResult = queryRequest.Result;
-    //            Debug.Log("Minted: " + dtoResult.Balance);
-
-
-    //        }
-
-
-
-
-
-    //        //ChangeVendingMachineFunction changeVendingMachine = new ChangeVendingMachineFunction();
-    //        //changeVendingMachine.NewVendingMachine = Address;
-
-    //        //TransactionSignedUnityRequest requestChangeVendingMachine = CreateSignedRequest();
-
-    //        //yield return requestChangeVendingMachine.SignAndSendTransaction(changeVendingMachine, deploymentReceipt.ContractAddress);
-
-    //        //if (requestChangeVendingMachine.Exception != null)
-    //        //{
-    //        //    Debug.LogError("Error at contract call" + requestChangeVendingMachine.Result + ":" + requestChangeVendingMachine.Exception);
-    //        //    yield break;
-    //        //}
-    //        //else
-    //        //{
-    //        //    Debug.Log("VendingMachine Success!!");
-
-    //        //}
-
-    //        //yield return changeVendingMachine .(transactionMessage, deploymentReceipt.ContractAddress);
-
-
-
-    //        //new EthTransferUnityRequest(url, privateKey, account);
-    //    }
-    //}
-
-    //private TransactionReceipt GetReceipt(string transactionHash, string operationLabel = "")
-    //{
-    //    Debug.Log("GetReceipt");
-
-    //    var transactionReceiptPolling = new TransactionReceiptPollingRequest(RpcUrl);
-    //    //checking every 2 seconds for the receipt
-
-    //    var pollLoop =  transactionReceiptPolling.PollForReceipt(transactionHash, 1);
-    //    while (pollLoop.MoveNext())
-    //    {
-    //        Debug.Log("polling: " + pollLoop.Current);
-    //    }
-
-
-    //    var deploymentReceipt = transactionReceiptPolling.Result;
-
-    //    if (deploymentReceipt.HasErrors() == true)
-    //    {
-    //        //StringBuilder sb = new StringBuilder();
-    //        Debug.LogError(operationLabel + transactionHash + "failed: " + deploymentReceipt.Logs.ToString());
-    //        return deploymentReceipt;
-    //    }
-
-    //    if (!string.IsNullOrEmpty(deploymentReceipt.ContractAddress))
-    //    {
-    //        Debug.LogError(operationLabel + " - " + transactionHash + "succes!");
-    //    }
-
-    //    return deploymentReceipt;
-    //}
-
-    //private TransactionSignedUnityRequest CreateSignedRequest()
-    //{
-    //    return new TransactionSignedUnityRequest(RpcUrl, privateKey);
-    //}
-
-    //public void CreateNewRandomPrivateKey()
-    //{
-    //    Nethereum.KeyStore.Crypto.KeyStoreCrypto keyStore = new Nethereum.KeyStore.Crypto.KeyStoreCrypto();
-    //    //keyStore.
-    //}
 
     // Update is called once per frame
     void Update () 
