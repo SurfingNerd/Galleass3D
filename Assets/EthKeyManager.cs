@@ -15,7 +15,48 @@ using System.Threading.Tasks;
 using Galleass3D.Contracts;
 using System.Threading;
 
+public class TransactionDetails
+{
+    public TransactionReceipt TransactionReceipt;
+
+    public string ContractName;
+
+    public List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO> FishEvents = new List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
+
+
+    public string GetDescriptiveText()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        string hasErrors = TransactionReceipt.HasErrors().HasValue ? TransactionReceipt.HasErrors().Value.ToString() : "???";
+
+        sb.AppendLine(TransactionReceipt.TransactionHash);
+        sb.AppendLine("Contract:" + ContractName);
+        sb.AppendLine("HasErrors:" + hasErrors);
+        sb.AppendLine("Status:" + TransactionReceipt.Status.Value.ToString());
+        sb.AppendLine("Logs:" + TransactionReceipt.Logs);
+
+        return sb.ToString();
+    }
+    //public string Transa;
+}
+
+public class BlockDetails
+{
+    public string GetDescriptiveText()
+    {
+        return BlockInfo.BlockHash;
+    }
+
+    public List<TransactionDetails> TransactionDetails = new List<TransactionDetails>();
+
+    public BlockWithTransactions BlockInfo { get; internal set; }
+}
+
 public class EthKeyManager : MonoBehaviour {
+
+
+    public static EthKeyManager Instance { get; private set; }
 
 
     [SerializeField]
@@ -27,9 +68,27 @@ public class EthKeyManager : MonoBehaviour {
     [SerializeField]
     public GameObject BlockInfoText;
 
+    [SerializeField]
+    public GameObject TransactionDetailsObject;
+    
+    [SerializeField]
+    public GameObject SelectTransactionButtonPrefab;
+
+    [SerializeField]
+    public GameObject TxtBlockNumberDisplay;
+
+
+
+    //cached fields.
+    UnityEngine.UI.Text TxtBlockNumberDisplayText;
+
 
     string Words = "visit require silent museum allow awesome cook topple gauge lend rain mixed";
     string Password = "";
+
+
+    private Dictionary<string, string> ContractMappingAddressToName = new Dictionary<string, string>();
+    private Dictionary<string, string> ContractMappingNameToAddress = new Dictionary<string, string>();
 
     //string Words = "ripple scissors kick mammal hire column oak again sun offer wealth tomorrow wagon turn fatal";
     //string Password = "password";
@@ -57,10 +116,21 @@ public class EthKeyManager : MonoBehaviour {
     //fishes.
     private Galleass3D.Contracts.Catfish.CatfishService Catfish;
 
+    /// <summary>
+    /// Blocknumber that got displayed in the UI
+    /// </summary>
+    private ulong LastBlockNumberDisplayed;
     private ulong LastBlockNumber;
+    private ulong StartBlockNumber;
+    private string LatestBlockInformation;
+    private bool AutoUpdateToLatestBlock = true;
+    private ulong CurrentBlockNumberDisplayed;
 
-    private string LatestBlockInformation; 
 
+
+
+    System.Collections.Concurrent.ConcurrentDictionary<string, TransactionDetails> LatestTransactionInformations = new System.Collections.Concurrent.ConcurrentDictionary<string, TransactionDetails>();
+    System.Collections.Concurrent.ConcurrentDictionary<ulong, BlockDetails> LatestBlockDetails = new System.Collections.Concurrent.ConcurrentDictionary<ulong, BlockDetails>();
 
     //event Handlers.
     Event<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO> Bay_FishEventHandler;
@@ -78,6 +148,7 @@ public class EthKeyManager : MonoBehaviour {
     private string LastKnownGalleassAddress = "0xDaCAAcC9A3893f94e1a3d5Da240CE95C649Fb748";
 
     bool ShallRun = true;
+
 
     private async Task<bool> StartBlockchainCommunication()
     {
@@ -111,6 +182,7 @@ public class EthKeyManager : MonoBehaviour {
 
         //fishes
         Catfish = await GetContract<Galleass3D.Contracts.Catfish.CatfishService>();
+
 
 
 
@@ -234,45 +306,14 @@ public class EthKeyManager : MonoBehaviour {
         Debug.Log("Getting Contract:" + contractName + " at address " + contractAddress);
         T result = (T)Activator.CreateInstance(typeof(T), Web3, contractAddress);
 
+        ContractMappingAddressToName.Add(contractAddress, contractName);
+        ContractMappingNameToAddress.Add(contractName, contractAddress);
+        //would be Nice: contractAddress to ContractHandler ?!
+
+
+
         return result;
     }
-
-
-
-    [Function("changeVendingMachine")]
-    public class ChangeVendingMachineFunction : FunctionMessage
-    {
-        [Parameter("address", "newVendingMachine", 1)]
-        public virtual string NewVendingMachine { get; set; }
-    }
-
-    [Function("mint", "bool")]
-    public class MintFunction : FunctionMessage
-    {
-        [Parameter("address", "to", 1)]
-        public string ToAddress { get; set; }
-
-        [Parameter("uint256", "amount", 2)]
-        public BigInteger Amount { get; set; }
-    }
-
-    [Function("balanceOf", "uint256")]
-    public class BalanceOfFunction : FunctionMessage
-    {
-        [Parameter("address", "_owner", 1)]
-        public string Owner { get; set; }
-    }
-
-    [FunctionOutput]
-    public class BalanceOfFunctionOutput : IFunctionOutputDTO
-    {
-        [Parameter("uint256", 1)]
-        public int Balance { get; set; }
-    }
-
-    public static EthKeyManager Instance { get; private set; }
-
-
 
     void Reset() {
         if (Instance == this)
@@ -354,40 +395,118 @@ public class EthKeyManager : MonoBehaviour {
 
     void UpdateUIPanel()
     {
-        LastBlockNumber = GetCurrentBlockNumber();
-        while (true) 
+        //LastBlockNumber = GetCurrentBlockNumber();
+        while (ShallRun) 
         {
             ulong newBlockNumber = GetCurrentBlockNumber();
+
+            if (StartBlockNumber == 0)
+            {
+                StartBlockNumber = newBlockNumber;
+            }
 
             //Web3.Eth.Blocks.GetBlockNumber();
             if (newBlockNumber > LastBlockNumber)
             {
                 var blockNumber = new Nethereum.Hex.HexTypes.HexBigInteger(new BigInteger(newBlockNumber));
 
-                var block = Web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(blockNumber);
-                block.Wait();
-                var result = block.Result;
+                var blockTask = Web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(blockNumber);
+                blockTask.Wait();
+                var block = blockTask.Result;
 
-               // var result = Web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(blockNumber);
+                BlockDetails blockDetails = new BlockDetails();
+                blockDetails.BlockInfo = block;
 
                 StringBuilder txInfos = new StringBuilder();
                 txInfos.AppendLine(newBlockNumber.ToString());
-                txInfos.AppendLine(result.BlockHash);
-                foreach(var tx in result.Transactions)
+                txInfos.AppendLine(block.BlockHash);
+
+                List<Task<TransactionReceipt>> transactionReceiptTasks = new List<Task<TransactionReceipt>>();
+                foreach (var tx in block.Transactions)
                 {
+                    //TODO: maybe just pick up transaction that point to one of our contracts ? see mapping ContractMappingAddressToName
+
                     txInfos.AppendLine(" - " + tx.TransactionHash);
                     //tx.TransactionHash;
                     //tx.
                     //tx.
+
+                    Task<TransactionReceipt> receiptTask = Web3.Eth.TransactionManager.TransactionReceiptService.PollForReceiptAsync(tx.TransactionHash);
+                    //receiptTask.Start();
+                    transactionReceiptTasks.Add(receiptTask);
+                }
+
+
+
+                TimeSpan timeout = TimeSpan.FromSeconds(10);
+                foreach(var task in transactionReceiptTasks)
+                {
+
+                    task.Wait(timeout);
+                    TransactionDetails details = new TransactionDetails();
+                    if (task.IsCompleted)
+                    {
+                        details.TransactionReceipt = task.Result;
+
+                        if (!string.IsNullOrEmpty(details.TransactionReceipt.ContractAddress) && ContractMappingAddressToName.ContainsKey(details.TransactionReceipt.ContractAddress))
+                        {
+                            details.ContractName = ContractMappingAddressToName[details.TransactionReceipt.ContractAddress];
+                        }
+
+                        AddEventsFromReceipt(details.TransactionReceipt, details.FishEvents);
+
+                        LatestTransactionInformations.TryAdd(details.TransactionReceipt.TransactionHash, details);
+                        blockDetails.TransactionDetails.Add(details);
+                    }
+                    else
+                    {
+                        if (task.IsCanceled)
+                        {
+                            Debug.LogWarning("Receiving Transaction details was cancelled");
+                        }
+
+                        if (task.IsFaulted)
+                        {
+                            Debug.LogWarning("Receiving Transaction details Rand into an Error.");
+                        }
+                    }
+
+                    //var fishEvents = details.TransactionReceipt.DecodeAllEvents<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
+
+
+                    //details.
+
+                    //task.Result
                 }
 
                 LatestBlockInformation = txInfos.ToString();
+
+                if (!LatestBlockDetails.TryAdd(newBlockNumber, blockDetails))
+                {
+                    Debug.LogError("Could not add Block #" + newBlockNumber);
+                }
+
+                LastBlockNumber = newBlockNumber;
                 //block.Result.Transactions
+
+
             }
 
 
 
             System.Threading.Thread.Sleep(BlockTimeMs);
+        }
+    }
+
+    private void AddEventsFromReceipt<T>(TransactionReceipt receipt, List<T> addToList)
+        where T : new() // Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO
+    {
+        //var decodedEvents = receipt.DecodeAllEvents<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
+        var decodedEvents = Nethereum.Contracts.EventExtensions.DecodeAllEvents<T>(receipt);
+
+        foreach (var decodedEvent in decodedEvents)
+        {
+            addToList.Add(decodedEvent.Event);
         }
     }
 
@@ -428,6 +547,41 @@ public class EthKeyManager : MonoBehaviour {
             LogErrorRecursive(exception.InnerException);
         }
     }
+
+    public void SelectTransactionDetail(TransactionDetails details)
+    {
+        Debug.Log("ethkeymanager:: SetTransactionDetails");
+        if (this.TransactionDetailsObject != null)
+        {
+            TransactionDetailsHolder detailHolder = this.TransactionDetailsObject.GetComponent<TransactionDetailsHolder>();
+            detailHolder.SetTransactionDetails(details);
+        }
+    }
+
+    public void SetAutoUpdateToLatestBlock(UnityEngine.UI.Toggle change)
+    {
+        AutoUpdateToLatestBlock = change.isOn;
+        Debug.Log("AutoUpdateToLatestBlock:" + AutoUpdateToLatestBlock);
+    }
+
+    public void IncreaseCurrentBlockNumberDisplayed()
+    {
+        if (CurrentBlockNumberDisplayed < LastBlockNumber)
+        {
+            CurrentBlockNumberDisplayed++;
+        }
+    }
+
+    public void DeceaseCurrentBlockNumberDisplayed()
+    {
+
+        if (CurrentBlockNumberDisplayed > StartBlockNumber)
+        {
+            CurrentBlockNumberDisplayed--;
+        }
+    }
+
+
 
     //public IEnumerator SendDeployMessage(Nethereum.Contracts.ContractDeploymentMessage message)
     //{
@@ -604,6 +758,52 @@ public class EthKeyManager : MonoBehaviour {
     // Update is called once per frame
     void Update () 
     {
-        SetText(BlockInfoText, LatestBlockInformation);
+        if (AutoUpdateToLatestBlock)
+        {
+            CurrentBlockNumberDisplayed = LastBlockNumber;
+        }
+
+        if (TxtBlockNumberDisplayText == null)
+        {
+            TxtBlockNumberDisplayText = TxtBlockNumberDisplay.GetComponent<UnityEngine.UI.Text>();
+        }
+
+        TxtBlockNumberDisplayText.text = StartBlockNumber + " << " + CurrentBlockNumberDisplayed + " >> " + LastBlockNumber;
+
+        if (LastBlockNumberDisplayed != CurrentBlockNumberDisplayed)        {
+            BlockDetails details;
+            if (LatestBlockDetails.TryGetValue(CurrentBlockNumberDisplayed, out details))
+            {
+                SetText(BlockInfoText, details.GetDescriptiveText());
+                //details.GetDesc
+                LastBlockNumberDisplayed = CurrentBlockNumberDisplayed;
+                Transform blockInfoTransform = BlockInfoText.GetComponent<Transform>();
+
+                float offsetY = 0;
+
+                foreach(var tx in details.TransactionDetails)
+                {
+                    GameObject transactionSelector = Instantiate(this.SelectTransactionButtonPrefab, blockInfoTransform);
+
+                    SelectTransaction selectTransactionScript = transactionSelector.GetComponent<SelectTransaction>();
+                    selectTransactionScript.SetTransactionDetails(this, tx);
+
+                    Transform transactionSelectorTransform = transactionSelector.GetComponent<Transform>();
+                    transactionSelectorTransform.SetPositionAndRotation(new UnityEngine.Vector3(blockInfoTransform.position.x, blockInfoTransform.position.y + offsetY), UnityEngine.Quaternion.identity);
+                    offsetY += 100;
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Could not display Block:" + CurrentBlockNumberDisplayed);
+            }
+        }
+
+        //SetText(BlockInfoText, LatestBlockInformation);
+    }
+
+    void OnApplicationQuit()
+    {
+        ShallRun = false;
     }
 }
