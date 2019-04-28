@@ -16,6 +16,17 @@ using Galleass3D.Contracts;
 
 public class EthKeyManager : MonoBehaviour {
 
+
+    [SerializeField]
+    public string RpcUrl;
+
+    [SerializeField]
+    public string PreselectedPrivateKey;
+
+    [SerializeField]
+    public GameObject BlockInfoText;
+
+
     string Words = "visit require silent museum allow awesome cook topple gauge lend rain mixed";
     string Password = "";
 
@@ -45,6 +56,7 @@ public class EthKeyManager : MonoBehaviour {
     //fishes.
     private Galleass3D.Contracts.Catfish.CatfishService Catfish;
 
+    private ulong LastBlockNumber;
 
 
     //event Handlers.
@@ -231,13 +243,6 @@ public class EthKeyManager : MonoBehaviour {
 
     public static EthKeyManager Instance { get; private set; }
 
-    [SerializeField]
-    public string RpcUrl;
-
-    [SerializeField]
-    public string PreselectedPrivateKey;
-
-   
 
 
     void Reset() {
@@ -289,6 +294,9 @@ public class EthKeyManager : MonoBehaviour {
 
         WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
 
+
+        StartCoroutine(UpdateUIPanel());
+
         //TODO: find out how to call a async function on purpose.
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         StartBlockchainCommunication();
@@ -314,6 +322,49 @@ public class EthKeyManager : MonoBehaviour {
 
     }
 
+    IEnumerator UpdateUIPanel()
+    {
+        LastBlockNumber = GetCurrentBlockNumber();
+        while (true) 
+        {
+            ulong newBlockNumber = GetCurrentBlockNumber();
+
+            //Web3.Eth.Blocks.GetBlockNumber();
+            if (newBlockNumber > LastBlockNumber)
+            {
+                var block = Web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(new Nethereum.Hex.HexTypes.HexBigInteger(new BigInteger( newBlockNumber)));
+                block.Wait();
+                StringBuilder txInfos = new StringBuilder();
+                txInfos.AppendLine(newBlockNumber.ToString());
+                txInfos.AppendLine(block.Result.BlockHash);
+                foreach(var tx in block.Result.Transactions)
+                {
+
+                    txInfos.AppendLine(" - " + tx.TransactionHash);
+                    //tx.TransactionHash;
+                    //tx.
+                    //tx.
+                }
+                //block.Result.Transactions
+                SetText(BlockInfoText, txInfos.ToString());
+
+            }
+
+
+
+            System.Threading.Thread.Sleep(BlockTimeMs);
+        }
+
+    }
+
+    private void SetText(GameObject textHostObject, string text)
+    {
+        if (textHostObject != null)
+        {
+            UnityEngine.UI.Text txComponent = BlockInfoText.GetComponent<UnityEngine.UI.Text>();
+            txComponent.text = text;
+        }
+    }
 
     private void DeployTest() 
     {
