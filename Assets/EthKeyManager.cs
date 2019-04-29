@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Galleass3D.Contracts;
 using System.Threading;
 using Galleass3D.Contracts.Dogger.ContractDefinition;
+using Galleass3D;
 
 public class TransactionDetails
 {
@@ -106,6 +107,8 @@ public class EthKeyManager : MonoBehaviour {
     string Words = "visit require silent museum allow awesome cook topple gauge lend rain mixed";
     string Password = "";
 
+    public LandManager LandManager;
+
 
     private Dictionary<string, string> ContractMappingAddressToName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     private Dictionary<string, string> ContractMappingNameToAddress = new Dictionary<string, string>();
@@ -115,27 +118,28 @@ public class EthKeyManager : MonoBehaviour {
     Nethereum.HdWallet.Wallet Wallet; // = new Nethereum.HdWallet.Wallet(Words, Password);
     private Account Account;
     private Nethereum.Web3.Web3 Web3;
+
     private Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService WorldsRegistry;
 
-    private Galleass3D.Contracts.Galleass.GalleassService Galleass;
-    private Galleass3D.Contracts.Timber.TimberService Timber;
-    private Galleass3D.Contracts.Copper.CopperService Copper;
-    private Galleass3D.Contracts.Fillet.FilletService Fillet;
-    private Galleass3D.Contracts.Dogger.DoggerService Dogger;
-    private Galleass3D.Contracts.Bay.BayService Bay;
-    private Galleass3D.Contracts.Citizens.CitizensService Citizens;
-    private Galleass3D.Contracts.CitizensLib.CitizensLibService CitizensLib;
-    private Galleass3D.Contracts.Land.LandService Land;
-    private Galleass3D.Contracts.TimberCamp.TimberCampService TimberCamp;
-    private Galleass3D.Contracts.LandLib.LandLibService LandLib;
-    private Galleass3D.Contracts.Harbor.HarborService Harbor;
-    private Galleass3D.Contracts.Fishmonger.FishmongerService Fishmonger;
-    private Galleass3D.Contracts.Village.VillageService Village;
-    private Galleass3D.Contracts.Market.MarketService Market;
-    private Galleass3D.Contracts.Sea.SeaService Sea;
+    public Galleass3D.Contracts.Galleass.GalleassService Galleass;
+    public Galleass3D.Contracts.Timber.TimberService Timber;
+    public Galleass3D.Contracts.Copper.CopperService Copper;
+    public Galleass3D.Contracts.Fillet.FilletService Fillet;
+    public Galleass3D.Contracts.Dogger.DoggerService Dogger;
+    public Galleass3D.Contracts.Bay.BayService Bay;
+    public Galleass3D.Contracts.Citizens.CitizensService Citizens;
+    public Galleass3D.Contracts.CitizensLib.CitizensLibService CitizensLib;
+    public Galleass3D.Contracts.Land.LandService Land;
+    public Galleass3D.Contracts.TimberCamp.TimberCampService TimberCamp;
+    public Galleass3D.Contracts.LandLib.LandLibService LandLib;
+    public Galleass3D.Contracts.Harbor.HarborService Harbor;
+    public Galleass3D.Contracts.Fishmonger.FishmongerService Fishmonger;
+    public Galleass3D.Contracts.Village.VillageService Village;
+    public Galleass3D.Contracts.Market.MarketService Market;
+    public Galleass3D.Contracts.Sea.SeaService Sea;
 
     //fishes.
-    private Galleass3D.Contracts.Catfish.CatfishService Catfish;
+    public Galleass3D.Contracts.Catfish.CatfishService Catfish;
 
     /// <summary>
     /// Blocknumber that got displayed in the UI
@@ -149,6 +153,14 @@ public class EthKeyManager : MonoBehaviour {
     private bool AutoUpdateToLatestBlock = true;
     private ulong CurrentBlockNumberDisplayed;
 
+
+
+    public int MainIslandX = -1;
+    public int MainIslandY = -1;
+
+
+    public int CurrentX = -1;
+    public int CurrentY = -1;
 
 
 
@@ -215,10 +227,20 @@ public class EthKeyManager : MonoBehaviour {
         UpdateEth();
         UpdateTimber();
         UpdateCopper();
+
+
+        //GetLandLibTileInfos();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 
-        bool stockCatfish = true; 
+
+        MainIslandX = await Land.MainXQueryAsync();
+        MainIslandY = await Land.MainYQueryAsync();
+
+        Debug.Log("MainIsland:" + MainIslandX.ToString() + " - " + MainIslandY.ToString());
+
+        bool stockCatfish = false;
+       
 
         if (stockCatfish)
         {
@@ -237,13 +259,19 @@ public class EthKeyManager : MonoBehaviour {
             DebugTransactionReceipt(stockCatfishInBay);
         }
 
-        Debug.Log("Minting Timber");
-        var timberReceipt = await Timber.MintRequestAndWaitForReceiptAsync(Account.Address, new BigInteger(100));
+        //Debug.Log("Minting Timber");
+        //var timberReceipt = await Timber.MintRequestAndWaitForReceiptAsync(Account.Address, new BigInteger(100));
+
+
+
+
 
         var doggerSupply = await Dogger.TotalSupplyQueryAsync();
         Debug.Log("Total Supply Doggers:" + doggerSupply.ToString());
 
         var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
+        var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
+
 
         //CancellationTokenSource s = new CancellationTokenSource(1500); 
         Debug.Log("Building Dogger");
@@ -251,6 +279,9 @@ public class EthKeyManager : MonoBehaviour {
 
         Debug.Log("Dogger: <<");
         DebugTransactionReceipt(buildDoggerReceipt);
+
+
+
 
         //TODO: for some reason, for this Reiceipt we have to wait forever!!
         //but it seems to go throught.
@@ -280,6 +311,9 @@ public class EthKeyManager : MonoBehaviour {
     {
         CurrentOwnership.Copper = int.Parse((await Copper.BalanceOfQueryAsync(Account.Address)).ToString());
     }
+  
+
+
 
     private void DebugTransactionReceipt(TransactionReceipt receipt)
     {
@@ -288,7 +322,6 @@ public class EthKeyManager : MonoBehaviour {
         Debug.Log("TransactionHash: " + receipt.TransactionHash);
         Debug.Log("HasErrors: " + hasErrors);
         Debug.Log("Status: " + receipt.Status.Value.ToString());
-
         Debug.Log("Logs: " + receipt.Logs);
         //foreach(var log in receipt.Logs)
 
@@ -383,6 +416,8 @@ public class EthKeyManager : MonoBehaviour {
             UnityEngine.Debug.LogError("EthKeyManager is already set. Additional EthKeyManager dit not get started.");
             return;
 		}
+
+        LandManager = GetComponent<LandManager>();
 
         if (string.IsNullOrEmpty(RpcUrl))
         {
@@ -703,8 +738,10 @@ public class EthKeyManager : MonoBehaviour {
 
     void HandleLandEvent(Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO generateLandEvent)
     {
-        Debug.Log("Land got generated: " + generateLandEvent.X + " " + generateLandEvent.Y + " - " + generateLandEvent.Island1 + " - " + generateLandEvent.Island2 + " - " + generateLandEvent.Island3 + " - " + generateLandEvent.Island4 + " - " + generateLandEvent.Island5 + " - " + generateLandEvent.Island6 + " - " + generateLandEvent.Island7 + " - " + generateLandEvent.Island8 + " - " + generateLandEvent.Island9);
+        LandManager.NotifyLandGeneratedEvent(generateLandEvent);
     }
+
+
 
     void HandleFishEvent(Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO eventDTO)
     {
