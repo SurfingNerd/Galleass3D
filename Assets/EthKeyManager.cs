@@ -63,7 +63,7 @@ public class Ownership
     public int Copper { get; set; }
     public int Timber { get; set; }
 
-    List<GetTokenOutputDTOBase> Doggers = new List<GetTokenOutputDTOBase>();
+    public List<GetTokenOutputDTOBase> Doggers = new List<GetTokenOutputDTOBase>();
 }
 
 
