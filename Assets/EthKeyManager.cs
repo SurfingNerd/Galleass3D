@@ -180,7 +180,7 @@ public class EthKeyManager : MonoBehaviour {
 
     private string WorldsRegistryAddress = "0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16";
 
-    private string LastKnownGalleassAddress = "0xDaCAAcC9A3893f94e1a3d5Da240CE95C649Fb748";
+    private string LastKnownGalleassAddress = "0x7BDcCd4bF7Cd764C20b6Da0AD1f91520A64641DC";
 
     bool ShallRun = true;
 
@@ -263,22 +263,31 @@ public class EthKeyManager : MonoBehaviour {
         //var timberReceipt = await Timber.MintRequestAndWaitForReceiptAsync(Account.Address, new BigInteger(100));
 
 
+        bool mineDogger = false;
 
 
+        if (mineDogger)
+        {
+            var doggerSupply = await Dogger.TotalSupplyQueryAsync();
+            Debug.Log("Total Supply Doggers:" + doggerSupply.ToString());
 
-        var doggerSupply = await Dogger.TotalSupplyQueryAsync();
-        Debug.Log("Total Supply Doggers:" + doggerSupply.ToString());
-
-        var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
-        var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
+            var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
+            var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
 
 
-        //CancellationTokenSource s = new CancellationTokenSource(1500); 
-        Debug.Log("Building Dogger");
-        var buildDoggerReceipt = await Dogger.BuildRequestAndWaitForReceiptAsync(new Galleass3D.Contracts.Dogger.ContractDefinition.BuildFunction() { Gas = DefaultGas, GasPrice = DefaultGasPrice });
+            //CancellationTokenSource s = new CancellationTokenSource(1500); 
+            Debug.Log("Building Dogger");
+            var buildDoggerReceipt = await Dogger.BuildRequestAndWaitForReceiptAsync(new Galleass3D.Contracts.Dogger.ContractDefinition.BuildFunction() { Gas = DefaultGas, GasPrice = DefaultGasPrice });
 
-        Debug.Log("Dogger: <<");
-        DebugTransactionReceipt(buildDoggerReceipt);
+            Debug.Log("Dogger: <<");
+            DebugTransactionReceipt(buildDoggerReceipt);
+        }
+
+
+        Debug.Log("Getting Tile info!!");
+        var getTileTest = await Land.GetTileQueryAsync(52719, 1288, 3);
+
+        Debug.Log("Get Tile: " + getTileTest.Owner + " - price: "  + getTileTest.Price); 
 
 
 
@@ -476,7 +485,6 @@ public class EthKeyManager : MonoBehaviour {
 
     void UpdateUIPanel()
     {
-        //LastBlockNumber = GetCurrentBlockNumber();
         while (ShallRun) 
         {
             ulong newBlockNumber = GetCurrentBlockNumber();
@@ -484,10 +492,11 @@ public class EthKeyManager : MonoBehaviour {
             if (StartBlockNumber == 0)
             {
                 StartBlockNumber = newBlockNumber;
+                LastBlockNumberProcessed = newBlockNumber;
             }
 
             //Web3.Eth.Blocks.GetBlockNumber();
-            if (newBlockNumber > LastBlockNumber)
+            if (newBlockNumber > LastBlockNumber )
             {
                 var blockNumber = new Nethereum.Hex.HexTypes.HexBigInteger(new BigInteger(newBlockNumber));
 
@@ -701,7 +710,7 @@ public class EthKeyManager : MonoBehaviour {
             }
         }
 
-        if (LastBlockNumber > LastBlockNumberProcessed)
+        if (LastBlockNumber > LastBlockNumberProcessed && /*we dont process the block before app start for now.*/ LastBlockNumber > StartBlockNumber)
         {
             BlockDetails blockDetails;
 
@@ -712,6 +721,7 @@ public class EthKeyManager : MonoBehaviour {
                 {
                     foreach (var eventDto in tx.LandEvents)
                     {
+                        //Debug.Log("Last Block: " + LastBlockNumber + " Start: " + StartBlockNumber + " LastProcessed: " + LastBlockNumberProcessed);
                         HandleLandEvent(eventDto);
                     }
 

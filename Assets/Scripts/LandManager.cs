@@ -12,7 +12,7 @@ namespace Galleass3D
     {
         public int Y;
         public int X;
-        public List<Galleass3D.Contracts.Land.ContractDefinition.GetTileOutputDTO> TileInfoRaw;
+        public List<Galleass3D.Contracts.Land.ContractDefinition.GetTileOutputDTO> TileInfoRaw = new List<Contracts.Land.ContractDefinition.GetTileOutputDTO>();
     }
 
     public class LandManager : MonoBehaviour
@@ -50,11 +50,9 @@ namespace Galleass3D
             }
         }
 
-        public void NotifyLandGeneratedEvent(Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO generateLandEvent)
+        public async void NotifyLandGeneratedEvent(Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO generateLandEvent)
         {
-            SetToNewLand(generateLandEvent);
-
-
+            await SetToNewLand(generateLandEvent);
         }
 
         async Task SetToNewLand(Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO generateLandEvent)
@@ -67,13 +65,28 @@ namespace Galleass3D
         {
             LandDetails result = new LandDetails() { X = x, Y = y };
 
+
+            Debug.Log("Getting Tile info!!");
+            var getTileTest = await EthKeyManager.Land.GetTileQueryAsync(52719, 1288, 1);
+
+            Debug.Log("Get Tile: " + getTileTest.Tile.ToString() + " - price: " + getTileTest.Price);
+
+            Debug.Log("Getting Tile info 2 !!");
+            var getTileTest2 = await EthKeyManager.Land.GetTileQueryAsync(23167, 65372, 2);
+
+            Debug.Log("Get Tile: " + getTileTest2.Owner + " - price: " + getTileTest2.Price);
+
+            //System.Threading.Thread.Sleep(5000);
             //StringBuilder sb = new StringBuilder();
-            for (byte i = 0; i < 18; i++)
+            for (byte i = 1; i < 18; i++)
             {
-                Debug.Log("Query Land...");
+                Debug.Log("Query Land..." + x + " - " + y);
+                //EthKeyManager.Land.ContractHandler.EthApiContractService.
+                //var tileOutput = await EthKeyManager.Land.GetTileQueryAsync(new Contracts.Land.ContractDefinition.GetTileFunction() { Gas = EthKeyManager.DefaultGas, GasPrice = EthKeyManager.DefaultGasPrice, X = x, Y = y, Index = i});
                 var tileOutput = await EthKeyManager.Land.GetTileQueryAsync(x, y, i);
+
                 result.TileInfoRaw.Add(tileOutput);
-                Debug.Log(i + " " + tileOutput.Tile + " price: " + tileOutput.Price.ToString() + " owner:" + tileOutput.Owner);
+                Debug.LogWarning(i + " " + tileOutput.Tile + " price: " + tileOutput.Price.ToString() + " owner:" + tileOutput.Owner);
             }
             return result;
         }

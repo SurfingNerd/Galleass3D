@@ -22,7 +22,7 @@ namespace Galleass3D.Contracts.DataParser.ContractDefinition
 
     public class DataParserDeploymentBase : ContractDeploymentMessage
     {
-        public static string BYTECODE = "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a723058201e0cdd68e99181c0bd50098f62a892c8e85ce2986333c6b6b700cf6f012f09c60029";
+        public static string BYTECODE = "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a72305820cf85eb68603f67603be33c3c5f368b797c1106a02891401742e648a3ec6e2b040029";
         public DataParserDeploymentBase() : base(BYTECODE) { }
         public DataParserDeploymentBase(string byteCode) : base(byteCode) { }
 
