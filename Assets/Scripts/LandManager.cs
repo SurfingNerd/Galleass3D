@@ -17,6 +17,41 @@ namespace Galleass3D
 
     public class LandManager : MonoBehaviour
     {
+
+        #region static
+        public static readonly Dictionary<string, int> MappingNameToID = new Dictionary<string, int>();
+        public static readonly Dictionary<int, string> MappingIDToName = new Dictionary<int, string>();
+
+        static LandManager()
+        {
+            MappingNameToID.Add("MainHills", 1);
+            MappingNameToID.Add("MainGrass", 2);
+
+            MappingNameToID.Add("MainStream", 30);
+
+            MappingNameToID.Add("Grass", 50);
+            MappingNameToID.Add("Forest", 51);
+            MappingNameToID.Add("Mountain", 52);
+            MappingNameToID.Add("CopperMountain", 53);
+            MappingNameToID.Add("SilverMountain", 54);
+
+            MappingNameToID.Add("Harbor", 100);
+            MappingNameToID.Add("Fishmonger", 101);
+            MappingNameToID.Add("Market", 102);
+
+            MappingNameToID.Add("TimberCamp", 150);
+
+            MappingNameToID.Add("Village", 2000);
+
+
+            foreach (var dictItem in MappingNameToID)
+            {
+                MappingIDToName.Add(dictItem.Value, dictItem.Key);
+            }
+        }
+        #endregion
+
+
         EthKeyManager EthKeyManager;
 
         int CurrentShownLandX = -1;

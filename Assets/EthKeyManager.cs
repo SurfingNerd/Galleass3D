@@ -763,4 +763,9 @@ public class EthKeyManager : MonoBehaviour {
     {
         Debug.Log("Handling non SpecificEvent!" + nonSpecificEvent.GetType().FullName);
     }
+
+    public string GetContractAddress(string contractName)
+    {
+        return ContractMappingNameToAddress[contractName];
+    }
 }

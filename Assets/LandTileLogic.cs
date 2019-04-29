@@ -1,48 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Galleass3D
 {
     public class LandTileLogic : MonoBehaviour
     {
-
-        #region static
-        private static readonly Dictionary<string, int> MappingNameToID = new Dictionary<string, int>();
-        private static readonly Dictionary<int, string> MappingIDToName = new Dictionary<int, string>();
-
-        static LandTileLogic()
-        {
-            MappingNameToID.Add("MainHills",1);
-            MappingNameToID.Add("MainGrass",2);
-
-            MappingNameToID.Add("MainStream",30);
-
-            MappingNameToID.Add("Grass",50);
-            MappingNameToID.Add("Forest",51);
-            MappingNameToID.Add("Mountain",52);
-            MappingNameToID.Add("CopperMountain",53);
-            MappingNameToID.Add("SilverMountain",54);
-
-            MappingNameToID.Add("Harbor",100);
-            MappingNameToID.Add("Fishmonger",101);
-            MappingNameToID.Add("Market",102);
-
-            MappingNameToID.Add("TimberCamp",150);
-
-            MappingNameToID.Add("Village",2000);
-
-
-            foreach (var dictItem in MappingNameToID)
-            {
-                MappingIDToName.Add(dictItem.Value, dictItem.Key);
-            }
-        }
-        #endregion
-
         private EthKeyManager EthKeyManager;
+        private LandManager LandManager;
         private Galleass3D.Contracts.Land.ContractDefinition.GetTileOutputDTO TileInfo;
-
+        private int LandX;
+        private int LandY;
 
         private UnityEngine.TextMesh Text;
         private UnityEngine.Terrain Terrain;
@@ -52,19 +21,21 @@ namespace Galleass3D
 
         public static string GetTileNameFromID(int id)
         {
-            return MappingIDToName[id];
+            return LandManager.MappingIDToName[id];
         }
 
         public void SetTileInfo(Galleass3D.Contracts.Land.ContractDefinition.GetTileOutputDTO tileInfo, int landX, int landY)
         {
             TileInfo = tileInfo;
+            LandX = landX;
+            LandY = landY;
 
             // TileInfo.Tile
             string islandType = "Unknown " + TileInfo.Tile.ToString();
 
-            if (MappingIDToName.ContainsKey(TileInfo.Tile))
+            if (LandManager.MappingIDToName.ContainsKey(TileInfo.Tile))
             {
-                islandType = MappingIDToName[TileInfo.Tile];
+                islandType = LandManager.MappingIDToName[TileInfo.Tile];
 
             }
 
@@ -78,6 +49,7 @@ namespace Galleass3D
         void Start()
         {
             EthKeyManager = GetComponentInParent<EthKeyManager>();
+            LandManager = GetComponentInParent<LandManager>();
 
             Text = GetComponentInChildren<TextMesh>();
             Terrain = GetComponentInChildren<Terrain>();
@@ -86,6 +58,28 @@ namespace Galleass3D
         void Update()
         {
 
+        }
+
+        public void BuyTile()
+        {
+
+        }
+
+        public void MakeTileHarbor()
+        {
+            EditTile("Harbor");
+        }
+
+        public void EditTile(string tileTypeName)
+        {
+            EthKeyManager.Land.EditTileRequestAndWaitForReceiptAsync(new Contracts.Land.ContractDefinition.EditTileFunction()
+            {
+                X = (ushort)LandX,
+                Y = (ushort)LandY,
+                Tile = (byte)IslandNumber,
+                Update = (ushort)LandManager.MappingNameToID[tileTypeName],
+                Contract = EthKeyManager.GetContractAddress(tileTypeName)
+            });
         }
 
     }
