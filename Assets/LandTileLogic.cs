@@ -40,7 +40,12 @@ namespace Galleass3D
         }
         #endregion
 
-        public EthKeyManager EthKeyManager;
+        private EthKeyManager EthKeyManager;
+        private Galleass3D.Contracts.Land.ContractDefinition.GetTileOutputDTO TileInfo;
+
+
+        private UnityEngine.TextMesh Text;
+        private UnityEngine.Terrain Terrain;
 
         [SerializeField]
         public int IslandNumber;
@@ -50,7 +55,33 @@ namespace Galleass3D
             return MappingIDToName[id];
         }
 
+        public void SetTileInfo(Galleass3D.Contracts.Land.ContractDefinition.GetTileOutputDTO tileInfo, int landX, int landY)
+        {
+            TileInfo = tileInfo;
 
+            // TileInfo.Tile
+            string islandType = "Unknown " + TileInfo.Tile.ToString();
+
+            if (MappingIDToName.ContainsKey(TileInfo.Tile))
+            {
+                islandType = MappingIDToName[TileInfo.Tile];
+
+            }
+
+            Text.text = islandType;
+
+            bool showTile = (TileInfo.Tile != 0);
+            Terrain.gameObject.SetActive(showTile);
+            Text.gameObject.SetActive(showTile);
+        }
+
+        void Start()
+        {
+            EthKeyManager = GetComponentInParent<EthKeyManager>();
+
+            Text = GetComponentInChildren<TextMesh>();
+            Terrain = GetComponentInChildren<Terrain>();
+        }
 
         void Update()
         {
