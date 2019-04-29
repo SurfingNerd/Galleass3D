@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith
+  by Austin Thomas Griffith & Thomas Haller
 
   The Experience contract tracks milestone accomplishments for each player.
   For instance, if they have never purchased a Dogger, (milestone 1), then

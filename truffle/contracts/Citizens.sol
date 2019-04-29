@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith
+  by Austin Thomas Griffith & Thomas Haller
 
   The Citizen represents workers in Galleass
   They have genetics and characteristics and extend the ERC721 token standard

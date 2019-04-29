@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith
+  by Austin Thomas Griffith & Thomas Haller
 
   The Timber Camp produces Timber depending on mined block hashes
   this Timber can be collected by the Tile owner

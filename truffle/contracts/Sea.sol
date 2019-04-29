@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith
+  by Austin Thomas Griffith & Thomas Haller
 
   The Sea enables seaworth ships to travel from one island to another
 

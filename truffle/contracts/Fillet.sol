@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith
+  by Austin Thomas Griffith & Thomas Haller
 
   A fillet is produced when a fishmonger butchers a fish. It is used to feed
   citizens and is the first type of food introduced to Galleass.

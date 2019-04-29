@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith
+  by Austin Thomas Griffith & Thomas Haller
 
   The Harbor is where ships embark and disembark from the Sea. It is the first
   land tile to be built in the main Land. You can buy, sell, and build ships

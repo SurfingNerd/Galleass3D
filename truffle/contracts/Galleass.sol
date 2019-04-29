@@ -3,7 +3,7 @@ pragma solidity ^0.4.18;
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith
+  by Austin Thomas Griffith & Thomas Haller
 
   The Galleass contract contains a reference to all contracts in the fleet and
   provides a method of upgrading/replacing old contract versions.

@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith
+  by Austin Thomas Griffith & Thomas Haller
 
   The Bay contains fish and doggers. Doggers move east and west and cast their bait
   in an attempt to catch a fish. The Bay requires a harbor for embarking and

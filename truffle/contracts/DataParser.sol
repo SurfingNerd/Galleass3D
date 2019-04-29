@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith
+  by Austin Thomas Griffith & Thomas Haller
 
   The DataParser library is extended to help parse ERC677 data
   Usually you parse out the x,y,tile then, there is a field or two
