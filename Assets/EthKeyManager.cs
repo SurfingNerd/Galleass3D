@@ -14,6 +14,7 @@ using Nethereum.Web3.Accounts;
 using System.Threading.Tasks;
 using Galleass3D.Contracts;
 using System.Threading;
+using Galleass3D.Contracts.Dogger.ContractDefinition;
 
 public class TransactionDetails
 {
@@ -22,6 +23,7 @@ public class TransactionDetails
     public string ContractName;
 
     public List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO> FishEvents = new List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
+
 
 
     public string GetDescriptiveText()
@@ -53,11 +55,24 @@ public class BlockDetails
     public BlockWithTransactions BlockInfo { get; internal set; }
 }
 
-public class EthKeyManager : MonoBehaviour {
 
+
+public class Ownership
+{
+    public BigInteger Ether { get; set; }
+    public int Copper { get; set; }
+    public int Timber { get; set; }
+
+    List<GetTokenOutputDTOBase> Doggers = new List<GetTokenOutputDTOBase>();
+}
+
+
+public class EthKeyManager : MonoBehaviour {
 
     public static EthKeyManager Instance { get; private set; }
 
+    public BigInteger DefaultGasPrice = new BigInteger(1000000);
+    public BigInteger DefaultGas = new BigInteger(2000000);
 
     [SerializeField]
     public string RpcUrl;
@@ -77,7 +92,8 @@ public class EthKeyManager : MonoBehaviour {
     [SerializeField]
     public GameObject TxtBlockNumberDisplay;
 
-
+    
+    Ownership CurrentOwnership = new Ownership();
 
     //cached fields.
     UnityEngine.UI.Text TxtBlockNumberDisplayText;
@@ -99,6 +115,7 @@ public class EthKeyManager : MonoBehaviour {
 
     private Galleass3D.Contracts.Galleass.GalleassService Galleass;
     private Galleass3D.Contracts.Timber.TimberService Timber;
+    private Galleass3D.Contracts.Copper.CopperService Copper;
     private Galleass3D.Contracts.Fillet.FilletService Fillet;
     private Galleass3D.Contracts.Dogger.DoggerService Dogger;
     private Galleass3D.Contracts.Bay.BayService Bay;
@@ -165,7 +182,9 @@ public class EthKeyManager : MonoBehaviour {
 
 
         Galleass = new Galleass3D.Contracts.Galleass.GalleassService(Web3, LastKnownGalleassAddress);
+
         Timber = await GetContract<Galleass3D.Contracts.Timber.TimberService>();
+        Copper = await GetContract<Galleass3D.Contracts.Copper.CopperService>();
         Fillet = await GetContract<Galleass3D.Contracts.Fillet.FilletService>();
         Dogger = await GetContract < Galleass3D.Contracts.Dogger.DoggerService>();
         Bay =   await GetContract<Galleass3D.Contracts.Bay.BayService>();
@@ -186,7 +205,14 @@ public class EthKeyManager : MonoBehaviour {
         Bay_FishEventHandler = Bay.ContractHandler.GetEvent<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
 
 
-        bool stockCatfish = false; 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        UpdateEth();
+        UpdateTimber();
+        UpdateCopper();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+
+        bool stockCatfish = true; 
 
         if (stockCatfish)
         {
@@ -199,7 +225,8 @@ public class EthKeyManager : MonoBehaviour {
             Debug.Log("Allowing Catfish in Bay");
             TransactionReceipt allowCatfishInBay = await Bay.AllowSpeciesRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress);
             Debug.Log("Stocking Catfish in Bay");
-            TransactionReceipt stockCatfishInBay = await Bay.StockRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress, 5);
+            TransactionReceipt stockCatfishInBay = await Bay.StockRequestAndWaitForReceiptAsync(new Galleass3D.Contracts.Bay.ContractDefinition.StockFunction() { Gas = DefaultGas, GasPrice = DefaultGasPrice, X = 5, Y = 5, Species = Catfish.ContractHandler.ContractAddress });
+            Bay.ContractHandler.EthApiContractService.TransactionManager.DefaultGas = new BigInteger(1000000);
             Debug.Log("Stocking Catfish in Bay -finished!");
             DebugTransactionReceipt(stockCatfishInBay);
         }
@@ -210,17 +237,11 @@ public class EthKeyManager : MonoBehaviour {
         var doggerSupply = await Dogger.TotalSupplyQueryAsync();
         Debug.Log("Total Supply Doggers:" + doggerSupply.ToString());
 
-
-        var hasOernussuib = await Galleass.HasPermissionQueryAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"));
-        Debug.Log("Has Permission: " + hasOernussuib);
-
         var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
-
-
 
         //CancellationTokenSource s = new CancellationTokenSource(1500); 
         Debug.Log("Building Dogger");
-        var buildDoggerReceipt = await Dogger.BuildRequestAndWaitForReceiptAsync();
+        var buildDoggerReceipt = await Dogger.BuildRequestAndWaitForReceiptAsync(new Galleass3D.Contracts.Dogger.ContractDefinition.BuildFunction() { Gas = DefaultGas, GasPrice = DefaultGasPrice });
 
         Debug.Log("Dogger: <<");
         DebugTransactionReceipt(buildDoggerReceipt);
@@ -230,6 +251,8 @@ public class EthKeyManager : MonoBehaviour {
 
         //Bay.FishQueryAsync()
 
+
+
         return true;
     }
 
@@ -237,6 +260,20 @@ public class EthKeyManager : MonoBehaviour {
     {
     }
 
+    async Task UpdateTimber()
+    {
+        CurrentOwnership.Timber = int.Parse((await Timber.BalanceOfQueryAsync(Account.Address)).ToString());
+    }
+
+    async Task UpdateEth()
+    {
+        CurrentOwnership.Ether = (await Web3.Eth.GetBalance.SendRequestAsync(Account.Address)).Value;
+    }
+
+    async Task UpdateCopper()
+    {
+        CurrentOwnership.Copper = int.Parse((await Copper.BalanceOfQueryAsync(Account.Address)).ToString());
+    }
 
     private void DebugTransactionReceipt(TransactionReceipt receipt)
     {
@@ -358,11 +395,16 @@ public class EthKeyManager : MonoBehaviour {
         Account = Wallet.GetAccount(0);
 
 
+
         Debug.Log("Address: " + Account.Address);
         //Wallet.GetAccount(0);
         //todo: find out how to create Key Pair
         Web3 = new Nethereum.Web3.Web3(Account, RpcUrl);
 
+
+        Web3.Eth.TransactionManager.DefaultGas = new BigInteger(1000000);
+        Web3.Eth.TransactionManager.DefaultGasPrice = new BigInteger(1000000000);
+        // Account.TransactionManager.DefaultGas
 
         WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
 
