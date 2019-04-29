@@ -22,8 +22,12 @@ public class TransactionDetails
 
     public string ContractName;
 
-    public List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO> FishEvents = new List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
+    public List<IEventDTO> AllEvents = new List<IEventDTO>();
 
+    public List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO> FishEvents = new List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
+    public List<Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO> LandEvents = new List<Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO>();
+
+    //LandGenerated
 
 
     public string GetDescriptiveText()
@@ -139,6 +143,8 @@ public class EthKeyManager : MonoBehaviour {
     private ulong LastBlockNumberDisplayed;
     private ulong LastBlockNumber;
     private ulong StartBlockNumber;
+    private ulong LastBlockNumberProcessed;
+
     private string LatestBlockInformation;
     private bool AutoUpdateToLatestBlock = true;
     private ulong CurrentBlockNumberDisplayed;
@@ -299,16 +305,18 @@ public class EthKeyManager : MonoBehaviour {
         return ulong.Parse(task.Result.Value.ToString());
     }
 
-    private void ParseEventsRaw()
+    public void CallGenerateLand()
     {
-        while (ShallRun)
-        {
-            ulong startBlockNumber = GetCurrentBlockNumber() - 1;
-           //HandleFishEvents(startBlockNumber);
+        GenerateLand();
+    }
 
-            System.Threading.Thread.Sleep(BlockTimeMs);
-        }
+    public async Task GenerateLand()
+    {
+        string generateLandResult = await LandLib.GenerateLandRequestAsync(new Galleass3D.Contracts.LandLib.ContractDefinition.GenerateLandFunction() { Gas = DefaultGas, GasPrice = DefaultGasPrice });
 
+        Debug.Log("GenerateLand: " + generateLandResult);
+
+        //return result;
     }
 
     //private IEnumerator ParseEvents()
@@ -408,9 +416,7 @@ public class EthKeyManager : MonoBehaviour {
 
         WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
 
-        
-
-        //StartCoroutine(UpdateUIPanel());
+      
 
         //TODO: find out how to call a async function on purpose.
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -491,7 +497,8 @@ public class EthKeyManager : MonoBehaviour {
                             details.ContractName = ContractMappingAddressToName[details.TransactionReceipt.ContractAddress];
                         }
 
-                        AddEventsFromReceipt(details.TransactionReceipt, details.FishEvents);
+                        AddEventsFromReceipt(details.TransactionReceipt, details.FishEvents, details.AllEvents);
+                        AddEventsFromReceipt(details.TransactionReceipt, details.LandEvents, details.AllEvents);
 
                         LatestTransactionInformations.TryAdd(details.TransactionReceipt.TransactionHash, details);
                         blockDetails.TransactionDetails.Add(details);
@@ -529,15 +536,17 @@ public class EthKeyManager : MonoBehaviour {
         }
     }
 
-    private void AddEventsFromReceipt<T>(TransactionReceipt receipt, List<T> addToList)
-        where T : new() // Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO
+    private void AddEventsFromReceipt<T>(TransactionReceipt receipt, List<T> addToList, List<IEventDTO> addToListUntyped)
+        where T : IEventDTO,  new()
     {
         //var decodedEvents = receipt.DecodeAllEvents<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
         var decodedEvents = Nethereum.Contracts.EventExtensions.DecodeAllEvents<T>(receipt);
 
         foreach (var decodedEvent in decodedEvents)
         {
+            Debug.Log("Found Event!!" + typeof(T).FullName);
             addToList.Add(decodedEvent.Event);
+            addToListUntyped.Add(decodedEvent.Event);
         }
     }
 
@@ -627,7 +636,8 @@ public class EthKeyManager : MonoBehaviour {
 
         TxtBlockNumberDisplayText.text = StartBlockNumber + " << " + CurrentBlockNumberDisplayed + " >> " + LastBlockNumber;
 
-        if (LastBlockNumberDisplayed != CurrentBlockNumberDisplayed)        {
+        if (LastBlockNumberDisplayed != CurrentBlockNumberDisplayed)        
+        {
             BlockDetails details;
             if (LatestBlockDetails.TryGetValue(CurrentBlockNumberDisplayed, out details))
             {
@@ -656,11 +666,54 @@ public class EthKeyManager : MonoBehaviour {
             }
         }
 
+        if (LastBlockNumber > LastBlockNumberProcessed)
+        {
+            BlockDetails blockDetails;
+
+            //need to process this block.
+            if (LatestBlockDetails.TryGetValue(LastBlockNumber, out blockDetails))
+            {
+                foreach(var tx in blockDetails.TransactionDetails)
+                {
+                    foreach (var eventDto in tx.LandEvents)
+                    {
+                        HandleLandEvent(eventDto);
+                    }
+
+                    foreach (var eventDto in tx.FishEvents)
+                    {
+                        HandleFishEvent(eventDto);
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("Could  not precess block " + LastBlockNumber.ToString());
+            }
+            LastBlockNumberProcessed = LastBlockNumber;
+        }
+
         //SetText(BlockInfoText, LatestBlockInformation);
     }
 
     void OnApplicationQuit()
     {
         ShallRun = false;
+    }
+
+    void HandleLandEvent(Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO generateLandEvent)
+    {
+        Debug.Log("Land got generated: " + generateLandEvent.X + " " + generateLandEvent.Y + " - " + generateLandEvent.Island1 + " - " + generateLandEvent.Island2 + " - " + generateLandEvent.Island3 + " - " + generateLandEvent.Island4 + " - " + generateLandEvent.Island5 + " - " + generateLandEvent.Island6 + " - " + generateLandEvent.Island7 + " - " + generateLandEvent.Island8 + " - " + generateLandEvent.Island9);
+    }
+
+    void HandleFishEvent(Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO eventDTO)
+    {
+        Debug.Log("Fish got generated: " + eventDTO.X + " " + eventDTO.Y + " - " + eventDTO.Species);
+    }
+
+
+    void HandleEvent(IEventDTO nonSpecificEvent)
+    {
+        Debug.Log("Handling non SpecificEvent!" + nonSpecificEvent.GetType().FullName);
     }
 }
