@@ -93,7 +93,7 @@ public class EthKeyManager : MonoBehaviour {
     public GameObject TxtBlockNumberDisplay;
 
     
-    Ownership CurrentOwnership = new Ownership();
+    public Ownership CurrentOwnership = new Ownership();
 
     //cached fields.
     UnityEngine.UI.Text TxtBlockNumberDisplayText;
