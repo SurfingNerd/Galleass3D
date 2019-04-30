@@ -754,7 +754,6 @@ public class EthKeyManager : MonoBehaviour {
 
                 foreach (var oldComponent in oldSelectComponents)
                 {
-                    Debug.LogWarning("Destroying oldSelect Component");
                     Destroy(oldComponent.gameObject);
                 }
 
@@ -823,7 +822,7 @@ public class EthKeyManager : MonoBehaviour {
 
     private void HandleDoggerWasBuildEvent(BuildEventDTO doggerWasBuild)
     {
-        Debug.LogWarning("A Dogger was Build!!");
+        Debug.Log("A Dogger was Build!!");
     }
    
 

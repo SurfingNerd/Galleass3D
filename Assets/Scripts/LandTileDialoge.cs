@@ -21,6 +21,8 @@ public class LandTileDialoge : MonoBehaviour
     public GameObject LandTileDialogeGameObject;
     public GameObject GeneralDialogsContainer;
 
+    public GameObject HaborSpecificOptions;
+
     public void SetLandManager(LandManager landManager)
     {
         LandManager = landManager;
@@ -95,26 +97,6 @@ public class LandTileDialoge : MonoBehaviour
         //LandManager.EthKeyManager.
     }
 
-    //MappingNameToID.Add("MainHills", 1);
-    //MappingNameToID.Add("MainGrass", 2);
-
-    //MappingNameToID.Add("MainStream", 30);
-
-    //MappingNameToID.Add("Grass", 50);
-    //MappingNameToID.Add("Forest", 51);w
-    //MappingNameToID.Add("Mountain", 52);
-    //MappingNameToID.Add("CopperMountain", 53);
-    //MappingNameToID.Add("SilverMountain", 54);
-
-    //MappingNameToID.Add("Harbor", 100);
-    //MappingNameToID.Add("Fishmonger", 101);
-    //MappingNameToID.Add("Market", 102);
-
-    //MappingNameToID.Add("TimberCamp", 150);
-
-    //MappingNameToID.Add("Village", 2000);
-
-
     internal void Show(LandTileLogic landTileLogic)
     {
         ContextObject = landTileLogic;
@@ -122,13 +104,15 @@ public class LandTileDialoge : MonoBehaviour
         OwnerText.text = ContextObject.TileInfo.Owner;
         TypeText.text = LandManager.MappingIDToName[ContextObject.TileInfo.Tile];
 
-
         BuyAmountText.IsActive();
         BuyAmountText.text = "Buy for " + ContextObject.TileInfo.Price.ToString();
 
         GeneralDialogsContainer.SetActive(true);
         LandTileDialogeGameObject.SetActive(true);
 
+        bool isHabor = LandManager.MappingIDToName[ContextObject.TileInfo.Tile] == "Harbor";
+
+        HaborSpecificOptions.SetActive(isHabor);
     }
 
     public void CloseDialoge()
