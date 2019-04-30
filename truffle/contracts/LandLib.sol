@@ -105,7 +105,7 @@ contract LandLib is Galleasset, DataParser {
   }
 
   function setTilesAndOwners(uint16 x,uint16 y,Land landContract,bytes32 landParts1, bytes32 landParts2)
-  public
+  private
   {
     uint8[9] memory islands;
     uint8 tileCountPerIsland = 0;
