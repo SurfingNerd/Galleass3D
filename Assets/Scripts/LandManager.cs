@@ -99,8 +99,6 @@ namespace Galleass3D
             {
                 if (CurrentLandDetailsDirty)
                 {
-                    Debug.LogWarning("LandTileLogics:" + LandTileLogics.Count);
-                    Debug.LogWarning("CurrentLandDetails:" + CurrentLandDetails.TileInfoRaw.Count);
                     for (int i = 0; i < 18; i++)
                     {
                         LandTileLogics[i].SetTileInfo(CurrentLandDetails.TileInfoRaw[i], CurrentLandDetails.X, CurrentLandDetails.Y);

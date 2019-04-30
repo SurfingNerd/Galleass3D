@@ -802,6 +802,11 @@ public class EthKeyManager : MonoBehaviour {
 
     public string GetContractAddress(string contractName)
     {
-        return ContractMappingNameToAddress[contractName];
+        if (ContractMappingNameToAddress.ContainsKey(contractName))
+        {
+            return ContractMappingNameToAddress[contractName];
+        }
+
+        return "0x0000000000000000000000000000000000000000";
     }
 }

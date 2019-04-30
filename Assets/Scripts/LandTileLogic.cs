@@ -84,7 +84,7 @@ namespace Galleass3D
                 Update = (ushort)LandManager.MappingNameToID[tileTypeName],
                 Contract = EthKeyManager.GetContractAddress(tileTypeName)
             });
-            Debug.LogWarning("EditTile Sent!! " + tileTypeName);
+            Debug.Log("EditTile Sent!! " + tileTypeName);
         }
 
         public void ShowLandTileDialoge()
