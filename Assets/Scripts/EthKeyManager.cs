@@ -750,16 +750,28 @@ public class EthKeyManager : MonoBehaviour {
 
                 float offsetY = 0;
 
-                foreach(var tx in details.TransactionDetails)
+                SelectTransaction[] oldSelectComponents = blockInfoTransform.GetComponentsInChildren<SelectTransaction>();
+
+                foreach (var oldComponent in oldSelectComponents)
+                {
+                    Debug.LogWarning("Destroying oldSelect Component");
+                    Destroy(oldComponent.gameObject);
+                }
+
+                blockInfoTransform.DetachChildren();
+
+                foreach (var tx in details.TransactionDetails)
                 {
                     GameObject transactionSelector = Instantiate(this.SelectTransactionButtonPrefab, blockInfoTransform);
 
                     SelectTransaction selectTransactionScript = transactionSelector.GetComponent<SelectTransaction>();
                     selectTransactionScript.SetTransactionDetails(this, tx);
 
+                    //here 
+
                     Transform transactionSelectorTransform = transactionSelector.GetComponent<Transform>();
                     transactionSelectorTransform.SetPositionAndRotation(new UnityEngine.Vector3(blockInfoTransform.position.x, blockInfoTransform.position.y + offsetY), UnityEngine.Quaternion.identity);
-                    offsetY += 100;
+                    offsetY += 30;
                 }
             }
             else
