@@ -53,6 +53,9 @@ namespace Galleass3D
 
             Text = GetComponentInChildren<TextMesh>();
             Terrain = GetComponentInChildren<Terrain>();
+
+            Text.gameObject.SetActive(false);
+            Terrain.gameObject.SetActive(false);
         }
 
         void Update()
@@ -72,6 +75,7 @@ namespace Galleass3D
 
         public void EditTile(string tileTypeName)
         {
+            Debug.LogWarning("EditTile" + tileTypeName);
             EthKeyManager.Land.EditTileRequestAndWaitForReceiptAsync(new Contracts.Land.ContractDefinition.EditTileFunction()
             {
                 X = (ushort)LandX,
@@ -80,6 +84,12 @@ namespace Galleass3D
                 Update = (ushort)LandManager.MappingNameToID[tileTypeName],
                 Contract = EthKeyManager.GetContractAddress(tileTypeName)
             });
+            Debug.LogWarning("EditTile Sent!! " + tileTypeName);
+        }
+
+        public void OnMouseDown()
+        {
+            MakeTileHarbor();
         }
 
     }

@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using Galleass3D;
 using UnityEngine;
 using System.Linq;
-
+using System;
+using System.Numerics;
 
 namespace Galleass3D
 {
@@ -113,16 +114,32 @@ namespace Galleass3D
 
             //System.Threading.Thread.Sleep(5000);
             //StringBuilder sb = new StringBuilder();
+
+            List<Task<Contracts.Land.ContractDefinition.GetTileOutputDTO>> getTileTasks =
+                new List<Task<Contracts.Land.ContractDefinition.GetTileOutputDTO>>();
+
             for (byte i = 0; i < 18; i++)
             {
-                //EthKeyManager.Land.ContractHandler.EthApiContractService.
-                //var tileOutput = await EthKeyManager.Land.GetTileQueryAsync(new Contracts.Land.ContractDefinition.GetTileFunction() { Gas = EthKeyManager.DefaultGas, GasPrice = EthKeyManager.DefaultGasPrice, X = x, Y = y, Index = i});
-                var tileOutput = await EthKeyManager.Land.GetTileQueryAsync(x, y, i);
+                getTileTasks.Add(EthKeyManager.Land.GetTileQueryAsync(x, y, i));
+            }
 
+            for (byte i = 0; i < 18; i++)
+            {
+                var tileOutput = await getTileTasks[i];
                 result.TileInfoRaw.Add(tileOutput);
             }
+
             return result;
         }
+
+        internal async Task LoadIsland(int mainIslandX, int mainIslandY)
+        {
+            Debug.Log("Loading Island " + mainIslandX + " " + mainIslandY);
+            CurrentLandDetails = await GetLandDetails((ushort)mainIslandX, (ushort)mainIslandY);
+            CurrentLandDetailsDirty = true;
+        }
+
+
 
         //public void NotifyLandChanges()
     }

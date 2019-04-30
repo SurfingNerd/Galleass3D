@@ -284,11 +284,10 @@ public class EthKeyManager : MonoBehaviour {
         }
 
 
-        Debug.Log("Getting Tile info!!");
-        var getTileTest = await Land.GetTileQueryAsync(52719, 1288, 3);
-
-        Debug.Log("Get Tile: " + getTileTest.Owner + " - price: "  + getTileTest.Price); 
-
+        if (MainIslandX  > 0 && MainIslandY > 0)
+        {
+            LandManager.LoadIsland(MainIslandX, MainIslandY);
+        }
 
 
 
