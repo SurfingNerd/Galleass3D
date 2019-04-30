@@ -17,4 +17,5 @@ config/test/contracts.json
 #build
 dist
 
-.mnemonic
+#for now i keep the mnemonic public available, so people can get started easy.
+#.mnemonic

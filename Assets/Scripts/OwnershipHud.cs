@@ -57,9 +57,9 @@ namespace Galleass3D
         public void Update()
         {
             //System.Numerics.BigInteger eth = EthKeyManager.CurrentOwnership.Ether / new System.Numerics.BigInteger(System.Math.Pow(10,18));
-            var fullEther = EthKeyManager.CurrentOwnership.Ether / new System.Numerics.BigInteger(System.Math.Pow(10, 18));
+            var fullEther = double.Parse(EthKeyManager.CurrentOwnership.Ether.ToString()) / System.Math.Pow( 10, 18);
 
-            SetValue(EtherText,double.Parse(fullEther.ToString()));
+            SetValue(EtherText, fullEther);
             SetValue(CopperText, EthKeyManager.CurrentOwnership.Copper);
             SetValue(TimberText, EthKeyManager.CurrentOwnership.Timber);
             SetValue(DoggerText, EthKeyManager.CurrentOwnership.Doggers.Count);
@@ -72,7 +72,7 @@ namespace Galleass3D
 
         void SetValue(UnityEngine.UI.Text textComponent, double value)
         {
-            textComponent.text = value.ToString("0.000");
+            textComponent.text = value.ToString("0.00000");
         }
 
 

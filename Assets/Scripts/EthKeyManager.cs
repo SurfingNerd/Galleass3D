@@ -234,7 +234,9 @@ public class EthKeyManager : MonoBehaviour {
 
     private string WorldsRegistryAddress = "0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16";
 
-    private string LastKnownGalleassAddress = "0x7BDcCd4bF7Cd764C20b6Da0AD1f91520A64641DC";
+    //    private string LastKnownGalleassAddress = "0x7BDcCd4bF7Cd764C20b6Da0AD1f91520A64641DC";
+
+    private string LastKnownGalleassAddress = "0xe83a2AE523005b5fB59781Ed20284Aa0209f2e83";
 
     bool ShallRun = true;
 
@@ -311,13 +313,15 @@ public class EthKeyManager : MonoBehaviour {
 
         bool mineDogger = false;
 
+        var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
+        //var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
 
         if (mineDogger)
         {
             var doggerSupply = await Dogger.TotalSupplyQueryAsync();
             Debug.Log("Total Supply Doggers:" + doggerSupply.ToString());
 
-            var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
+            //var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
             var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
 
 

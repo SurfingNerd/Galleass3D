@@ -112,30 +112,19 @@ module.exports = async function(deployer) {
 
   //console.log(copper);
 
-  console.log('Generating  Land...');
-  await landLib.generateLand.sendTransaction();
+  // console.log('Generating  Land...');
+  // await landLib.generateLand.sendTransaction();
 
-  //console.log('gal: ' +gallAddr);
-  // var timber = await deployer.deploy(Timber, gallAddr);
-  // var fillet = await deployer.deploy(Fillet, gallAddr);
-  // var dogger = await deployer.deploy(Dogger, gallAddr);
-  // var copper = await deployer.deploy(Copper, gallAddr);
-  
-  //console.log(timber);
-  var mintWoodTransaction = await timber.mint.sendTransaction(deploymentAccount, 10);
-  
-  var balance = await timber.balanceOf.call(deploymentAccount);
-  console.log('minted: ' + balance);
 
-  const fs = require('fs');
 
-  fs.writeFile("./build/latestGalleasAddress.txt", galleas.address, function(err) {
-    if(err) {
-        return console.log(err);
-    }
+  // const fs = require('fs');
+  // fs.writeFile("./build/latestGalleasAddress.txt", galleas.address, function(err) {
+  //   if(err) {
+  //       return console.log(err);
+  //   }
 
-    console.log("latest Galleass address written to: build/latestGalleasAddress.txt");
-}); 
+  //   console.log("latest Galleass address written to: build/latestGalleasAddress.txt");
+  // }); 
   // galleas.address
 
 };
