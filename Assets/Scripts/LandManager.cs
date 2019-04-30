@@ -62,8 +62,6 @@ namespace Galleass3D
 
 
 
-        int CurrentShownLandX = -1;
-        int CurrentShownLandY = -1;
 
         LandDetails CurrentLandDetails;
         bool CurrentLandDetailsDirty = false;

@@ -1,12 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
+using Nethereum.Hex.HexTypes;
 using UnityEngine;
 
 namespace Galleass3D
 {
     public class LandTileLogic : MonoBehaviour
     {
+        enum TransferTimberToHarborCallType
+        {
+            SendToken = 0,
+            BuildShip = 1,
+            BuyShip = 2
+        }
+
+
         private EthKeyManager EthKeyManager;
         private LandManager LandManager;
         public Galleass3D.Contracts.Land.ContractDefinition.GetTileOutputDTO TileInfo;
@@ -93,9 +103,51 @@ namespace Galleass3D
             LandManager.ShowDialoge(this);
         }
 
-        public void StockDogger()
+        byte[] EncodeTransferTimberToHarborCall(ushort x, ushort y, ushort ix, string shipName, TransferTimberToHarborCallType callType)
         {
+            byte[] result = EthKeyManager.GetEncodedDataCall(x, y, ix, (byte)callType);
+            byte[] shipNameEncoded = System.Text.Encoding.ASCII.GetBytes(shipName);
 
+            for (int i = 0; i < shipNameEncoded.Length; i++)
+            {
+                result[6 + i] = shipNameEncoded[i];
+            }
+
+            return result;
+        }
+
+        internal async Task StockDogger()
+        {
+            //int amountTimber = 2;
+            //Debug.Log("Approving " + amountTimber + " to Harbor for Creating a Dogger");
+            //await EthKeyManager.Timber.ApproveRequestAsync(EthKeyManager.Harbor.ContractHandler.ContractAddress, new System.Numerics.BigInteger(2) );
+
+
+            //transferAndCall
+            byte[] callData = EncodeTransferTimberToHarborCall((ushort)LandX, (ushort)LandY, (ushort)IslandNumber, "Dogger", TransferTimberToHarborCallType.BuildShip);
+
+            HexBigInteger hex = new HexBigInteger(new BigInteger(callData));
+
+            Debug.Log("StockDOgger Hex: " + hex.HexValue);
+
+            Debug.Log("StockDOgger Hex - correct order: " + BitConverter.ToString(callData));
+
+            Galleass3D.Contracts.Timber.ContractDefinition.TransferAndCallFunction call =
+                new Contracts.Timber.ContractDefinition.TransferAndCallFunction();
+
+            call.Value = new BigInteger(2);
+            call.To = EthKeyManager.Harbor.ContractHandler.ContractAddress;
+            call.Data = callData;
+
+            call.Gas = EthKeyManager.DefaultGas;
+
+            var request = await EthKeyManager.Timber.TransferAndCallRequestAsync(call);
+            Debug.Log("Dogger Call is out!! "  + request);
+
+
+
+            //Debug.Log("StockDOgger Call Finished Hex: " + callData);
+            //TileInfo.Tile
         }
     }
 }

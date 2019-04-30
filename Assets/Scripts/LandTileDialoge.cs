@@ -88,24 +88,31 @@ public class LandTileDialoge : MonoBehaviour
         //ContextObject.SetTileInfo
     }
 
+    public void StockDogger()
+    {
+        //TODO: check if its a harbor.
+        ContextObject.StockDogger();
+        //LandManager.EthKeyManager.
+    }
+
     //MappingNameToID.Add("MainHills", 1);
-            //MappingNameToID.Add("MainGrass", 2);
+    //MappingNameToID.Add("MainGrass", 2);
 
-            //MappingNameToID.Add("MainStream", 30);
+    //MappingNameToID.Add("MainStream", 30);
 
-            //MappingNameToID.Add("Grass", 50);
-            //MappingNameToID.Add("Forest", 51);w
-            //MappingNameToID.Add("Mountain", 52);
-            //MappingNameToID.Add("CopperMountain", 53);
-            //MappingNameToID.Add("SilverMountain", 54);
+    //MappingNameToID.Add("Grass", 50);
+    //MappingNameToID.Add("Forest", 51);w
+    //MappingNameToID.Add("Mountain", 52);
+    //MappingNameToID.Add("CopperMountain", 53);
+    //MappingNameToID.Add("SilverMountain", 54);
 
-            //MappingNameToID.Add("Harbor", 100);
-            //MappingNameToID.Add("Fishmonger", 101);
-            //MappingNameToID.Add("Market", 102);
+    //MappingNameToID.Add("Harbor", 100);
+    //MappingNameToID.Add("Fishmonger", 101);
+    //MappingNameToID.Add("Market", 102);
 
-            //MappingNameToID.Add("TimberCamp", 150);
+    //MappingNameToID.Add("TimberCamp", 150);
 
-            //MappingNameToID.Add("Village", 2000);
+    //MappingNameToID.Add("Village", 2000);
 
 
     internal void Show(LandTileLogic landTileLogic)

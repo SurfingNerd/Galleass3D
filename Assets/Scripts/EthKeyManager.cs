@@ -29,8 +29,8 @@ public class TransactionDetails
     public List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO> FishEvents = new List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
     public List<Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO> LandEvents = new List<Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO>();
     public List<Galleass3D.Contracts.StandardTile.ContractDefinition.LandOwnerEventDTO> LandOwner = new List<Galleass3D.Contracts.StandardTile.ContractDefinition.LandOwnerEventDTO>();
-
-
+    public List<Galleass3D.Contracts.Dogger.ContractDefinition.BuildEventDTO> DoggerWasBuild = new List<Galleass3D.Contracts.Dogger.ContractDefinition.BuildEventDTO>();
+    //public List<Galleass3D.Contracts.Timber.ContractDefinition.Transfer > DoggerWasBuild = new List<Galleass3D.Contracts.Dogger.ContractDefinition.BuildEventDTO>();
 
     //LandGenerated
 
@@ -110,7 +110,38 @@ public class EthKeyManager : MonoBehaviour {
     [SerializeField]
     public GameObject TxtBlockNumberDisplay;
 
-    
+    internal byte[] GetEncodedDataCall(ushort x, ushort y, ushort landId, byte command)
+    {
+        //TODO: getAddressFromBytes Address start at Index 6.
+
+
+        Debug.Log("Encoding Call: " + x + " - " + y + " - " + landId);
+        //byte[] bigX = new BigInteger(x).ToByteArray();
+        //byte[] bigY = new BigInteger(y).ToByteArray();
+        //byte[] bigI = new BigInteger(landId).ToByteArray();
+
+        byte[] result = new byte[32];
+
+
+
+        result[0] = command;
+        result[1] = BitConverter.GetBytes(x)[1];
+        result[2] = BitConverter.GetBytes(x)[0];
+        result[3] = BitConverter.GetBytes(y)[1];
+        result[4] = BitConverter.GetBytes(y)[0];
+
+
+        //for (int i = 0; i < 4; i++)
+        // {
+        //    result[i] = bigX[38 - 8 + i];
+        //   result[i + 8]
+        //}
+
+        Debug.Log("Finished Encoding Call: " + x + " - " + y + " - " + landId);
+
+        return result;
+    }
+
     public Ownership CurrentOwnership = new Ownership();
 
     //cached fields.
@@ -567,6 +598,8 @@ public class EthKeyManager : MonoBehaviour {
                         AddEventsFromReceipt(details.TransactionReceipt, details.FishEvents, details.AllEvents);
                         AddEventsFromReceipt(details.TransactionReceipt, details.LandEvents, details.AllEvents);
                         AddEventsFromReceipt(details.TransactionReceipt, details.LandOwner, details.AllEvents);
+                        AddEventsFromReceipt(details.TransactionReceipt, details.DoggerWasBuild, details.AllEvents);
+
 
 
                         LatestTransactionInformations.TryAdd(details.TransactionReceipt.TransactionHash, details);
@@ -759,6 +792,11 @@ public class EthKeyManager : MonoBehaviour {
                     {
                         HandleLandOwnerEvent(landOwnerEvent);
                     }
+
+                    foreach(var doggerWasBuild in tx.DoggerWasBuild)
+                    {
+                        HandleDoggerWasBuildEvent(doggerWasBuild);
+                    }
                 }
             }
             else
@@ -771,12 +809,11 @@ public class EthKeyManager : MonoBehaviour {
         //SetText(BlockInfoText, LatestBlockInformation);
     }
 
-
-
-    void OnApplicationQuit()
+    private void HandleDoggerWasBuildEvent(BuildEventDTO doggerWasBuild)
     {
-        ShallRun = false;
+        Debug.LogWarning("A Dogger was Build!!");
     }
+   
 
     void HandleLandEvent(Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO generateLandEvent)
     {
@@ -798,6 +835,11 @@ public class EthKeyManager : MonoBehaviour {
     void HandleEvent(IEventDTO nonSpecificEvent)
     {
         Debug.Log("Handling non SpecificEvent!" + nonSpecificEvent.GetType().FullName);
+    }
+
+    void OnApplicationQuit()
+    {
+        ShallRun = false;
     }
 
     public string GetContractAddress(string contractName)
