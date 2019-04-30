@@ -55,9 +55,18 @@ public class LandTileDialoge : MonoBehaviour
 
     internal void Show(GetTileOutputDTO getTileOutputDTO)
     {
+
         OwnerText.text = getTileOutputDTO.Owner;
         TypeText.text = LandManager.MappingIDToName[getTileOutputDTO.Tile];
+
+
+        BuyAmountText.IsActive();
         BuyAmountText.text = "Buy for " + getTileOutputDTO.Price.ToString();
-        gameObject.SetActive(true);
+
+        //Debug.LogWarning("Child: " + transform.GetChild(0).name + " " + (transform.GetChild(0).name == "LandTileDialoge"));
+        transform.GetChild(0).gameObject.SetActive(true);
+
+        //transform.gameObject.FindRecursiveByName("LandTileDialoge").SetActive(true);
+        //transform.Find("LandTileDialoge").gameObject.SetActive(true); ;
     }
 }
