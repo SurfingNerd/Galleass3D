@@ -75,7 +75,7 @@ namespace Galleass3D
 
         public void EditTile(string tileTypeName)
         {
-            Debug.LogWarning("EditTile" + tileTypeName);
+            Debug.Log("EditTile" + tileTypeName);
             EthKeyManager.Land.EditTileRequestAndWaitForReceiptAsync(new Contracts.Land.ContractDefinition.EditTileFunction()
             {
                 X = (ushort)LandX,
@@ -91,6 +91,11 @@ namespace Galleass3D
         {
             //LandManager.ShowDialoge(LandX, LandY, IslandNumber);
             LandManager.ShowDialoge(this);
+        }
+
+        public void StockDogger()
+        {
+
         }
     }
 }
