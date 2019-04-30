@@ -61,6 +61,7 @@ public class TransactionDetailsHolder : MonoBehaviour
             currentDisplayedDetails = details;
             Debug.Log("Text set to " + infoText.text);
         }
+        DisplayTransactionDetails();
     }
 
     public void DisplayTransactionDetails()
