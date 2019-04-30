@@ -277,16 +277,8 @@ public class EthKeyManager : MonoBehaviour {
         Bay_FishEventHandler = Bay.ContractHandler.GetEvent<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
 
 
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        UpdateEth();
-        UpdateTimber();
-        UpdateCopper();
 
-
-        //GetLandLibTileInfos();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
-
+        UpdateBalances();
 
         MainIslandX = await Land.MainXQueryAsync();
         MainIslandY = await Land.MainYQueryAsync();
@@ -340,7 +332,9 @@ public class EthKeyManager : MonoBehaviour {
 
         if (MainIslandX  > 0 && MainIslandY > 0)
         {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             LandManager.LoadIsland(MainIslandX, MainIslandY);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
 
@@ -407,7 +401,9 @@ public class EthKeyManager : MonoBehaviour {
 
     public void CallGenerateLand()
     {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         GenerateLand();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
     }
 
     public async Task GenerateLand()
@@ -524,32 +520,24 @@ public class EthKeyManager : MonoBehaviour {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         StartBlockchainCommunication();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+    }
 
-
-
-        //Address =    "0x44FAe35d8A77794F60d65D8346c37da4af923134";
-        //privateKey = "B65C0964709083440649EB86F795D9DAB6FA14D28FECDEFC4C0A74189573FD65";
-
-
-        // Address = Account.Address;
-
-        //
-        ///var url = ;
-        //var PrivateKey = "0xb5b1870957d373ef0eeffecc6e4812c0fd08f554b37b233526acc331bf1544f7";
-        //var account = "0x12890d2cce102216644c59daE5baed380d84830c";
-
-        //DeployTest();
+    void UpdateBalances()
+    {
+#pragma warning disable CS4014
+        UpdateCopper();
+        UpdateEth();
+        UpdateTimber();
+#pragma warning restore CS4014
     }
 
     void UpdateUIPanel()
     {
         while (ShallRun) 
         {
-            UpdateCopper();
-            UpdateEth();
-            UpdateTimber();
-            ulong newBlockNumber = GetCurrentBlockNumber();
 
+            ulong newBlockNumber = GetCurrentBlockNumber();
+            UpdateBalances();
             if (StartBlockNumber == 0)
             {
                 StartBlockNumber = newBlockNumber;

@@ -37,16 +37,6 @@ public class LandTileDialoge : MonoBehaviour
         //LandTileDialoge
         Transform childTransform = LandTileDialogeGameObject.transform;
 
-        if (childTransform != null)
-        {
-            Debug.LogWarning(childTransform.name +  " found.");
-        }
-
-        if (childTransform.Find("OwnerText") != null)
-        {
-            Debug.LogWarning("OwnerText found");
-        }
-
         OwnerText = childTransform.Find("OwnerText").GetComponent<Text>();
         TypeText = childTransform.Find("TypeText").GetComponent<Text>();
         BuyButton = childTransform.Find("BuyButton").GetComponent<Button>();
