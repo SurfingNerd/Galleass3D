@@ -30,7 +30,11 @@ public class TransactionDetails
     public List<Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO> LandEvents = new List<Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO>();
     public List<Galleass3D.Contracts.StandardTile.ContractDefinition.LandOwnerEventDTO> LandOwner = new List<Galleass3D.Contracts.StandardTile.ContractDefinition.LandOwnerEventDTO>();
     public List<Galleass3D.Contracts.Dogger.ContractDefinition.BuildEventDTO> DoggerWasBuild = new List<Galleass3D.Contracts.Dogger.ContractDefinition.BuildEventDTO>();
-    //public List<Galleass3D.Contracts.Timber.ContractDefinition.Transfer > DoggerWasBuild = new List<Galleass3D.Contracts.Dogger.ContractDefinition.BuildEventDTO>();
+
+    //public List<Galleass3D.Contracts.Timber.ContractDefinition.MintEventDTO> TimberMintEvents = new List<Galleass3D.Contracts.Timber.ContractDefinition.MintEventDTO>();
+    //public List<Galleass3D.Contracts.Copper.ContractDefinition.MintEventDTO> CopperMintEvents = new List<Galleass3D.Contracts.Copper.ContractDefinition.MintEventDTO>();
+
+   
 
     //LandGenerated
 
@@ -541,6 +545,9 @@ public class EthKeyManager : MonoBehaviour {
     {
         while (ShallRun) 
         {
+            UpdateCopper();
+            UpdateEth();
+            UpdateTimber();
             ulong newBlockNumber = GetCurrentBlockNumber();
 
             if (StartBlockNumber == 0)
@@ -599,6 +606,10 @@ public class EthKeyManager : MonoBehaviour {
                         AddEventsFromReceipt(details.TransactionReceipt, details.LandEvents, details.AllEvents);
                         AddEventsFromReceipt(details.TransactionReceipt, details.LandOwner, details.AllEvents);
                         AddEventsFromReceipt(details.TransactionReceipt, details.DoggerWasBuild, details.AllEvents);
+                       // AddEventsFromReceipt(details.TransactionReceipt, details.TimberMintEvents, details.AllEvents);
+                       // AddEventsFromReceipt(details.TransactionReceipt, details.CopperMintEvents , details.AllEvents);
+
+
 
 
 
@@ -862,4 +873,15 @@ public class EthKeyManager : MonoBehaviour {
 
         return "0x0000000000000000000000000000000000000000";
     }
+
+    public void MintTimber()
+    {
+        Timber.MintRequestAsync(Account.Address, new BigInteger(10));
+    }
+
+    public void MintCopper()
+    {
+        Copper.MintRequestAsync(Account.Address, new BigInteger(10));
+    }
+
 }
