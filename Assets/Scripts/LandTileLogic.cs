@@ -87,10 +87,9 @@ namespace Galleass3D
             Debug.LogWarning("EditTile Sent!! " + tileTypeName);
         }
 
-        public void OnMouseDown()
+        public void ShowLandTileDialoge()
         {
-            MakeTileHarbor();
+            LandManager.ShowDialoge(LandX, LandY, IslandNumber);
         }
-
     }
 }

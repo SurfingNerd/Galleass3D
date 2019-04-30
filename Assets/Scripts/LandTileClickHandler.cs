@@ -21,10 +21,9 @@ namespace Galleass
 
         }
 
-
         void OnMouseDown()
         {
-            LandTileLogic.MakeTileHarbor();
+            LandTileLogic.GetComponent<LandTileLogic>().ShowLandTileDialoge();
         }
     }
 }

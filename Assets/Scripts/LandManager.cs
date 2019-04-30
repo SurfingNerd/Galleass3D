@@ -53,7 +53,13 @@ namespace Galleass3D
         #endregion
 
 
-        EthKeyManager EthKeyManager;
+        public GameObject DialogeBaseObject;
+
+
+        public EthKeyManager EthKeyManager { get; private set; }
+        LandTileDialoge LandTileDialoge;
+
+
 
         int CurrentShownLandX = -1;
         int CurrentShownLandY = -1;
@@ -67,6 +73,13 @@ namespace Galleass3D
         void Start()
         {
             EthKeyManager = GetComponent<EthKeyManager>();
+
+            LandTileDialoge = DialogeBaseObject.GetComponentInChildren<LandTileDialoge>();
+
+            if (LandTileDialoge==null)
+            {
+                Debug.LogError("LandTileDialog not found.");
+            }
 
             //NOTE: this works if everything is setup correct.
             LandTileLogic[] landTileLogics = GetComponentsInChildren<LandTileLogic>();
@@ -140,7 +153,15 @@ namespace Galleass3D
         }
 
 
+        public void ShowDialoge(int islandX, int islandY, int islandIndex)
+        {
+            if (CurrentLandDetails.X != islandX || CurrentLandDetails.Y != islandY)
+            {
+                Debug.LogError("Unexpected Dialoge from other Land! requested:" + islandX + " - " + islandY + " Current: " + CurrentLandDetails.X  + " - " + CurrentLandDetails.Y);
+            }   
 
+            LandTileDialoge.Show(CurrentLandDetails.TileInfoRaw[islandIndex]);
+        }
         //public void NotifyLandChanges()
     }
 
