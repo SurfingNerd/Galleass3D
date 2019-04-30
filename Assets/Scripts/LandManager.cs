@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Linq;
 using System;
 using System.Numerics;
+using Galleass3D.Contracts.StandardTile.ContractDefinition;
 
 namespace Galleass3D
 {
@@ -76,14 +77,14 @@ namespace Galleass3D
 
             LandTileDialoge = DialogeBaseObject.GetComponentInChildren<LandTileDialoge>();
 
-            if (LandTileDialoge==null)
+            if (LandTileDialoge == null)
             {
                 Debug.LogError("LandTileDialog not found.");
             }
 
             //NOTE: this works if everything is setup correct.
             LandTileLogic[] landTileLogics = GetComponentsInChildren<LandTileLogic>();
-            LandTileLogics =landTileLogics.OrderBy(x => x.IslandNumber).ToList();
+            LandTileLogics = landTileLogics.OrderBy(x => x.IslandNumber).ToList();
 
             if (LandTileLogics.Count != 18)
             {
@@ -167,7 +168,25 @@ namespace Galleass3D
         {
             LandTileDialoge.Show(landTileLogic);
         }
+
+        internal void NotifyLandOwnerEvent(LandOwnerEventDTO landOwnerEvent)
+        {
+            //check if we are talking about this land.
+
+            if (landOwnerEvent.X == CurrentLandDetails.X && landOwnerEvent.Y == CurrentLandDetails.Y)
+            {
+                UpdateLandTile(landOwnerEvent.X, landOwnerEvent.Y, landOwnerEvent.Tile);
+            }
+        }
         //public void NotifyLandChanges()
+
+        private async Task UpdateLandTile(ushort x, ushort y, byte tile)
+        {
+            var newTileInfo = await EthKeyManager.Land.GetTileQueryAsync(x, y, tile);
+
+            CurrentLandDetails.TileInfoRaw[tile] = newTileInfo;
+            CurrentLandDetailsDirty = true;
+        }
     }
 
 }

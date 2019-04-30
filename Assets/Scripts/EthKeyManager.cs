@@ -16,6 +16,7 @@ using Galleass3D.Contracts;
 using System.Threading;
 using Galleass3D.Contracts.Dogger.ContractDefinition;
 using Galleass3D;
+using Galleass3D.Contracts.StandardTile.ContractDefinition;
 
 public class TransactionDetails
 {
@@ -27,6 +28,9 @@ public class TransactionDetails
 
     public List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO> FishEvents = new List<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
     public List<Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO> LandEvents = new List<Galleass3D.Contracts.Land.ContractDefinition.LandGeneratedEventDTO>();
+    public List<Galleass3D.Contracts.StandardTile.ContractDefinition.LandOwnerEventDTO> LandOwner = new List<Galleass3D.Contracts.StandardTile.ContractDefinition.LandOwnerEventDTO>();
+
+
 
     //LandGenerated
 
@@ -562,6 +566,8 @@ public class EthKeyManager : MonoBehaviour {
 
                         AddEventsFromReceipt(details.TransactionReceipt, details.FishEvents, details.AllEvents);
                         AddEventsFromReceipt(details.TransactionReceipt, details.LandEvents, details.AllEvents);
+                        AddEventsFromReceipt(details.TransactionReceipt, details.LandOwner, details.AllEvents);
+
 
                         LatestTransactionInformations.TryAdd(details.TransactionReceipt.TransactionHash, details);
                         blockDetails.TransactionDetails.Add(details);
@@ -748,6 +754,11 @@ public class EthKeyManager : MonoBehaviour {
                     {
                         HandleFishEvent(eventDto);
                     }
+
+                    foreach(var landOwnerEvent in tx.LandOwner)
+                    {
+                        HandleLandOwnerEvent(landOwnerEvent);
+                    }
                 }
             }
             else
@@ -760,6 +771,8 @@ public class EthKeyManager : MonoBehaviour {
         //SetText(BlockInfoText, LatestBlockInformation);
     }
 
+
+
     void OnApplicationQuit()
     {
         ShallRun = false;
@@ -770,6 +783,10 @@ public class EthKeyManager : MonoBehaviour {
         LandManager.NotifyLandGeneratedEvent(generateLandEvent);
     }
 
+    private void HandleLandOwnerEvent(LandOwnerEventDTO landOwnerEvent)
+    {
+        LandManager.NotifyLandOwnerEvent(landOwnerEvent);
+    }
 
 
     void HandleFishEvent(Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO eventDTO)

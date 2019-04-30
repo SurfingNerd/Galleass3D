@@ -18,6 +18,8 @@ public class LandTileDialoge : MonoBehaviour
     //GetTileOutputDTO ContextObject;
     LandTileLogic ContextObject;
 
+    public GameObject LandTileDialogeGameObject;
+    public GameObject GeneralDialogsContainer;
 
     public void SetLandManager(LandManager landManager)
     {
@@ -31,7 +33,7 @@ public class LandTileDialoge : MonoBehaviour
         //Debug.LogWarning(transform.name);
 
         //LandTileDialoge
-        Transform childTransform = transform.GetChild(0);
+        Transform childTransform = LandTileDialogeGameObject.transform;
 
         if (childTransform != null)
         {
@@ -91,8 +93,14 @@ public class LandTileDialoge : MonoBehaviour
         BuyAmountText.IsActive();
         BuyAmountText.text = "Buy for " + ContextObject.TileInfo.Price.ToString();
 
-        //Debug.LogWarning("Child: " + transform.GetChild(0).name + " " + (transform.GetChild(0).name == "LandTileDialoge"));
-        transform.GetChild(0).gameObject.SetActive(true);
+        GeneralDialogsContainer.SetActive(true);
+        LandTileDialogeGameObject.SetActive(true);
 
+    }
+
+    public void CloseDialoge()
+    {
+        GeneralDialogsContainer.SetActive(false);
+        LandTileDialogeGameObject.SetActive(false);
     }
 }
