@@ -15,6 +15,9 @@ public class LandTileDialoge : MonoBehaviour
     LandManager LandManager;
 
 
+    //GetTileOutputDTO ContextObject;
+    LandTileLogic ContextObject;
+
 
     public void SetLandManager(LandManager landManager)
     {
@@ -53,20 +56,43 @@ public class LandTileDialoge : MonoBehaviour
         
     }
 
-    internal void Show(GetTileOutputDTO getTileOutputDTO)
-    {
+    //internal void Show(GetTileOutputDTO getTileOutputDTO)
+    //{
 
-        OwnerText.text = getTileOutputDTO.Owner;
-        TypeText.text = LandManager.MappingIDToName[getTileOutputDTO.Tile];
+    //    OwnerText.text = getTileOutputDTO.Owner;
+    //    TypeText.text = LandManager.MappingIDToName[getTileOutputDTO.Tile];
+
+
+    //    BuyAmountText.IsActive();
+    //    BuyAmountText.text = "Buy for " + getTileOutputDTO.Price.ToString();
+
+    //    //Debug.LogWarning("Child: " + transform.GetChild(0).name + " " + (transform.GetChild(0).name == "LandTileDialoge"));
+    //    transform.GetChild(0).gameObject.SetActive(true);
+
+    //    ContextObject = getTileOutputDTO;
+    //    //transform.gameObject.FindRecursiveByName("LandTileDialoge").SetActive(true);
+    //    //transform.Find("LandTileDialoge").gameObject.SetActive(true); ;
+    //}
+
+    public void SetHarbor()
+    {
+        ContextObject.MakeTileHarbor();
+        //ContextObject.SetTileInfo
+    }
+
+    internal void Show(LandTileLogic landTileLogic)
+    {
+        ContextObject = landTileLogic;
+
+        OwnerText.text = ContextObject.TileInfo.Owner;
+        TypeText.text = LandManager.MappingIDToName[ContextObject.TileInfo.Tile];
 
 
         BuyAmountText.IsActive();
-        BuyAmountText.text = "Buy for " + getTileOutputDTO.Price.ToString();
+        BuyAmountText.text = "Buy for " + ContextObject.TileInfo.Price.ToString();
 
         //Debug.LogWarning("Child: " + transform.GetChild(0).name + " " + (transform.GetChild(0).name == "LandTileDialoge"));
         transform.GetChild(0).gameObject.SetActive(true);
 
-        //transform.gameObject.FindRecursiveByName("LandTileDialoge").SetActive(true);
-        //transform.Find("LandTileDialoge").gameObject.SetActive(true); ;
     }
 }

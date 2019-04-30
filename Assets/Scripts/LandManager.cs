@@ -153,14 +153,19 @@ namespace Galleass3D
         }
 
 
-        public void ShowDialoge(int islandX, int islandY, int islandIndex)
-        {
-            if (CurrentLandDetails.X != islandX || CurrentLandDetails.Y != islandY)
-            {
-                Debug.LogError("Unexpected Dialoge from other Land! requested:" + islandX + " - " + islandY + " Current: " + CurrentLandDetails.X  + " - " + CurrentLandDetails.Y);
-            }   
+        //public void ShowDialoge(int islandX, int islandY, int islandIndex)
+        //{
+        //    if (CurrentLandDetails.X != islandX || CurrentLandDetails.Y != islandY)
+        //    {
+        //        Debug.LogError("Unexpected Dialoge from other Land! requested:" + islandX + " - " + islandY + " Current: " + CurrentLandDetails.X  + " - " + CurrentLandDetails.Y);
+        //    }   
 
-            LandTileDialoge.Show(CurrentLandDetails.TileInfoRaw[islandIndex]);
+        //    LandTileDialoge.Show(CurrentLandDetails.TileInfoRaw[islandIndex]);
+        //}
+
+        public void ShowDialoge(LandTileLogic landTileLogic)
+        {
+            LandTileDialoge.Show(landTileLogic);
         }
         //public void NotifyLandChanges()
     }

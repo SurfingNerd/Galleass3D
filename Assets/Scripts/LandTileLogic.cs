@@ -9,7 +9,7 @@ namespace Galleass3D
     {
         private EthKeyManager EthKeyManager;
         private LandManager LandManager;
-        private Galleass3D.Contracts.Land.ContractDefinition.GetTileOutputDTO TileInfo;
+        public Galleass3D.Contracts.Land.ContractDefinition.GetTileOutputDTO TileInfo;
         private int LandX;
         private int LandY;
 
@@ -89,7 +89,8 @@ namespace Galleass3D
 
         public void ShowLandTileDialoge()
         {
-            LandManager.ShowDialoge(LandX, LandY, IslandNumber);
+            //LandManager.ShowDialoge(LandX, LandY, IslandNumber);
+            LandManager.ShowDialoge(this);
         }
     }
 }

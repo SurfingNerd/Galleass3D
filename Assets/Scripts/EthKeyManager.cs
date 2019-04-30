@@ -72,7 +72,16 @@ public class Ownership
 }
 
 
+
 public class EthKeyManager : MonoBehaviour {
+
+    public enum StageMode
+    {
+        PAUSED, 
+        BUILD,
+        STAGE,
+        PRODUCTION
+    }
 
     public static EthKeyManager Instance { get; private set; }
 
@@ -138,8 +147,14 @@ public class EthKeyManager : MonoBehaviour {
     public Galleass3D.Contracts.Market.MarketService Market;
     public Galleass3D.Contracts.Sea.SeaService Sea;
 
+
+
+
     //fishes.
     public Galleass3D.Contracts.Catfish.CatfishService Catfish;
+
+
+    public StageMode CurrentStageMode;
 
     /// <summary>
     /// Blocknumber that got displayed in the UI
@@ -289,6 +304,11 @@ public class EthKeyManager : MonoBehaviour {
             LandManager.LoadIsland(MainIslandX, MainIslandY);
         }
 
+
+
+        var stageMode = await Galleass.StagedModeQueryAsync();
+
+        CurrentStageMode = (StageMode)stageMode;
 
 
         //TODO: for some reason, for this Reiceipt we have to wait forever!!
