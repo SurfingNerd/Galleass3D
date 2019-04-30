@@ -58,12 +58,12 @@ module.exports = {
       gasPrice: 1000000000
      },
 
-    production: {
-      host: "116.203.118.82",     // Localhost (default: none)
-      port: 8545,            
+    prod: {
+      provider: () => new HDWalletProvider(mnemonic, `http://40.71.213.163:8545`),       
       network_id: "*",       // Any network (default: none)
-      //gas: 7999999,
+      gas: 799999900,
       gasPrice: 1000000000
+      //gas: 7999999,
      },
 
      prototype93: {

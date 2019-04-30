@@ -17,7 +17,7 @@ module.exports = async function(deployer) {
   console.log('deploying main contract with account:' + deploymentAccount); 
 
 
-  var registry = await Registry.at('0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16');
+  //var registry = await Registry.at('0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16');
   //var registry = await deployer.deploy(Registry);
 
   var galleas = await deployer.deploy(Galleass, 'Thomas Haller');
@@ -29,7 +29,7 @@ module.exports = async function(deployer) {
 
   console.log('seconds: ' + seconds);
 
-  await registry.registerGalleasWorld.sendTransaction(galleas.address, deploymentAccount, web3.utils.fromAscii('test - world sec:' + secondsSinceGameBirth));
+  //await registry.registerGalleasWorld.sendTransaction(galleas.address, deploymentAccount, web3.utils.fromAscii('test - world sec:' + secondsSinceGameBirth));
   //const __mainContract = galleas;
   //const var gallAddr = Galleass.address;
 

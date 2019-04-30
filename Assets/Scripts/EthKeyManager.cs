@@ -232,11 +232,11 @@ public class EthKeyManager : MonoBehaviour {
 
     // Nethereum.Web3.Web3 web3 = new Nethereum.Web3.Web3(new Nethereum.HdWallet.Wallet("", ""));
 
-    private string WorldsRegistryAddress = "0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16";
+    //private string WorldsRegistryAddress = "0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16";
 
     //    private string LastKnownGalleassAddress = "0x7BDcCd4bF7Cd764C20b6Da0AD1f91520A64641DC";
 
-    private string LastKnownGalleassAddress = "0xe83a2AE523005b5fB59781Ed20284Aa0209f2e83";
+    private string LastKnownGalleassAddress = "0xcCA2A0478EcA1eA2242CC17c3aE072123631C5Be";
 
     bool ShallRun = true;
 
@@ -489,8 +489,9 @@ public class EthKeyManager : MonoBehaviour {
         if (string.IsNullOrEmpty(RpcUrl))
         {
             //RpcUrl = "http://localhost:9545";
-            RpcUrl = "http://116.203.118.82:8545";
+            //RpcUrl = "http://116.203.118.82:8545";
             //RpcUrl = "https://rpc.tau1.artis.network";
+            RpcUrl = "http://40.71.213.163:8545";
         }
 
         //if (!string.IsNullOrEmpty(PreselectedPrivateKey))
@@ -516,7 +517,7 @@ public class EthKeyManager : MonoBehaviour {
         Web3.Eth.TransactionManager.DefaultGasPrice = new BigInteger(1000000000);
         // Account.TransactionManager.DefaultGas
 
-        WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
+        //WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
 
       
 
