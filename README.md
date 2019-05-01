@@ -10,7 +10,7 @@ https://medium.com/gitcoin/the-ethereal-hackathon-4f5dc2eb56d6
 
 ## About
 
-This is a Proof of Concept, learning and teaching project for Ethereum, Smart Contracts, Unity .Net and C#.
+This is a Proof of Concept, learning and teaching project for Ethereum, Nethereum, Smart Contracts, Unity .Net and C#.
 It is a fischerman themed ressource harvesting game, 
 originally developed by Austin Thomas Griffith https://github.com/austintgriffith/galleass
 
