@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Land contract tracks all the procedurally generated islands in Galleass.
 
@@ -31,8 +31,7 @@ contract Land is Galleasset {
 
   mapping (uint16 => mapping (uint16 => uint16)) public totalWidth;
 
-  function Land(address _galleass) public Galleasset(_galleass) { }
-  function () public {revert();}
+  constructor(address _galleass) public Galleasset(_galleass) { }
 
   function editTile(uint16 _x, uint16 _y,uint8 _tile,uint16 _update,address _contract) onlyOwner isBuilding public returns (bool) {
     tileTypeAt[_x][_y][_tile] = _update;
@@ -67,7 +66,7 @@ contract Land is Galleasset {
   event BuyTile(uint16 _x,uint16 _y,uint8 _tile,address _owner,uint _price,address _contract);
 
   //erc677 receiver
-  function onTokenTransfer(address _sender, uint _amount, bytes _data) public isGalleasset("Land") returns (bool) {
+  function onTokenTransfer(address _sender, uint _amount, bytes memory _data) public isGalleasset("Land") returns (bool) {
     TokenTransfer(msg.sender,_sender,_amount,_data);
     //THIS HAS MOVED TO LANDLIB FOR FASTER DEV LOOP/UPGRADABILITY
     //LandLib landLib = LandLib(getContract("LandLib"));
@@ -110,7 +109,7 @@ contract Land is Galleasset {
     mainY=_mainY;
     return true;
   }
-  function signalGenerateLand(uint16 _x,uint16 _y,uint8[9] islands) public returns (bool) {
+  function signalGenerateLand(uint16 _x,uint16 _y,uint8[9] memory islands) public returns (bool) {
     require(msg.sender==getContract("LandLib"));
     emit LandGenerated(now,_x,_y,islands[0],islands[1],islands[2],islands[3],islands[4],islands[5],islands[6],islands[7],islands[8]);
   }

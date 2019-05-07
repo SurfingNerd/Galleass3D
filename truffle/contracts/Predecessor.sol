@@ -1,10 +1,8 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
-import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import './Staged.sol';
 
-
-contract Predecessor is Ownable, Staged{
+contract Predecessor is Staged{
     constructor () public {}
     address public descendant;
     function setDescendant(address _descendant) onlyOwner isNotProduction public {

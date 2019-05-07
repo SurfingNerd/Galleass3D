@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The DataParser library is extended to help parse ERC677 data
   Usually you parse out the x,y,tile then, there is a field or two
@@ -14,19 +14,19 @@ pragma solidity ^0.4.15;
 
 contract DataParser{
 
-  function getX(bytes _data) internal pure returns (uint16 _x){
+  function getX(bytes memory _data) internal view returns (uint16 _x){
     return uint16(_data[1]) << 8 | uint16(_data[2]);
   }
 
-  function getY(bytes _data) internal pure returns (uint16 _y){
+  function getY(bytes memory _data) internal view returns (uint16 _y){
     return uint16(_data[3]) << 8 | uint16(_data[4]);
   }
 
-  function getTile(bytes _data) internal pure returns (uint8 _tile){
+  function getTile(bytes memory _data) internal view returns (uint8 _tile){
     return uint8(_data[5]);
   }
 
-  function getRemainingBytesLeadingZs(uint8 _offset, bytes _data) internal pure returns (bytes32 result){
+  function getRemainingBytesLeadingZs(uint8 _offset, bytes memory _data) internal view returns (bytes32 result){
     uint8 b = 31;
     uint8 d = uint8(_data.length-1);
     while(d>_offset-1){
@@ -36,7 +36,7 @@ contract DataParser{
   }
 
 
-  function getRemainingBytesTrailingZs(uint _offset,bytes _data) internal pure returns (bytes32 result) {
+  function getRemainingBytesTrailingZs(uint _offset,bytes memory _data) internal view returns (bytes32 result) {
     for (uint i = 0; i < 32; i++) {
       uint8 adjusted = uint8(_offset + i);
       if(adjusted<_data.length){
@@ -48,7 +48,7 @@ contract DataParser{
     return result;
   }
 
-  function getRemainingUint(uint8 _offset,bytes _data) internal pure returns (uint) {
+  function getRemainingUint(uint8 _offset,bytes memory _data) internal view returns (uint) {
     uint result = 0;
     uint endsAt = _data.length;
     uint8 d = uint8(endsAt-1);
@@ -61,7 +61,7 @@ contract DataParser{
     return result;
   }
 
-  function getAddressFromBytes(uint8 _offset,bytes _data) internal pure returns (address) {
+  function getAddressFromBytes(uint8 _offset,bytes memory _data) internal view returns (address) {
     uint result = 0;
     uint endsAt = _offset+20;
     uint8 d = uint8(endsAt-1);

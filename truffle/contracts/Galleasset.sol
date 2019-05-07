@@ -1,12 +1,12 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.7;
 
-import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import './PayableOwnable.sol';
 import './Galleass.sol';
 import './StandardTokenInterface.sol';
 import './Staged.sol';
 
 
-contract Galleasset is Ownable {
+contract Galleasset is PayableOwnable {
 
   address public galleass;
 
@@ -30,10 +30,6 @@ contract Galleasset is Ownable {
     return galleassContract.hasPermission(_contract,_permission);
   }
 
-  function getGalleassTokens(address _from,bytes32 _name,uint256 _amount) internal returns (bool) {
-    return StandardTokenInterface(getContract(_name)).galleassTransferFrom(_from,address(this),_amount);
-  }
-
   function getTokens(address _from,bytes32 _name,uint256 _amount) internal returns (bool) {
     return StandardTokenInterface(getContract(_name)).transferFrom(_from,address(this),_amount);
   }
@@ -44,7 +40,7 @@ contract Galleasset is Ownable {
 
   function withdraw(uint256 _amount) public onlyOwner isBuilding returns (bool) {
     require(address(this).balance >= _amount);
-    assert(owner.send(_amount));
+    assert(owner().send(_amount));
     return true;
   }
   function withdrawToken(address _token,uint256 _amount) public onlyOwner isBuilding returns (bool) {

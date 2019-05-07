@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Harbor is where ships embark and disembark from the Sea. It is the first
   land tile to be built in the main Land. You can buy, sell, and build ships
@@ -34,7 +34,7 @@ contract Harbor is StandardTile {
     //currentPrice["Dogger"] = ((1 ether)/1000);
   }
 
-  function onTokenTransfer(address _sender, uint _amount, bytes _data) public isGalleasset("Harbor") returns (bool){
+  function onTokenTransfer(address _sender, uint _amount, bytes memory _data) public isGalleasset("Harbor") returns (bool){
     emit TokenTransfer(msg.sender,_sender,_amount,_data);
     uint8 action = uint8(_data[0]);
     if(action==0){
@@ -50,7 +50,7 @@ contract Harbor is StandardTile {
   }
   event TokenTransfer(address token,address sender,uint amount,bytes data);
 
-  function _buyShip(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _buyShip(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
 
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
@@ -85,7 +85,7 @@ contract Harbor is StandardTile {
   }
 
 
-  function _build(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _build(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
 
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
@@ -214,7 +214,7 @@ contract Harbor is StandardTile {
     return false;
   }
 
-  function countShips(uint16 _x,uint16 _y,uint8 _tile,bytes32 _model) public constant returns (uint256) {
+  function countShips(uint16 _x,uint16 _y,uint8 _tile,bytes32 _model) public view returns (uint256) {
     uint256 count = 0;
     uint256 index = 0;
     while(index<shipStorage[_x][_y][_tile][_model].length){

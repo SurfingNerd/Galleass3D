@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Dogger is the main fishing boat in Galleass.
 
@@ -30,7 +30,6 @@ contract Dogger is Galleasset, NFT, BuildableInterface {
       });
       items.push(_item);
     }
-    function () public {revert();}
 
     struct Item{
       uint16 strength;
@@ -92,7 +91,7 @@ contract Dogger is Galleasset, NFT, BuildableInterface {
         );
     }
 
-    function tokensOfOwner(address _owner) external view returns(uint256[]) {
+    function tokensOfOwner(address _owner) external view returns(uint256[] memory) {
         uint256 tokenCount = balanceOf(_owner);
         if (tokenCount == 0) {
             return new uint256[](0);

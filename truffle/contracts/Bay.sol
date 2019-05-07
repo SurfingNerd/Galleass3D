@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Bay contains fish and doggers. Doggers move east and west and cast their bait
   in an attempt to catch a fish. The Bay requires a harbor for embarking and
@@ -36,7 +36,7 @@ contract Bay is Galleasset {
 
   uint8 updateNonce = 0;
   event ShipUpdate(uint16 indexed x,uint16 indexed y,uint256 id,address indexed owner,uint timestamp,bool floating,bool sailing,bool direction,bool fishing,uint64 blockNumber,uint16 location);
-  function emitShipUpdate(uint16 _x, uint16 _y,Ship thisShip) internal {
+  function emitShipUpdate(uint16 _x, uint16 _y,Ship storage thisShip) internal {
     emit ShipUpdate(_x,_y,thisShip.id,msg.sender,now*1000+(updateNonce++),thisShip.floating,thisShip.sailing,thisShip.direction,thisShip.fishing,thisShip.blockNumber,thisShip.location);
   }
   /*
@@ -84,7 +84,7 @@ contract Bay is Galleasset {
     StandardTokenInterface fishContract = StandardTokenInterface(_species);
     require( fishContract.transferFrom(msg.sender,address(this),_amount) );
     while(_amount-->0){
-      bytes32 id = keccak256(nonce++,blockhash(block.number-1),msg.sender);
+      bytes32 id = keccak256(abi.encode(nonce++,blockhash(block.number-1),msg.sender));
       //watch for collisions that should never happen
       require(fish[_x][_y][id]==address(0));
       //set fish _species
@@ -113,7 +113,7 @@ contract Bay is Galleasset {
     require( shipsContract.ownerOf(shipId)==address(this) );
 
     //initialize the ship storage
-    Ship thisShip = ships[_x][_y][msg.sender];
+    Ship storage thisShip = ships[_x][_y][msg.sender];
     thisShip.id = shipId;
     thisShip.floating=true;
     thisShip.sailing=false;
@@ -145,7 +145,7 @@ contract Bay is Galleasset {
 
     //delete the ship from Bay memory
     uint256 deletedId = ships[_x][_y][msg.sender].id;
-    Ship thisShip = ships[_x][_y][msg.sender];
+    Ship storage thisShip = ships[_x][_y][msg.sender];
     thisShip.floating=false;
     thisShip.sailing=false;
     emit ShipUpdate(_x,_y,deletedId,msg.sender,now*1000+(updateNonce++),thisShip.floating,thisShip.sailing,thisShip.direction,thisShip.fishing,thisShip.blockNumber,thisShip.location);
@@ -162,7 +162,7 @@ contract Bay is Galleasset {
   //
   function setSail(uint16 _x, uint16 _y,bool direction) public isGalleasset("Bay") returns (bool) {
 
-    Ship thisShip = ships[_x][_y][msg.sender];
+    Ship storage thisShip = ships[_x][_y][msg.sender];
 
     //ship must be floating but not fishing or sailing
     require( thisShip.floating );
@@ -183,7 +183,7 @@ contract Bay is Galleasset {
   //
   function dropAnchor(uint16 _x, uint16 _y) public isGalleasset("Bay") returns (bool) {
 
-    Ship thisShip = ships[_x][_y][msg.sender];
+    Ship storage thisShip = ships[_x][_y][msg.sender];
 
     require( thisShip.floating );
     require( thisShip.sailing );
@@ -201,7 +201,7 @@ contract Bay is Galleasset {
   //
   function castLine(uint16 _x, uint16 _y,bytes32 baitHash) public isGalleasset("Bay") returns (bool) {
 
-    Ship thisShip = ships[_x][_y][msg.sender];
+    Ship storage thisShip = ships[_x][_y][msg.sender];
 
     require( thisShip.floating );
     require( !thisShip.sailing );
@@ -221,7 +221,7 @@ contract Bay is Galleasset {
   //
   function reelIn(uint16 _x, uint16 _y,bytes32 _fish, bytes32 _bait) public isGalleasset("Bay") returns (bool) {
 
-    Ship thisShip = ships[_x][_y][msg.sender];
+    Ship storage thisShip = ships[_x][_y][msg.sender];
 
     require( thisShip.floating );
     require( thisShip.fishing );
@@ -234,7 +234,7 @@ contract Bay is Galleasset {
       return false;
     }
     require( species[_x][_y][fish[_x][_y][_fish]] );//make sure fish exists and is valid species
-    require( keccak256(_bait) == thisShip.bait);//make sure their off-chain bait == onchain hash
+    require( keccak256(abi.encode(_bait)) == thisShip.bait);//make sure their off-chain bait == onchain hash
 
     thisShip.fishing = false;
     emitShipUpdate(_x,_y,thisShip);
@@ -268,7 +268,7 @@ contract Bay is Galleasset {
 
   // --------------------------------------------------------------------------- GETTERS
 
-  function getShip(uint16 _x, uint16 _y,address _address) public constant returns (
+  function getShip(uint16 _x, uint16 _y,address _address) public view returns (
     uint256 id,
     bool floating,
     bool sailing,
@@ -278,7 +278,7 @@ contract Bay is Galleasset {
     uint16 location
   ) {
     uint16 loc = shipLocation(_x,_y,_address);
-    Ship thisShip = ships[_x][_y][_address];
+    Ship storage thisShip = ships[_x][_y][_address];
     return(
       thisShip.id,
       thisShip.floating,
@@ -295,21 +295,22 @@ contract Bay is Galleasset {
   //
   // location of fish is based on their id
   //
-  function fishLocation(bytes32 id) public constant returns(uint16,uint16) {
+  function fishLocation(bytes32 id) public view returns(uint16,uint16) {
     bytes16[2] memory parts = [bytes16(0), 0];
         assembly {
             mstore(parts, id)
             mstore(add(parts, 16), id)
         }
-    return (uint16(uint(parts[0]) % width),uint16(uint(parts[1]) % depth));
+    //return (uint16(uint(parts[0]) % width),uint16(uint(parts[1]) % depth));
+    return ((uint16)(parts[0]) % width, parts[1] % depth);
   }
 
   //
   // location of a moving ship is calculated based on blocks since it set sail
   //
-  function shipLocation(uint16 _x, uint16 _y,address _owner) public constant returns (uint16) {
+  function shipLocation(uint16 _x, uint16 _y,address _owner) public view returns (uint16) {
 
-    Ship thisShip = ships[_x][_y][_owner];
+    Ship storage thisShip = ships[_x][_y][_owner];
 
     if(!thisShip.sailing){
       return thisShip.location;
@@ -326,7 +327,7 @@ contract Bay is Galleasset {
     }
   }
 
-  function inRangeToDisembark(uint16 _x, uint16 _y,address _account) public constant returns (bool) {
+  function inRangeToDisembark(uint16 _x, uint16 _y,address _account) public view returns (bool) {
     //if it's not floating, no need to check
     if(ships[_x][_y][_account].location==0 || !ships[_x][_y][_account].floating) return false;
     //get the location of the harbor
@@ -339,7 +340,7 @@ contract Bay is Galleasset {
     }
   }
 
-  function getHarborLocation(uint16 _x, uint16 _y) public constant returns (uint16) {
+  function getHarborLocation(uint16 _x, uint16 _y) public view returns (uint16) {
     Land landContract = Land(getContract("Land"));
     //uint16 harborLocation = landContract.getTileLocation(landContract.mainX(),landContract.mainY(),getContract("Harbor"));
     uint16 harborLocation = landContract.getTileLocation(_x,_y,getContract("Harbor"));
@@ -353,7 +354,7 @@ contract Bay is Galleasset {
   // get some psuedo random numbers to decided if they catch the fish
   // they need to be close and it's hard if the fish is deeper
   //
-  function _catchFish(Ship thisShip,bytes32 _fish, bytes32 bait) internal returns (bool) {
+  function _catchFish(Ship storage thisShip,bytes32 _fish, bytes32 bait) internal returns (bool) {
 
     bytes32 catchHash = keccak256(bait,blockhash(thisShip.blockNumber));
     bytes32 depthHash = keccak256(bait,catchHash,blockhash(thisShip.blockNumber));

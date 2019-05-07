@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The CitizensLib contract extends the logic for Citizens
   
@@ -65,15 +65,15 @@ contract CitizensLib is Galleasset {
       /*require( getTokens(msg.sender,food1,1) );
       require( getTokens(msg.sender,food2,1) );
       require( getTokens(msg.sender,food3,1) );*/
-      require( getGalleassTokens(owner,"Fillet",3) );
+      require( getTokens(owner,"Fillet",3) );
       //for now there are only fillets, eventually a complex funtion will take in the food and output the characteristics
       characteristics = 0x0002000200000000000000000000000000000000000000000000000000000000;
     } else if(food1=="Greens"&&food2=="Fillet"&&food3=="Fillet"){
       /*require( getTokens(msg.sender,food1,1) );
       require( getTokens(msg.sender,food2,1) );
       require( getTokens(msg.sender,food3,1) );*/
-      require( getGalleassTokens(owner,"Greens",1) );
-      require( getGalleassTokens(owner,"Fillet",2) );
+      require( getTokens(owner,"Greens",1) );
+      require( getTokens(owner,"Fillet",2) );
       //for now there are only fillets, eventually a complex funtion will take in the food and output the characteristics
                        // str|sta|dex|int|amb|rig|ind|ing|
       characteristics = 0x0001000200010005000100000000000100000000000000000000000000000000;

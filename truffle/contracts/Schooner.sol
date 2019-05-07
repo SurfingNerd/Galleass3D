@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Schooner is the main fishing boat in Galleass.
 
@@ -34,7 +34,6 @@ contract Schooner is Galleasset, NFT, BuildableInterface {
       });
       items.push(_item);
     }
-    function () public {revert();}
 
     struct Item{
       uint16 strength;
@@ -60,7 +59,7 @@ contract Schooner is Galleasset, NFT, BuildableInterface {
       uint16 power = 512;
       uint16 defense = 512;
 
-      Build(msg.sender,strength,speed,luck,power,defense);
+      emit Build(msg.sender,strength,speed,luck,power,defense);
       return _create(msg.sender,strength,speed,luck,power,defense);
     }
     event Build(address _sender,uint16 strength,uint16 speed,uint8 luck,uint16 power,uint16 defense);
@@ -84,7 +83,7 @@ contract Schooner is Galleasset, NFT, BuildableInterface {
           birth: uint64(now)
         });
         uint256 newId = items.push(_item) - 1;
-        _transfer(0, _owner, newId);
+        _transfer(address(0), _owner, newId);
         return newId;
     }
 
@@ -104,7 +103,7 @@ contract Schooner is Galleasset, NFT, BuildableInterface {
         );
     }
 
-    function tokensOfOwner(address _owner) external view returns(uint256[]) {
+    function tokensOfOwner(address _owner) external view returns(uint256[] memory) {
         uint256 tokenCount = balanceOf(_owner);
         if (tokenCount == 0) {
             return new uint256[](0);

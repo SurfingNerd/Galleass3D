@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -57,12 +57,12 @@ contract Fishmonger is StandardTile {
     require( _amount>0 );
     //take the fish even without approval because of permissions
     StandardTokenInterface fishContract = StandardTokenInterface(_species);
-    require( fishContract.galleassTransferFrom(msg.sender,address(this),_amount) );
+    require( fishContract.transferFrom(msg.sender,address(this),_amount) );
     //RESTOCK THE SEA WITH THE ORIGINAL FISH (not zero sum obviously because fillets will also be produced, the sea continues to produce fish to make fillets forever)
     _restockBay(fishContract,_x,_y,_species,_amount);
     //CONVERT THE FISH TO FILLETS (THE fishmonger then sells fillets for citizen food in later levels)
     StandardTokenInterface filletContract = StandardTokenInterface(getContract("Fillet"));
-    require( filletContract.galleassMint(address(this),_amount*FILLETSPERFISH) ); //mint 1 fillet for each fish caught
+    require( filletContract.mint(address(this),_amount*FILLETSPERFISH) ); //mint 1 fillet for each fish caught
     //each tile has a different inventory of fillets, increment it
     _incrementTokenBalance(_x,_y,_tile,getContract("Fillet"),_amount);
 
@@ -85,7 +85,7 @@ contract Fishmonger is StandardTile {
     require( bayContract.stock(_x,_y,_species,_amount) );
   }
 
-  function onTokenTransfer(address _sender, uint _amount, bytes _data) public isGalleasset("Fishmonger") returns (bool){
+  function onTokenTransfer(address _sender, uint _amount, bytes memory _data) public isGalleasset("Fishmonger") returns (bool){
     emit TokenTransfer(msg.sender,_sender,_amount,_data);
     uint8 action = uint8(_data[0]);
     if(action==0){
@@ -101,7 +101,7 @@ contract Fishmonger is StandardTile {
   event TokenTransfer(address token,address sender,uint amount,bytes data);
 
   //players will buy fillets to feed their citizens
-  function _buyFillet(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _buyFillet(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
     uint8 _tile = getTile(_data);

@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   A standard tile has mapping for land owners and inventory hodl/send etc
 */
@@ -14,7 +14,6 @@ import './DataParser.sol';
 contract StandardTile is Galleasset, DataParser{
 
   constructor(address _galleass) public Galleasset(_galleass) { }
-  function () public {revert();}
 
   //      land x            land y          land tile
   mapping(uint16 => mapping(uint16 => mapping(uint8 => address))) public landOwners;
@@ -39,7 +38,7 @@ contract StandardTile is Galleasset, DataParser{
   }
 
   //the owner of the tile will need to stock it with copper to pay fishermen for their fillets
-  function _sendToken(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _sendToken(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
     uint8 _tile = getTile(_data);

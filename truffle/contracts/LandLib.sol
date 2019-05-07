@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Land contract tracks all the procedurally generated islands in Galleass.
 
@@ -50,7 +50,6 @@ contract LandLib is Galleasset, DataParser {
     tileTypes["Village"]=2000;
     tileTypes["Castle"]=2010;
   }
-  function () public {revert();}
 
   function setTileType(uint16 _tile,bytes32 _name) onlyOwner isBuilding public returns (bool) {
     tileTypes[_name] = _tile;
@@ -105,7 +104,7 @@ contract LandLib is Galleasset, DataParser {
   }
 
   function setTilesAndOwners(uint16 x,uint16 y,Land landContract,bytes32 landParts1, bytes32 landParts2)
-  private
+  public
   {
     uint8[9] memory islands;
     uint8 tileCountPerIsland = 0;
@@ -135,7 +134,7 @@ contract LandLib is Galleasset, DataParser {
   event Debug(uint8 currentIslandCount,uint8 tileCountPerIsland);
 
 
-  function getTotalWidth(uint16 _x,uint16 _y) public constant returns (uint16){
+  function getTotalWidth(uint16 _x,uint16 _y) public view returns (uint16){
     Land landContract = Land(getContract("Land"));
     uint16 totalWidth = 0;
     bool foundLand = false;
@@ -155,7 +154,7 @@ contract LandLib is Galleasset, DataParser {
   }
 
   //erc677 receiver
-  function onTokenTransfer(address _sender, uint _amount, bytes _data) public isGalleasset("LandLib") returns (bool) {
+  function onTokenTransfer(address _sender, uint _amount, bytes memory _data) public isGalleasset("LandLib") returns (bool) {
     TokenTransfer(msg.sender,_sender,_amount,_data);
     uint8 action = uint8(_data[0]);
     if(action==1){
@@ -171,7 +170,7 @@ contract LandLib is Galleasset, DataParser {
   }
   event TokenTransfer(address token,address sender,uint amount,bytes data);
 
-  function _buyTile(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _buyTile(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     Land landContract = Land(getContract("Land"));
     address copperContractAddress = getContract("Copper");
     require(msg.sender == copperContractAddress);
@@ -216,7 +215,7 @@ contract LandLib is Galleasset, DataParser {
       if(_newTileType==tileTypes["Village"]){
         //require( getTokens(msg.sender,"Timber",6) );
         StandardTokenInterface timberContract = StandardTokenInterface(getContract("Timber"));
-        require( timberContract.galleassTransferFrom(msg.sender,getContract("Land"),6) ); //use 6 timber (moved to Land contract)
+        require( timberContract.transferFrom(msg.sender,getContract("Land"),6) ); //use 6 timber (moved to Land contract)
         //set tile type on the Land Contract
         landContract.setTileTypeAt(_x,_y,_tile,_newTileType);
         //set contract at tile to the Village
@@ -233,7 +232,7 @@ contract LandLib is Galleasset, DataParser {
       if(_newTileType==tileTypes["Castle"]){
         //require( getTokens(msg.sender,"Timber",6) );
         StandardTokenInterface stoneContract = StandardTokenInterface(getContract("Stone"));
-        require( stoneContract.galleassTransferFrom(msg.sender,getContract("Land"),20) ); //use 20 stone (moved to Land contract)
+        require( stoneContract.transferFrom(msg.sender,getContract("Land"),20) ); //use 20 stone (moved to Land contract)
         //set tile type on the Land Contract
         landContract.setTileTypeAt(_x,_y,_tile,_newTileType);
         //set contract at tile to the Village
@@ -250,7 +249,7 @@ contract LandLib is Galleasset, DataParser {
     }
   }
 
-  function _buildTimberCamp(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _buildTimberCamp(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     Land landContract = Land(getContract("Land"));
     //build timber camp
     address copperContractAddress = getContract("Copper");
@@ -320,7 +319,7 @@ contract LandLib is Galleasset, DataParser {
     return true;
   }
 
-  function _extractRawResource(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _extractRawResource(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     Land landContract = Land(getContract("Land"));
     address copperContractAddress = getContract("Copper");
     require(msg.sender == copperContractAddress);
@@ -340,26 +339,26 @@ contract LandLib is Galleasset, DataParser {
       //they must send in 3 copper to extract 1 Timber
       require(_amount>=3);
       resourceContract = StandardTokenInterface(getContract("Timber"));
-      require(resourceContract.galleassMint(_sender,1));
+      require(resourceContract.mint(_sender,1));
       return true;
     } else if(landContract.tileTypeAt(_x,_y,_tile)==tileTypes["Grass"] || landContract.tileTypeAt(_x,_y,_tile)==tileTypes["MainGrass"]){
       //they must send in 2 copper to extract 1 Greens
       require(_amount>=2);
       resourceContract = StandardTokenInterface(getContract("Greens"));
-      require(resourceContract.galleassMint(_sender,1));
+      require(resourceContract.mint(_sender,1));
       return true;
     } else if(landContract.tileTypeAt(_x,_y,_tile)==tileTypes["Mountain"]) {
       //they must send in 4 copper to extract 1 Stone
       require(_amount>=4);
       resourceContract = StandardTokenInterface(getContract("Stone"));
-      require(resourceContract.galleassMint(_sender,1));
+      require(resourceContract.mint(_sender,1));
       return true;
     }else{
       return false;
     }
   }
 
-  function translateTileToWidth(uint16 _tileType) public constant returns (uint16) {
+  function translateTileToWidth(uint16 _tileType) public view returns (uint16) {
     if(_tileType==tileTypes["Water"]){
       return 95;
     }else if (_tileType>=1&&_tileType<50){
@@ -375,7 +374,7 @@ contract LandLib is Galleasset, DataParser {
     }
   }
 
-  function translateToStartingTile(uint16 tilepart) public constant returns (uint16) {
+  function translateToStartingTile(uint16 tilepart) public view returns (uint16) {
     if(tilepart<12850){
       return tileTypes["Water"];
     }else if(tilepart<19275){
