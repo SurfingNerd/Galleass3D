@@ -91,7 +91,9 @@ contract Citizens is Galleasset, NFT {
     }
     //------------------------------------------------------------------------------------------------//
 
-    function _createCitizen(address _owner,uint8 _status,uint _data,uint16 _x,uint16 _y, uint8 _tile, bytes32 _genes, bytes32 _characteristics) internal returns (uint){
+    function _createCitizen(address _owner,uint8 _status,uint _data,uint16 _x,uint16 _y, uint8 _tile, bytes32 _genes, bytes32 _characteristics)
+    internal
+    returns (uint) {
         Citizen memory _citizen = Citizen({
           status: _status,
           data: _data,
@@ -103,17 +105,26 @@ contract Citizens is Galleasset, NFT {
           birth: uint64(block.number)
         });
         uint256 newCitizenId = citizens.push(_citizen) - 1;
-        _transfer(0, _owner, newCitizenId);
-        emit CitizenUpdate(newCitizenId,_citizen.x,_citizen.y,_citizen.tile,_owner,_citizen.status,_citizen.data,_citizen.genes,_citizen.characteristics);
+        _transfer(address(0), _owner, newCitizenId);
+        emit CitizenUpdate(newCitizenId,_citizen.x,_citizen.y,_citizen.tile,_owner,_citizen.status,
+          _citizen.data,_citizen.genes,_citizen.characteristics);
         return newCitizenId;
     }
-    event CitizenUpdate(uint indexed id,uint16 indexed x, uint16 indexed y,uint8 tile,address owner,uint8 status,uint data,bytes32 genes,bytes32 characteristics);
 
-    function totalSupply() public view returns (uint) {
-        return citizens.length - 1;
+    event CitizenUpdate(uint indexed id,uint16 indexed x, uint16 indexed y,uint8 tile,address owner,
+      uint8 status,uint data,bytes32 genes,bytes32 characteristics);
+
+    function totalSupply()
+    public
+    view
+    returns (uint) {
+      return citizens.length - 1;
     }
 
-    function getToken(uint256 _id) public view returns (address owner,uint8 status,uint data,uint16 x,uint16 y,uint8 tile, bytes32 genes,bytes32 characteristics,uint64 birth) {
+    function getToken(uint256 _id)
+    public
+    view
+    returns (address owner,uint8 status,uint data,uint16 x,uint16 y,uint8 tile, bytes32 genes,bytes32 characteristics,uint64 birth) {
       Citizen storage c = citizens[_id];
       return (tokenIndexToOwner[_id],c.status,c.data,c.x,c.y,c.tile,c.genes,c.characteristics,c.birth);
     }

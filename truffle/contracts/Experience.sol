@@ -25,9 +25,9 @@ contract Experience is Galleasset {
   mapping(address => mapping(uint16 => bool)) public experience;
 
   function update(address _player,uint16 _milestone,bool _value) public isGalleasset("Experience") returns (bool) {
-    require(hasPermission(msg.sender,"updateExperience"));
-    experience[_player][_milestone]=_value;
-    ExperienceUpdate(_player,_milestone,experience[_player][_milestone]);
+    require(hasPermission(msg.sender,"updateExperience"), 'requires updateExperience');
+    experience[_player][_milestone] = _value;
+    emit ExperienceUpdate(_player,_milestone,experience[_player][_milestone]);
     return true;
   }
   event ExperienceUpdate(address _owner,uint16 _milestone,bool _value);

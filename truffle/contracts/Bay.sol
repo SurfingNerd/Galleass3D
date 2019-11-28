@@ -296,13 +296,21 @@ contract Bay is Galleasset {
   // location of fish is based on their id
   //
   function fishLocation(bytes32 id) public view returns(uint16,uint16) {
+
     bytes16[2] memory parts = [bytes16(0), 0];
+    //TODO: find a nicer method than inline-assembly
         assembly {
             mstore(parts, id)
             mstore(add(parts, 16), id)
         }
+
+    bytes16 xPart = parts[0];
+    bytes16 yPart = parts[1];
+
     //return (uint16(uint(parts[0]) % width),uint16(uint(parts[1]) % depth));
-    return ((uint16)(parts[0]) % width, parts[1] % depth);
+    uint16 x = (uint16)((uint128)(xPart) % width);
+    uint16 y = (uint16)((uint128)(yPart) % depth);
+    return (x, y);
   }
 
   //
@@ -356,12 +364,12 @@ contract Bay is Galleasset {
   //
   function _catchFish(Ship storage thisShip,bytes32 _fish, bytes32 bait) internal returns (bool) {
 
-    bytes32 catchHash = keccak256(bait,blockhash(thisShip.blockNumber));
-    bytes32 depthHash = keccak256(bait,catchHash,blockhash(thisShip.blockNumber));
-    uint randomishWidthNumber = uint16( uint(catchHash) % width/5 );
+    bytes32 catchHash = keccak256(abi.encodePacked(bait,blockhash(thisShip.blockNumber)));
+    bytes32 depthHash = keccak256(abi.encodePacked(bait,catchHash,blockhash(thisShip.blockNumber)));
+    uint randomishWidthNumber = uint16(uint(catchHash) % width/5);
     uint depthPlus = depth;
-    depthPlus+=depth/3;
-    uint randomishDepthNumber =  uint(depthHash) % (depthPlus) ;
+    depthPlus += depth / 3;
+    uint randomishDepthNumber = uint(depthHash) % (depthPlus);
 
     uint16 fishx;
     uint16 fishy;
@@ -369,9 +377,9 @@ contract Bay is Galleasset {
 
     uint16 distanceToFish = 0;
     if(thisShip.location > fishx){
-      distanceToFish+=thisShip.location-fishx;
+      distanceToFish += thisShip.location - fishx;
     }else{
-      distanceToFish+=fishx-thisShip.location;
+      distanceToFish += fishx - thisShip.location;
     }
     bool result = ( distanceToFish < randomishWidthNumber && fishy < randomishDepthNumber);
     emit Attempt(msg.sender,randomishWidthNumber, randomishDepthNumber, fishx, fishy, distanceToFish, result);

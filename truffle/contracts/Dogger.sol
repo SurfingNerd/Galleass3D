@@ -58,10 +58,10 @@ contract Dogger is Galleasset, NFT, BuildableInterface {
 
 
     function galleassetTransferFrom(address _from,address _to,uint256 _tokenId) external {
-        require(_to != address(0));
-        require(_to != address(this));
-        require(_owns(_from, _tokenId));
-        require(hasPermission(msg.sender,"transferDogger"));
+        require(_to != address(0), 'to must not be 0');
+        require(_to != address(this), 'to must not be the address of the Dogger Contract');
+        require(_owns(_from, _tokenId), 'from must own the dogger');
+        require(hasPermission(msg.sender,"transferDogger"), 'requires permission.');
         _transfer(_from, _to, _tokenId);
     }
 
@@ -73,7 +73,7 @@ contract Dogger is Galleasset, NFT, BuildableInterface {
           birth: uint64(now)
         });
         uint256 newId = items.push(_item) - 1;
-        _transfer(0, _owner, newId);
+        _transfer(address(0), _owner, newId);
         return newId;
     }
 
