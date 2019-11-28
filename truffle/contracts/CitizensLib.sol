@@ -163,18 +163,14 @@ contract CitizensLib is Galleasset {
   }
 
   function moveCitizen(uint _id,uint8 _tile) public isGalleasset("CitizensLib") returns (bool) {
-    
+
     Citizens citizensContract = Citizens(getContract("Citizens"));
-    bytes32 dummyGenes;
-    bytes32 dummyCharacteristics;
-    uint64 dummyBirth;
     uint8 status;
     address owner;
-    uint256 dummyData;
     uint16 x;
     uint16 y;
     uint8 tile;
-    (owner,status,dummyData,x,y,tile,dummyGenes,dummyCharacteristics, dummyBirth) = citizensContract.getToken(_id);
+    (owner,status,,x,y,tile,,,) = citizensContract.getToken(_id);
     //you must own the citizen to move them
     require(owner==msg.sender, 'Only Owner');
     //the citizen must be idle to move

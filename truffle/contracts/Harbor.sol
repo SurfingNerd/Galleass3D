@@ -46,7 +46,6 @@ contract Harbor is StandardTile {
     } else {
       revert("unknown action");
     }
-    return true;
   }
   event TokenTransfer(address token,address sender,uint amount,bytes data);
 
@@ -59,17 +58,17 @@ contract Harbor is StandardTile {
     bytes32 _model = getRemainingBytesTrailingZs(6,_data);
 
     //you must be sending in copper
-    require(msg.sender == getContract("Copper"));
+    require(msg.sender == getContract("Copper"), 'sender must be copper contract');
 
     //they must send in enough copper to buy the ship
-    require( _amount >= currentPrice[_x][_y][_tile][_model] );
+    require(_amount >= currentPrice[_x][_y][_tile][_model], 'must send in enough copper to buy the ship');
 
     if(_model=="Schooner"){
       address shipsContractAddress = getContract(_model);
-      require( shipsContractAddress!=address(0) );
+      require(shipsContractAddress!=address(0), 'shipsContractAddress must be available');
       NFT shipsContract = NFT(shipsContractAddress);
       uint256 availableShip = getShipFromStorage(_x,_y,_tile,shipsContract,_model);
-      require( availableShip!=0 );
+      require(availableShip!=0, 'Ship must be available in storage');
       shipsContract.transfer(_sender,availableShip);
 
       Land landContract = Land(getContract("Land"));
