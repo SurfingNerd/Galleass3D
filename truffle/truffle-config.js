@@ -27,8 +27,6 @@ const fs = require('fs');
 //var prototype93provider = new PrivateKeyProvider(pk, "http://rpc.tau1.artis.network");
  
 const mnemonic = fs.readFileSync(".mnemonic").toString().trim();
-const pk = '0xdee6e14d77620a7112746915641bed0bcba77066c9d943a7c884d5b763fcf8d9';
-const address = '0x527DFBb2c4E02F83716f3e92022e46836d807e29';
 
 module.exports = {
   /**
@@ -120,7 +118,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-       version: "0.4.25",    // Fetch exact version from solc-bin (default: truffle's version)
+       version: "0.5.13",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       settings: {          // See the solidity docs for advice about optimization and evmVersion
         optimizer: {

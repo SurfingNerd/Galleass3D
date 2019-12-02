@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Harbor is where ships embark and disembark from the Sea. It is the first
   land tile to be built in the main Land. You can buy, sell, and build ships
@@ -34,7 +34,7 @@ contract Harbor is StandardTile {
     //currentPrice["Dogger"] = ((1 ether)/1000);
   }
 
-  function onTokenTransfer(address _sender, uint _amount, bytes _data) public isGalleasset("Harbor") returns (bool){
+  function onTokenTransfer(address _sender, uint _amount, bytes memory _data) public isGalleasset("Harbor") returns (bool){
     emit TokenTransfer(msg.sender,_sender,_amount,_data);
     uint8 action = uint8(_data[0]);
     if(action==0){
@@ -46,11 +46,10 @@ contract Harbor is StandardTile {
     } else {
       revert("unknown action");
     }
-    return true;
   }
   event TokenTransfer(address token,address sender,uint amount,bytes data);
 
-  function _buyShip(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _buyShip(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
 
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
@@ -59,17 +58,17 @@ contract Harbor is StandardTile {
     bytes32 _model = getRemainingBytesTrailingZs(6,_data);
 
     //you must be sending in copper
-    require(msg.sender == getContract("Copper"));
+    require(msg.sender == getContract("Copper"), 'sender must be copper contract');
 
     //they must send in enough copper to buy the ship
-    require( _amount >= currentPrice[_x][_y][_tile][_model] );
+    require(_amount >= currentPrice[_x][_y][_tile][_model], 'must send in enough copper to buy the ship');
 
     if(_model=="Schooner"){
       address shipsContractAddress = getContract(_model);
-      require( shipsContractAddress!=address(0) );
+      require(shipsContractAddress!=address(0), 'shipsContractAddress must be available');
       NFT shipsContract = NFT(shipsContractAddress);
-      uint256 availableShip = getShipFromStorage(_x,_y,_tile,shipsContract,_model);
-      require( availableShip!=0 );
+      uint256 availableShip = getShipFromStorage(_x,_y,_tile,_model);
+      require(availableShip!=0, 'Ship must be available in storage');
       shipsContract.transfer(_sender,availableShip);
 
       Land landContract = Land(getContract("Land"));
@@ -85,7 +84,7 @@ contract Harbor is StandardTile {
   }
 
 
-  function _build(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _build(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
 
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
@@ -94,35 +93,34 @@ contract Harbor is StandardTile {
     bytes32 _model = getRemainingBytesTrailingZs(6,_data);
 
     //you must be sending in timber
-    require(msg.sender == getContract("Timber"));
+    require(msg.sender == getContract("Timber"), 'caller must be Timber contract.');
 
     //you must own the tile
-    require(_sender == landOwners[_x][_y][_tile]);
+    require(_sender == landOwners[_x][_y][_tile], 'you must own the tile');
 
     if(_model=="Dogger"){
       //must send in enough timber to build
-      require( _amount >= TIMBERTOBUILDDOGGER );
-      require( _buildShip(_x,_y,_tile,_model) > 0);
+      require(_amount >= TIMBERTOBUILDDOGGER, 'must send in enough timber to build');
+      require(_buildShip(_x,_y,_tile,_model) > 0, 'failure: build dogger failed');
       return true;
     }else if(_model=="Schooner"){
       //must send in enough timber to build
-      require( _amount >= TIMBERTOBUILDSCHOONER );
-      require( _buildShip(_x,_y,_tile,_model) > 0);
+      require(_amount >= TIMBERTOBUILDSCHOONER, 'must send in enough timber to build');
+      require(_buildShip(_x,_y,_tile,_model) > 0, 'failure: build dogger failed');
       return true;
     }else{
       return false;
     }
-    return true;
   }
 
   //this is really only used for the scripts that build doggers
   // I should carve this out and only use transfer and call because it is confusing to have two different build functions
   function buildShip(uint16 _x,uint16 _y,uint8 _tile,bytes32 _model) public isGalleasset("Harbor") isLandOwner(_x,_y,_tile) returns (uint) {
     if(_model=="Dogger"){
-      require( getTokens(msg.sender,"Timber",TIMBERTOBUILDDOGGER) );
+      require(getTokens(msg.sender,"Timber",TIMBERTOBUILDDOGGER), 'unable to get Timber for dogger');
       return _buildShip(_x,_y,_tile,_model);
     }else if(_model=="Schooner"){
-      require( getTokens(msg.sender,"Timber",TIMBERTOBUILDSCHOONER) );
+      require(getTokens(msg.sender,"Timber",TIMBERTOBUILDSCHOONER), 'unable to get Timber for schooner');
       return _buildShip(_x,_y,_tile,_model);
     }else{
       return 0;
@@ -131,17 +129,17 @@ contract Harbor is StandardTile {
 
   function _buildShip(uint16 _x,uint16 _y,uint8 _tile,bytes32 _model) internal returns (uint) {
     address shipsContractAddress = getContract(_model);
-    require( shipsContractAddress!=address(0) );
+    require(shipsContractAddress!=address(0), 'Ships contract address must not be zero');
     if(_model=="Dogger"){
-      require( approveTokens("Timber",shipsContractAddress,TIMBERTOBUILDDOGGER) );
+      require(approveTokens("Timber",shipsContractAddress,TIMBERTOBUILDDOGGER), 'failed: approve timber for dogger');
     }else if(_model=="Schooner"){
-      require( approveTokens("Timber",shipsContractAddress,TIMBERTOBUILDSCHOONER) );
+      require(approveTokens("Timber",shipsContractAddress,TIMBERTOBUILDSCHOONER), 'failed: approve timber for schooner');
     }else{
       return 0;
     }
     BuildableInterface shipContract = BuildableInterface(shipsContractAddress);
     uint256 shipId = shipContract.build();
-    require( storeShip(_x,_y,_tile,shipId,_model) );
+    require(storeShip(_x,_y,_tile,shipId,_model), 'failed to store ship');
     return shipId;
   }
 
@@ -163,38 +161,42 @@ contract Harbor is StandardTile {
     return msg.sender.send(buyBackAmount);
   }*/
 
-  function buyShip(uint16 _x,uint16 _y,uint8 _tile,bytes32 model) public payable isGalleasset("Harbor") returns (uint) {
-    require( currentPrice[_x][_y][_tile][model] > 0 );
-    require( msg.value >= currentPrice[_x][_y][_tile][model] );
+  function buyShip(uint16 _x,uint16 _y,uint8 _tile,bytes32 model)
+  public
+  payable
+  isGalleasset("Harbor")
+  returns (uint) {
+    require(currentPrice[_x][_y][_tile][model] > 0, 'price for given model is not set');
+    require(msg.value >= currentPrice[_x][_y][_tile][model], 'not enough money for that model provided');
     address shipsContractAddress = getContract(model);
-    require( shipsContractAddress!=address(0) );
+    require(shipsContractAddress!=address(0), 'shipsContractAddress not known for this model');
     NFT shipsContract = NFT(shipsContractAddress);
-    uint256 availableShip = getShipFromStorage(_x,_y,_tile,shipsContract,model);
-    require( availableShip!=0 );
+    uint256 availableShip = getShipFromStorage(_x,_y,_tile,model);
+    require(availableShip != 0, 'No ship available in storage');
     shipsContract.transfer(msg.sender,availableShip);
 
     address experienceContractAddress = getContract("Experience");
-    require( experienceContractAddress!=address(0) );
+    require(experienceContractAddress != address(0), 'Experience contract is not setup');
     Experience experienceContract = Experience(experienceContractAddress);
-    require( experienceContract.update(msg.sender,1,true) );//milestone 1: buy ship
+    require(experienceContract.update(msg.sender,1,true), 'Update experience failed');//milestone 1: buy ship
 
     return availableShip;
   }
 
   //the land owner can adjust the price in Eth that players have to pay for a ship
   function setPrice(uint16 _x,uint16 _y,uint8 _tile,bytes32 model,uint256 amount) public isLandOwner(_x,_y,_tile) returns (bool) {
-    currentPrice[_x][_y][_tile][model]=amount;
+    currentPrice[_x][_y][_tile][model] = amount;
   }
 
 
   // Internal functions dealing with ship/memory storage --- ////////////////////////////////////////////////////////////
 
-  function getShipFromStorage(uint16 _x,uint16 _y,uint8 _tile,NFT shipsContract, bytes32 model) internal returns (uint256) {
+  function getShipFromStorage(uint16 _x,uint16 _y,uint8 _tile, bytes32 model) internal returns (uint256) {
     uint256 index = 0;
     while(index<shipStorage[_x][_y][_tile][model].length){
       if(shipStorage[_x][_y][_tile][model][index]!=0){
         uint256 shipId = shipStorage[_x][_y][_tile][model][index];
-        shipStorage[_x][_y][_tile][model][index]=0;
+        shipStorage[_x][_y][_tile][model][index] = 0;
         return shipId;
       }
       index++;
@@ -214,7 +216,7 @@ contract Harbor is StandardTile {
     return false;
   }
 
-  function countShips(uint16 _x,uint16 _y,uint8 _tile,bytes32 _model) public constant returns (uint256) {
+  function countShips(uint16 _x,uint16 _y,uint8 _tile,bytes32 _model) public view returns (uint256) {
     uint256 count = 0;
     uint256 index = 0;
     while(index<shipStorage[_x][_y][_tile][_model].length){

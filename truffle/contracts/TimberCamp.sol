@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Timber Camp produces Timber depending on mined block hashes
   this Timber can be collected by the Tile owner
@@ -34,20 +34,24 @@ contract TimberCamp is StandardTile {
   function collect(uint16 _x,uint16 _y,uint8 _tile) public isGalleasset("TimberCamp") isLandOwner(_x,_y,_tile) returns (bool) {
     uint8 amount = canCollect(_x,_y,_tile);
     StandardTokenInterface resourceContract = StandardTokenInterface(getContract(resource));
-    require(resourceContract.galleassMint(msg.sender,amount));
+    require(resourceContract.mint(msg.sender,amount));
     lastBlock[_x][_y][_tile] = uint64(block.number);
     return true;
   }
 
 
-  function canCollect(uint16 _x,uint16 _y,uint8 _tile) public constant returns (uint8 amount) {
+  function canCollect(uint16 _x,uint16 _y,uint8 _tile) public view returns (uint8 amount) {
     amount=0;
     uint16 minNumber = uint16(min);
     uint16 maxNumber = uint16(max);
     uint64 currentBlock = uint16(block.number);
     while(currentBlock >= lastBlock[_x][_y][_tile]){
       bytes32 blockHash = blockhash(currentBlock);
-      uint16 hashNumber = uint16(blockHash[0]) << 8 | uint16(blockHash[1]);
+      //uint16 hashNumber = uint16(blockHash[0]) << 8 | uint16(blockHash[1]);
+      
+
+      uint16 hashNumber = uint16( uint8(blockHash[0])) << 8 | uint16(uint8(blockHash[1]));
+
       if(hashNumber >= minNumber && hashNumber <= maxNumber){
         amount++;
         if(amount>=maxCollect) return maxCollect;

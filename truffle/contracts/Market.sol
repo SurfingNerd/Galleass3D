@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.5.7;
 
 /*
 
@@ -29,20 +29,8 @@ contract Market is StandardTile {
     return true;
   }
 
-  //if the market has permission to galleassTransferFrom your token you can call sell directly
-  // it's better to 667 them in without special galeeass permission
-  /*function sell(uint16 _x,uint16 _y,uint8 _tile,address _token,uint _amount) public isGalleasset("Market") returns (bool) {
-    //token must have a buy price
-    require(buyPrices[_x][_y][_tile][_token]>0);
-    //move their tokens in
-    StandardToken tokenContract = StandardToken(_token);
-    require(tokenContract.galleassTransferFrom(msg.sender,address(this),_amount));
-    //send them the correct amount of copper
-    StandardToken copperContract = StandardToken(getContract("Copper"));
-    require(copperContract.transfer(msg.sender,buyPrices[_x][_y][_tile][_token]*_amount));
-  }*/
 
-  function onTokenTransfer(address _sender, uint _amount, bytes _data) public isGalleasset("Market") returns (bool){
+  function onTokenTransfer(address _sender, uint _amount, bytes memory _data) public isGalleasset("Market") returns (bool){
     emit TokenTransfer(msg.sender,_sender,_amount,_data);
     uint8 action = uint8(_data[0]);
     if(action==0){
@@ -57,17 +45,19 @@ contract Market is StandardTile {
   }
   event TokenTransfer(address token,address sender,uint amount,bytes data);
 
-  function _buy(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _buy(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     //you must be sending in copper
     require(msg.sender == getContract("Copper"));
-    //increment tile's copper balance
-    _incrementTokenBalance(_x,_y,_tile,msg.sender,_amount);
+
     //parse land location out of data
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
     uint8 _tile = getTile(_data);
     address _tokenAddress = getAddressFromBytes(6,_data);
 
+    //increment tile's copper balance
+    _incrementTokenBalance(_x,_y,_tile,msg.sender,_amount);
+    
     //token must have a sell price
     require(sellPrices[_x][_y][_tile][_tokenAddress]>0);
     //increment tile's token balance
@@ -88,7 +78,7 @@ contract Market is StandardTile {
   event Buy(uint16 _x,uint16 _y,uint8 _tile,uint copperSpent, address _tokenAddress,uint amountOfTokensToSend);
 
   //player is sending some token to the market and expecting payment in copper based on the buyPrice the market is willing to pay for the incoming token
-  function _sell(address _sender, uint _amount, bytes _data) internal returns (bool) {
+  function _sell(address _sender, uint _amount, bytes memory _data) internal returns (bool) {
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
     uint8 _tile = getTile(_data);

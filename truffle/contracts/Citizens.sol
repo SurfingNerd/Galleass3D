@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Citizen represents workers in Galleass
   They have genetics and characteristics and extend the ERC721 token standard
@@ -32,7 +32,6 @@ contract Citizens is Galleasset, NFT {
       });
       citizens.push(_citizen);
     }
-    function () public {revert();}
 
     struct Citizen{
       uint8 status;
@@ -69,7 +68,7 @@ contract Citizens is Galleasset, NFT {
 
     function setStatus(uint _id,uint8 _status) public isGalleasset("Citizens") returns (bool){
       require(msg.sender == getContract("CitizensLib"));
-      Citizen c = citizens[_id];
+      Citizen storage c = citizens[_id];
       c.status = _status;
       emit CitizenUpdate(_id,c.x,c.y,c.tile,tokenIndexToOwner[_id],c.status,c.data,c.genes,c.characteristics);
       return true;
@@ -77,7 +76,7 @@ contract Citizens is Galleasset, NFT {
 
     function setTile(uint _id,uint8 _tile) public isGalleasset("Citizens") returns (bool){
       require(msg.sender == getContract("CitizensLib"));
-      Citizen c = citizens[_id];
+      Citizen storage c = citizens[_id];
       c.tile = _tile;
       emit CitizenUpdate(_id,c.x,c.y,c.tile,tokenIndexToOwner[_id],c.status,c.data,c.genes,c.characteristics);
       return true;
@@ -85,14 +84,16 @@ contract Citizens is Galleasset, NFT {
 
     function setData(uint _id,uint _data) public isGalleasset("Citizens") returns (bool){
       require(msg.sender == getContract("CitizensLib"));
-      Citizen c = citizens[_id];
+      Citizen storage c = citizens[_id];
       c.data = _data;
       emit CitizenUpdate(_id,c.x,c.y,c.tile,tokenIndexToOwner[_id],c.status,c.data,c.genes,c.characteristics);
       return true;
     }
     //------------------------------------------------------------------------------------------------//
 
-    function _createCitizen(address _owner,uint8 _status,uint _data,uint16 _x,uint16 _y, uint8 _tile, bytes32 _genes, bytes32 _characteristics) internal returns (uint){
+    function _createCitizen(address _owner,uint8 _status,uint _data,uint16 _x,uint16 _y, uint8 _tile, bytes32 _genes, bytes32 _characteristics)
+    internal
+    returns (uint) {
         Citizen memory _citizen = Citizen({
           status: _status,
           data: _data,
@@ -104,22 +105,31 @@ contract Citizens is Galleasset, NFT {
           birth: uint64(block.number)
         });
         uint256 newCitizenId = citizens.push(_citizen) - 1;
-        _transfer(0, _owner, newCitizenId);
-        emit CitizenUpdate(newCitizenId,_citizen.x,_citizen.y,_citizen.tile,_owner,_citizen.status,_citizen.data,_citizen.genes,_citizen.characteristics);
+        _transfer(address(0), _owner, newCitizenId);
+        emit CitizenUpdate(newCitizenId,_citizen.x,_citizen.y,_citizen.tile,_owner,_citizen.status,
+          _citizen.data,_citizen.genes,_citizen.characteristics);
         return newCitizenId;
     }
-    event CitizenUpdate(uint indexed id,uint16 indexed x, uint16 indexed y,uint8 tile,address owner,uint8 status,uint data,bytes32 genes,bytes32 characteristics);
 
-    function totalSupply() public view returns (uint) {
-        return citizens.length - 1;
+    event CitizenUpdate(uint indexed id,uint16 indexed x, uint16 indexed y,uint8 tile,address owner,
+      uint8 status,uint data,bytes32 genes,bytes32 characteristics);
+
+    function totalSupply()
+    public
+    view
+    returns (uint) {
+      return citizens.length - 1;
     }
 
-    function getToken(uint256 _id) public view returns (address owner,uint8 status,uint data,uint16 x,uint16 y,uint8 tile, bytes32 genes,bytes32 characteristics,uint64 birth) {
-      Citizen c = citizens[_id];
+    function getToken(uint256 _id)
+    public
+    view
+    returns (address owner,uint8 status,uint data,uint16 x,uint16 y,uint8 tile, bytes32 genes,bytes32 characteristics,uint64 birth) {
+      Citizen storage c = citizens[_id];
       return (tokenIndexToOwner[_id],c.status,c.data,c.x,c.y,c.tile,c.genes,c.characteristics,c.birth);
     }
 
-    function tokensOfOwner(address _owner) external view returns(uint256[]) {
+    function tokensOfOwner(address _owner) external view returns(uint256[] memory) {
         uint256 tokenCount = balanceOf(_owner);
         if (tokenCount == 0) {
             return new uint256[](0);

@@ -1,9 +1,9 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Galleass contract contains a reference to all contracts in the fleet and
   provides a method of upgrading/replacing old contract versions.
@@ -20,19 +20,16 @@ pragma solidity ^0.4.18;
 
 */
 
-
-
-import 'openzeppelin-solidity/contracts/ownership/Contactable.sol';
 import './Staged.sol';
 import './Predecessor.sol';
 import './Galleasset.sol';
 import './StandardTokenInterface.sol';
 
 
-contract Galleass is Staged, Contactable, Predecessor{
+contract Galleass is Staged, Predecessor{
 
-  string public constant name = "Galleass3D";
-  string public constant author = "thomas.haller@lab10.coop";
+  string public constant name = "Galleass";
+  string public constant author = "Thomas Haller thomas.haller@lab10.io";
 
   event UpgradeContract(address _contractAddress,address _descendant,address _whoDid);
   event SetContract(bytes32 _name,address _contractAddress,address _whoDid);
@@ -41,7 +38,7 @@ contract Galleass is Staged, Contactable, Predecessor{
   mapping(bytes32 => address) contracts;
   mapping(address => mapping(bytes32 => bool)) permission;
 
-  constructor(string _contact) public { setContactInformation(_contact); }
+  constructor() public {}
 
   function upgradeContract(address _contract) onlyOwner isBuilding public returns (bool) {
     Galleasset(_contract).upgradeGalleass(descendant);
@@ -77,9 +74,9 @@ contract Galleass is Staged, Contactable, Predecessor{
     }
   }
 
-  function withdraw(uint256 _amount) public onlyOwner returns (bool) {
+  function withdraw(uint256 _amount) public onlyOwner payable returns (bool) {
     require(address(this).balance >= _amount);
-    assert(owner.send(_amount));
+    assert(owner().send(_amount));
     return true;
   }
   function withdrawToken(address _token,uint256 _amount) public onlyOwner returns (bool) {

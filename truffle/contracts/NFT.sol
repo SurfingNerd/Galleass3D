@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 //https://github.com/ethereum/EIPs/issues/721
 // thanks to Dieter Shirley && http://axiomzen.co

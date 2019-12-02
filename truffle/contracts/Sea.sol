@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The Sea enables seaworth ships to travel from one island to another
 
@@ -18,7 +18,7 @@ contract Sea is Galleasset {
 
   uint8 updateNonce = 0;
   event ShipUpdate(uint256 timestamp,uint256 id,address contractAddress,address indexed owner,bool floating,bool sailing,uint16 indexed x,uint16 indexed y,uint16 location,uint16 destX,uint16 destY,uint16 destLocation,uint16 destBlock);
-  function emitShipUpdate(address _contract, uint _shipId,address _owner,Ship thisShip) internal {
+  function emitShipUpdate(address _contract, uint _shipId,address _owner,Ship storage thisShip) internal {
     emit ShipUpdate(now,_shipId,_contract,_owner,thisShip.floating,thisShip.sailing,thisShip.x,thisShip.y,thisShip.location,thisShip.destX,thisShip.destY,thisShip.destLocation,thisShip.destBlock);
   }
 
@@ -141,7 +141,7 @@ contract Sea is Galleasset {
 
   // --------------------------------------------------------------------------- GETTERS
 
-  function getShip(uint16 _x, uint16 _y,address _address) public constant returns (
+  function getShip(uint16 _x, uint16 _y,address _address) public view returns (
     uint256 id,
     bool floating,
     bool sailing,
@@ -168,7 +168,7 @@ contract Sea is Galleasset {
   //
   // location of fish is based on their id
   //
-  function fishLocation(bytes32 id) public constant returns(uint16,uint16) {
+  function fishLocation(bytes32 id) public view returns(uint16,uint16) {
     bytes16[2] memory parts = [bytes16(0), 0];
         assembly {
             mstore(parts, id)
@@ -180,7 +180,7 @@ contract Sea is Galleasset {
   //
   // location of a moving ship is calculated based on blocks since it set sail
   //
-  function shipLocation(uint16 _x, uint16 _y,address _owner) public constant returns (uint16) {
+  function shipLocation(uint16 _x, uint16 _y,address _owner) public view returns (uint16) {
 
     Ship thisShip = ships[_x][_y][_owner];
 
@@ -199,7 +199,7 @@ contract Sea is Galleasset {
     }
   }
 
-  function inRangeToDisembark(uint16 _x, uint16 _y,address _account) public constant returns (bool) {
+  function inRangeToDisembark(uint16 _x, uint16 _y,address _account) public view returns (bool) {
     //if it's not floating, no need to check
     if(ships[_x][_y][_account].location==0 || !ships[_x][_y][_account].floating) return false;
     //get the location of the harbor
@@ -212,7 +212,7 @@ contract Sea is Galleasset {
     }
   }
 
-  function getHarborLocation(uint16 _x, uint16 _y) public constant returns (uint16) {
+  function getHarborLocation(uint16 _x, uint16 _y) public view returns (uint16) {
     Land landContract = Land(getContract("Land"));
     //uint16 harborLocation = landContract.getTileLocation(landContract.mainX(),landContract.mainY(),getContract("Harbor"));
     uint16 harborLocation = landContract.getTileLocation(_x,_y,getContract("Harbor"));
@@ -227,8 +227,8 @@ contract Sea is Galleasset {
 contract Land {
   uint16 public mainX;
   uint16 public mainY;
-  function getTileLocation(uint16 _x,uint16 _y,address _address) public constant returns (uint16) { }
-  function findTileByAddress(uint16 _x,uint16 _y,address _address) public constant returns (uint8) { }
+  function getTileLocation(uint16 _x,uint16 _y,address _address) public view returns (uint16) { }
+  function findTileByAddress(uint16 _x,uint16 _y,address _address) public view returns (uint8) { }
 }
 
 

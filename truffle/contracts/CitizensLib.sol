@@ -1,9 +1,9 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.5.7;
 
 /*
 
   https://galleass.io
-  by Austin Thomas Griffith & Thomas Haller
+  by Austin Thomas Griffith
 
   The CitizensLib contract extends the logic for Citizens
   
@@ -41,7 +41,7 @@ contract CitizensLib is Galleasset {
     //genes will at first be random but then maybe they will be mixed... like you might need
     //to not only have food, but a couple citizens in the village too and you would use
     //their existing genes to mix for the new genes
-    bytes32 genes = keccak256(nonce++,blockhash(block.number-1));
+    bytes32 genes = keccak256(abi.encodePacked(blockhash(block.number-1), nonce++));
 
     //internal function to reduce stack size
     _createCitizen(owner,_x,_y,_tile,genes,characteristics);
@@ -65,50 +65,65 @@ contract CitizensLib is Galleasset {
       /*require( getTokens(msg.sender,food1,1) );
       require( getTokens(msg.sender,food2,1) );
       require( getTokens(msg.sender,food3,1) );*/
-      require( getGalleassTokens(owner,"Fillet",3) );
+      require(getTokens(owner,"Fillet",3), 'No Fillet available');
       //for now there are only fillets, eventually a complex funtion will take in the food and output the characteristics
       characteristics = 0x0002000200000000000000000000000000000000000000000000000000000000;
     } else if(food1=="Greens"&&food2=="Fillet"&&food3=="Fillet"){
       /*require( getTokens(msg.sender,food1,1) );
       require( getTokens(msg.sender,food2,1) );
       require( getTokens(msg.sender,food3,1) );*/
-      require( getGalleassTokens(owner,"Greens",1) );
-      require( getGalleassTokens(owner,"Fillet",2) );
+      require(getTokens(owner,"Greens",1), "No Greens available");
+      require(getTokens(owner,"Fillet",2), "No Fillet available");
       //for now there are only fillets, eventually a complex funtion will take in the food and output the characteristics
                        // str|sta|dex|int|amb|rig|ind|ing|
       characteristics = 0x0001000200010005000100000000000100000000000000000000000000000000;
     }else{
-      //unknown recipe
-      revert();
+      revert("unknown recipe");
     }
 
     return characteristics;
+  }
+
+
+  function getUint16(bytes1 data1, bytes1 data2)
+  internal
+  pure
+  returns (uint16 _x) {
+    bytes2 a = (bytes2)(data1);
+    bytes2 b = (bytes2)(data2);
+
+    a = a << 8;
+    return (uint16)(a) + (uint16)(b);
+    //return uint16(_data[1] << 8 | uint16(_data[2]));
   }
 
   function getCitizenGenes(uint256 _id) public view returns (uint16 head,uint16 hair,uint16 eyes,uint16 nose,uint16 mouth) {
     Citizens citizensContract = Citizens(getContract("Citizens"));
     bytes32 genes;
     (,,,,,,genes,,) = citizensContract.getToken(_id);
-    head = uint16(genes[0]) << 8 | uint16(genes[1]);
-    hair = uint16(genes[2]) << 8 | uint16(genes[3]);
-    eyes = uint16(genes[4]) << 8 | uint16(genes[5]);
-    nose = uint16(genes[6]) << 8 | uint16(genes[7]);
-    mouth = uint16(genes[8]) << 8 | uint16(genes[9]);
+    head = getUint16(genes[0], genes[1]);
+    hair = getUint16(genes[2], genes[3]);
+    eyes = getUint16(genes[4], genes[5]);
+    nose = getUint16(genes[6], genes[7]);
+    mouth = getUint16(genes[8], genes[9]);
     return (head,hair,eyes,nose,mouth);
   }
 
-  function getCitizenCharacteristics(uint256 _id) public view returns (uint16 strength,uint16 stamina,uint16 dexterity,uint16 intelligence,uint16 ambition,uint16 rigorousness,uint16 industriousness,uint16 ingenuity) {
+  function getCitizenCharacteristics(uint256 _id)
+  public
+  view
+  returns (uint16 strength,uint16 stamina,uint16 dexterity,uint16 intelligence,uint16 ambition,uint16 rigorousness,uint16 industriousness,uint16 ingenuity) {
     Citizens citizensContract = Citizens(getContract("Citizens"));
     bytes32 characteristics;
     (,,,,,,,characteristics,) = citizensContract.getToken(_id);
-    strength = uint16(characteristics[0]) << 8 | uint16(characteristics[1]);
-    stamina = uint16(characteristics[2]) << 8 | uint16(characteristics[3]);
-    dexterity = uint16(characteristics[4]) << 8 | uint16(characteristics[5]);
-    intelligence = uint16(characteristics[6]) << 8 | uint16(characteristics[7]);
-    ambition = uint16(characteristics[8]) << 8 | uint16(characteristics[9]);
-    rigorousness = uint16(characteristics[10]) << 8 | uint16(characteristics[11]);
-    industriousness = uint16(characteristics[12]) << 8 | uint16(characteristics[13]);
-    ingenuity = uint16(characteristics[14]) << 8 | uint16(characteristics[15]);
+    strength = getUint16(characteristics[0], characteristics[1]);
+    stamina = getUint16(characteristics[2], characteristics[3]);
+    dexterity = getUint16(characteristics[4], characteristics[5]);
+    intelligence = getUint16(characteristics[6], characteristics[7]);
+    ambition = getUint16(characteristics[8], characteristics[9]);
+    rigorousness = getUint16(characteristics[10], characteristics[11]);
+    industriousness = getUint16(characteristics[12], characteristics[13]);
+    ingenuity = getUint16(characteristics[14], characteristics[15]);
     return (strength, stamina, dexterity, intelligence, ambition, rigorousness, industriousness, ingenuity);
   }
 
@@ -119,7 +134,7 @@ contract CitizensLib is Galleasset {
   }
 
   function setStatus(uint _id,uint8 _status) public isGalleasset("CitizensLib") returns (bool){
-    require(hasPermission(msg.sender,"useCitizens"));
+    require(hasPermission(msg.sender,"useCitizens"), 'missing useCitizens permission');
     Citizens citizensContract = Citizens(getContract("Citizens"));
     return citizensContract.setStatus(_id,_status);
   }
@@ -131,34 +146,35 @@ contract CitizensLib is Galleasset {
     address owner;
     (owner,status,,,,,,,) = citizensContract.getToken(_id);
     //you must own the citizen to set its sale price
-    require(owner==msg.sender);
+    require(owner==msg.sender, 'must be owner');
     //the citizen must be idle or for sale to go on sale
-    require(status==1||status==2);
+    require(status==1||status==2, 'status must be 1 or 2');
     //is it currently for sale?
     if(_price==0){
       //setting the price to 0 means not for sale any more
-      require(citizensContract.setStatus(_id,1));
+      require(citizensContract.setStatus(_id,1), 'it is not for sale');
     }else{
       //set status to 2 (for sale)
-      require(citizensContract.setStatus(_id,2));
+      require(citizensContract.setStatus(_id,2), 'could not set status for sale');
     }
     //set citizen data to the price
-    require(citizensContract.setData(_id,_price));
+    require(citizensContract.setData(_id,_price), 'could not sent price');
     return true;
   }
 
   function moveCitizen(uint _id,uint8 _tile) public isGalleasset("CitizensLib") returns (bool) {
+
     Citizens citizensContract = Citizens(getContract("Citizens"));
     uint8 status;
     address owner;
     uint16 x;
     uint16 y;
     uint8 tile;
-    (owner,status,,x,y,tile,,) = citizensContract.getToken(_id);
+    (owner,status,,x,y,tile,,,) = citizensContract.getToken(_id);
     //you must own the citizen to move them
-    require(owner==msg.sender);
+    require(owner==msg.sender, 'Only Owner');
     //the citizen must be idle to move
-    require(status==1);
+    require(status==1, 'Status must be 1');
     //you must own all the land between the current location and the destination
     //(bascially they will walk at the speed of light at first, but eventually
     // there should probably be some sort of transportation per island and it
@@ -167,13 +183,13 @@ contract CitizensLib is Galleasset {
     //first let's just make sure they own the dest and build the other stuff in
     //maybe it's fine for them to move anywhere on local islands at first idk
     //destination can't be water
-    require(landContract.tileTypeAt(x,y,_tile)>0);
+    require(landContract.tileTypeAt(x,y,_tile)>0, 'destination cant be water');
     //must own destination
-    require(landContract.ownerAt(x,y,_tile)==msg.sender);
+    require(landContract.ownerAt(x,y,_tile)==msg.sender, 'must own destination');
     //you can't already be at the destination
-    require(tile!=_tile);
+    require(tile!=_tile, 'you cant already be at the destination');
     //set the tile on the Citisen contract
-    require(citizensContract.setTile(_id,_tile));
+    require(citizensContract.setTile(_id,_tile), 'failed: set the tile on the Citisen contract');
     return true;
   }
   event Debug(uint _id,uint8 _tile,uint8 status,address owner);
