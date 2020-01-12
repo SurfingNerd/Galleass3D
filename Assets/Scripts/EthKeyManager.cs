@@ -236,7 +236,7 @@ public class EthKeyManager : MonoBehaviour {
 
     //    private string LastKnownGalleassAddress = "0x7BDcCd4bF7Cd764C20b6Da0AD1f91520A64641DC";
 
-    private string LastKnownGalleassAddress = "0xcCA2A0478EcA1eA2242CC17c3aE072123631C5Be";
+    private string LastKnownGalleassAddress = "0x79583ADFEA5Ac6E7CEc839E1cBDA7dfaaAddfb45";
 
     bool ShallRun = true;
 
