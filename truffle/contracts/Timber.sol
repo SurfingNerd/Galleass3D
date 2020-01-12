@@ -19,7 +19,7 @@ contract Timber is Galleasset, ERC20Mintable, ERC677Token {
   string public constant symbol = "G_TIMBER";
   uint8 public constant decimals = 0;
 
-  constructor(address _galleass) Galleasset(_galleass) public {
+  constructor(address _galleass) public Galleasset(_galleass) {
   }
 
 

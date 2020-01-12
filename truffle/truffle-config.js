@@ -15,7 +15,7 @@
  * You'll also need a mnemonic - the twelve word phrase the wallet uses to generate
  * public/private key pairs. If you're publishing your code to GitHub make sure you load this
  * phrase from a file you've .gitignored so it doesn't accidentally become public.
- *
+ *t
  */
 
  const HDWalletProvider = require('truffle-hdwallet-provider');
@@ -27,6 +27,10 @@ const fs = require('fs');
 //var prototype93provider = new PrivateKeyProvider(pk, "http://rpc.tau1.artis.network");
  
 const mnemonic = fs.readFileSync(".mnemonic").toString().trim();
+
+const mnemonicDevChain = 'swallow crucial satisfy cruel what rail taste aim connect correct immense focus';
+
+console.log(mnemonic);
 
 module.exports = {
   /**
@@ -47,12 +51,22 @@ module.exports = {
     // options below to some value.
     //
     development: {
-      //provider: () => new HDWalletProvider(mnemonic, `http://116.203.118.82:8545`),
+      provider: () => new HDWalletProvider(mnemonic, `http://127.0.0.1:8545`),
       //host: "116.203.118.82",     // Localhost (default: none)
-      host: "127.0.0.1",
-      port: 9545,            
+      //host: "127.0.0.1",
+      //port: 8545,            
       network_id: "*",       // Any network (default: none)
       //gas: 7999999,
+      gasPrice: 1000000000
+     },
+
+     local: {
+      provider: () => new HDWalletProvider(mnemonic, `http://127.0.0.1:8545`),
+      //host: "116.203.118.82",     // Localhost (default: none)
+      //host: "127.0.0.1",
+      //port: 8545,            
+      network_id: "*",       // Any network (default: none)
+      gas: 7999999,
       gasPrice: 1000000000
      },
 
