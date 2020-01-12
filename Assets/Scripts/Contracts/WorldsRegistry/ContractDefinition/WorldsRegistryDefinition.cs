@@ -22,25 +22,32 @@ namespace Galleass3D.Contracts.WorldsRegistry.ContractDefinition
 
     public class WorldsRegistryDeploymentBase : ContractDeploymentMessage
     {
-        public static string BYTECODE = "0x6080604052336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550610695806100536000396000f30060806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063274ad47214610072578063715018a6146100e35780638da5cb5b146100fa578063af95766114610151578063f2fde38b146101c2575b600080fd5b34801561007e57600080fd5b506100a16004803603810190808035600019169060200190929190505050610205565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b3480156100ef57600080fd5b506100f8610238565b005b34801561010657600080fd5b5061010f61033a565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34801561015d57600080fd5b506101c0600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803560001916906020019092919050505061035f565b005b3480156101ce57600080fd5b50610203600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610508565b005b60016020528060005260406000206000915054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561029357600080fd5b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff167ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482060405160405180910390a260008060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff161415156103ba57600080fd5b600060016000836000191660001916815260200190815260200160002060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415156104a9576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004018080602001828103825260268152602001807f4120576f726c6420776974682074686973206e616d6520616c7265616479206581526020017f786973747321000000000000000000000000000000000000000000000000000081525060400191505060405180910390fd5b8260016000836000191660001916815260200190815260200160002060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550505050565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561056357600080fd5b61056c8161056f565b50565b600073ffffffffffffffffffffffffffffffffffffffff168173ffffffffffffffffffffffffffffffffffffffff16141515156105ab57600080fd5b8073ffffffffffffffffffffffffffffffffffffffff166000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a3806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550505600a165627a7a7230582020bde41b3121c90faecf2eac0514340ed9e9bbba549a66005501a2f33c4e85a00029";
+        public static string BYTECODE = "0x6080604052336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16600073ffffffffffffffffffffffffffffffffffffffff167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a36106f4806100cf6000396000f3fe608060405234801561001057600080fd5b50600436106100885760003560e01c80638da5cb5b1161005b5780638da5cb5b1461016d5780638f32d59b146101b7578063af957661146101d9578063f2fde38b1461025f57610088565b806308dcb3871461008d578063274ad472146100ab578063715018a6146101195780637dacfe6514610123575b600080fd5b6100956102a3565b6040518082815260200191505060405180910390f35b6100d7600480360360208110156100c157600080fd5b81019080803590602001909291905050506102a9565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6101216102dc565b005b61012b6103ac565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6101756103d2565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6101bf6103fb565b604051808215151515815260200191505060405180910390f35b610245600480360360608110156101ef57600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610452565b604051808215151515815260200191505060405180910390f35b6102a16004803603602081101561027557600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291905050506105aa565b005b60025481565b60016020528060005260406000206000915054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6102e46103fb565b6102ed57600080fd5b600073ffffffffffffffffffffffffffffffffffffffff166000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a360008060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550565b600360009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff16905090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614905090565b600061045c6103fb565b61046557600080fd5b8160028190555083600360006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550836001600084815260200190815260200160002060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550817f35934566dce01a64a8e994804d3c00b967edc2b48e194901011fd1692d2ba63b858542604051808473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a2600190509392505050565b6105b26103fb565b6105bb57600080fd5b6105c4816105c7565b50565b600073ffffffffffffffffffffffffffffffffffffffff168173ffffffffffffffffffffffffffffffffffffffff16141561060157600080fd5b8073ffffffffffffffffffffffffffffffffffffffff166000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a3806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505056fea265627a7a72315820366feb22da868880c51869e361d54f5275cd1ceb1c69ed753126261e45235dc264736f6c634300050d0032";
         public WorldsRegistryDeploymentBase() : base(BYTECODE) { }
         public WorldsRegistryDeploymentBase(string byteCode) : base(byteCode) { }
 
     }
 
-    public partial class WorldsFunction : WorldsFunctionBase { }
+    public partial class IsOwnerFunction : IsOwnerFunctionBase { }
 
-    [Function("worlds", "address")]
-    public class WorldsFunctionBase : FunctionMessage
+    [Function("isOwner", "bool")]
+    public class IsOwnerFunctionBase : FunctionMessage
     {
-        [Parameter("bytes32", "", 1)]
-        public virtual byte[] ReturnValue1 { get; set; }
+
     }
 
-    public partial class RenounceOwnershipFunction : RenounceOwnershipFunctionBase { }
+    public partial class LastCreatedWorldNameFunction : LastCreatedWorldNameFunctionBase { }
 
-    [Function("renounceOwnership")]
-    public class RenounceOwnershipFunctionBase : FunctionMessage
+    [Function("lastCreatedWorldName", "bytes32")]
+    public class LastCreatedWorldNameFunctionBase : FunctionMessage
+    {
+
+    }
+
+    public partial class LastCreatedWorldsAddressFunction : LastCreatedWorldsAddressFunctionBase { }
+
+    [Function("lastCreatedWorldsAddress", "address")]
+    public class LastCreatedWorldsAddressFunctionBase : FunctionMessage
     {
 
     }
@@ -53,18 +60,35 @@ namespace Galleass3D.Contracts.WorldsRegistry.ContractDefinition
 
     }
 
+    public partial class RenounceOwnershipFunction : RenounceOwnershipFunctionBase { }
+
+    [Function("renounceOwnership")]
+    public class RenounceOwnershipFunctionBase : FunctionMessage
+    {
+
+    }
+
     public partial class TransferOwnershipFunction : TransferOwnershipFunctionBase { }
 
     [Function("transferOwnership")]
     public class TransferOwnershipFunctionBase : FunctionMessage
     {
-        [Parameter("address", "_newOwner", 1)]
+        [Parameter("address", "newOwner", 1)]
         public virtual string NewOwner { get; set; }
+    }
+
+    public partial class WorldsFunction : WorldsFunctionBase { }
+
+    [Function("worlds", "address")]
+    public class WorldsFunctionBase : FunctionMessage
+    {
+        [Parameter("bytes32", "", 1)]
+        public virtual byte[] ReturnValue1 { get; set; }
     }
 
     public partial class RegisterGalleasWorldFunction : RegisterGalleasWorldFunctionBase { }
 
-    [Function("registerGalleasWorld")]
+    [Function("registerGalleasWorld", "bool")]
     public class RegisterGalleasWorldFunctionBase : FunctionMessage
     {
         [Parameter("address", "galleasContract", 1)]
@@ -75,13 +99,19 @@ namespace Galleass3D.Contracts.WorldsRegistry.ContractDefinition
         public virtual byte[] Name { get; set; }
     }
 
-    public partial class OwnershipRenouncedEventDTO : OwnershipRenouncedEventDTOBase { }
+    public partial class GalleasWorldRegisteredEventDTO : GalleasWorldRegisteredEventDTOBase { }
 
-    [Event("OwnershipRenounced")]
-    public class OwnershipRenouncedEventDTOBase : IEventDTO
+    [Event("GalleasWorldRegistered")]
+    public class GalleasWorldRegisteredEventDTOBase : IEventDTO
     {
-        [Parameter("address", "previousOwner", 1, true )]
-        public virtual string PreviousOwner { get; set; }
+        [Parameter("address", "galeassContract", 1, false )]
+        public virtual string GaleassContract { get; set; }
+        [Parameter("address", "initiator", 2, false )]
+        public virtual string Initiator { get; set; }
+        [Parameter("bytes32", "name", 3, true )]
+        public virtual byte[] Name { get; set; }
+        [Parameter("uint256", "timestamp", 4, false )]
+        public virtual BigInteger Timestamp { get; set; }
     }
 
     public partial class OwnershipTransferredEventDTO : OwnershipTransferredEventDTOBase { }
@@ -95,16 +125,32 @@ namespace Galleass3D.Contracts.WorldsRegistry.ContractDefinition
         public virtual string NewOwner { get; set; }
     }
 
-    public partial class WorldsOutputDTO : WorldsOutputDTOBase { }
+    public partial class IsOwnerOutputDTO : IsOwnerOutputDTOBase { }
 
     [FunctionOutput]
-    public class WorldsOutputDTOBase : IFunctionOutputDTO 
+    public class IsOwnerOutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("bool", "", 1)]
+        public virtual bool ReturnValue1 { get; set; }
+    }
+
+    public partial class LastCreatedWorldNameOutputDTO : LastCreatedWorldNameOutputDTOBase { }
+
+    [FunctionOutput]
+    public class LastCreatedWorldNameOutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("bytes32", "", 1)]
+        public virtual byte[] ReturnValue1 { get; set; }
+    }
+
+    public partial class LastCreatedWorldsAddressOutputDTO : LastCreatedWorldsAddressOutputDTOBase { }
+
+    [FunctionOutput]
+    public class LastCreatedWorldsAddressOutputDTOBase : IFunctionOutputDTO 
     {
         [Parameter("address", "", 1)]
         public virtual string ReturnValue1 { get; set; }
     }
-
-
 
     public partial class OwnerOutputDTO : OwnerOutputDTOBase { }
 
@@ -116,6 +162,17 @@ namespace Galleass3D.Contracts.WorldsRegistry.ContractDefinition
     }
 
 
+
+
+
+    public partial class WorldsOutputDTO : WorldsOutputDTOBase { }
+
+    [FunctionOutput]
+    public class WorldsOutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("address", "", 1)]
+        public virtual string ReturnValue1 { get; set; }
+    }
 
 
 }

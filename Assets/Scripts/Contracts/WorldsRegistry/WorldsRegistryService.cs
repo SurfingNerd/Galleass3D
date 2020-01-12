@@ -42,18 +42,48 @@ namespace Galleass3D.Contracts.WorldsRegistry
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
-        public Task<string> WorldsQueryAsync(WorldsFunction worldsFunction, BlockParameter blockParameter = null)
+        public Task<bool> IsOwnerQueryAsync(IsOwnerFunction isOwnerFunction, BlockParameter blockParameter = null)
         {
-            return ContractHandler.QueryAsync<WorldsFunction, string>(worldsFunction, blockParameter);
+            return ContractHandler.QueryAsync<IsOwnerFunction, bool>(isOwnerFunction, blockParameter);
         }
 
         
-        public Task<string> WorldsQueryAsync(byte[] returnValue1, BlockParameter blockParameter = null)
+        public Task<bool> IsOwnerQueryAsync(BlockParameter blockParameter = null)
         {
-            var worldsFunction = new WorldsFunction();
-                worldsFunction.ReturnValue1 = returnValue1;
-            
-            return ContractHandler.QueryAsync<WorldsFunction, string>(worldsFunction, blockParameter);
+            return ContractHandler.QueryAsync<IsOwnerFunction, bool>(null, blockParameter);
+        }
+
+        public Task<byte[]> LastCreatedWorldNameQueryAsync(LastCreatedWorldNameFunction lastCreatedWorldNameFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<LastCreatedWorldNameFunction, byte[]>(lastCreatedWorldNameFunction, blockParameter);
+        }
+
+        
+        public Task<byte[]> LastCreatedWorldNameQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<LastCreatedWorldNameFunction, byte[]>(null, blockParameter);
+        }
+
+        public Task<string> LastCreatedWorldsAddressQueryAsync(LastCreatedWorldsAddressFunction lastCreatedWorldsAddressFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<LastCreatedWorldsAddressFunction, string>(lastCreatedWorldsAddressFunction, blockParameter);
+        }
+
+        
+        public Task<string> LastCreatedWorldsAddressQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<LastCreatedWorldsAddressFunction, string>(null, blockParameter);
+        }
+
+        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
+        }
+
+        
+        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
         }
 
         public Task<string> RenounceOwnershipRequestAsync(RenounceOwnershipFunction renounceOwnershipFunction)
@@ -74,17 +104,6 @@ namespace Galleass3D.Contracts.WorldsRegistry
         public Task<TransactionReceipt> RenounceOwnershipRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<RenounceOwnershipFunction>(null, cancellationToken);
-        }
-
-        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
-        }
-
-        
-        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
         }
 
         public Task<string> TransferOwnershipRequestAsync(TransferOwnershipFunction transferOwnershipFunction)
@@ -111,6 +130,20 @@ namespace Galleass3D.Contracts.WorldsRegistry
                 transferOwnershipFunction.NewOwner = newOwner;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
+        }
+
+        public Task<string> WorldsQueryAsync(WorldsFunction worldsFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<WorldsFunction, string>(worldsFunction, blockParameter);
+        }
+
+        
+        public Task<string> WorldsQueryAsync(byte[] returnValue1, BlockParameter blockParameter = null)
+        {
+            var worldsFunction = new WorldsFunction();
+                worldsFunction.ReturnValue1 = returnValue1;
+            
+            return ContractHandler.QueryAsync<WorldsFunction, string>(worldsFunction, blockParameter);
         }
 
         public Task<string> RegisterGalleasWorldRequestAsync(RegisterGalleasWorldFunction registerGalleasWorldFunction)

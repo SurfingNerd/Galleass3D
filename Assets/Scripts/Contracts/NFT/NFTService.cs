@@ -42,20 +42,6 @@ namespace Galleass3D.Contracts.NFT
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
-        public Task<string> TokenIndexToOwnerQueryAsync(TokenIndexToOwnerFunction tokenIndexToOwnerFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<TokenIndexToOwnerFunction, string>(tokenIndexToOwnerFunction, blockParameter);
-        }
-
-        
-        public Task<string> TokenIndexToOwnerQueryAsync(BigInteger returnValue1, BlockParameter blockParameter = null)
-        {
-            var tokenIndexToOwnerFunction = new TokenIndexToOwnerFunction();
-                tokenIndexToOwnerFunction.ReturnValue1 = returnValue1;
-            
-            return ContractHandler.QueryAsync<TokenIndexToOwnerFunction, string>(tokenIndexToOwnerFunction, blockParameter);
-        }
-
         public Task<string> TokenIndexToApprovedQueryAsync(TokenIndexToApprovedFunction tokenIndexToApprovedFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<TokenIndexToApprovedFunction, string>(tokenIndexToApprovedFunction, blockParameter);
@@ -68,6 +54,20 @@ namespace Galleass3D.Contracts.NFT
                 tokenIndexToApprovedFunction.ReturnValue1 = returnValue1;
             
             return ContractHandler.QueryAsync<TokenIndexToApprovedFunction, string>(tokenIndexToApprovedFunction, blockParameter);
+        }
+
+        public Task<string> TokenIndexToOwnerQueryAsync(TokenIndexToOwnerFunction tokenIndexToOwnerFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<TokenIndexToOwnerFunction, string>(tokenIndexToOwnerFunction, blockParameter);
+        }
+
+        
+        public Task<string> TokenIndexToOwnerQueryAsync(BigInteger returnValue1, BlockParameter blockParameter = null)
+        {
+            var tokenIndexToOwnerFunction = new TokenIndexToOwnerFunction();
+                tokenIndexToOwnerFunction.ReturnValue1 = returnValue1;
+            
+            return ContractHandler.QueryAsync<TokenIndexToOwnerFunction, string>(tokenIndexToOwnerFunction, blockParameter);
         }
 
         public Task<string> TransferRequestAsync(TransferFunction transferFunction)

@@ -72,36 +72,6 @@ namespace Galleass3D.Contracts.StandardTokenInterface
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferFromFunction, cancellationToken);
         }
 
-        public Task<string> GalleassTransferFromRequestAsync(GalleassTransferFromFunction galleassTransferFromFunction)
-        {
-             return ContractHandler.SendRequestAsync(galleassTransferFromFunction);
-        }
-
-        public Task<TransactionReceipt> GalleassTransferFromRequestAndWaitForReceiptAsync(GalleassTransferFromFunction galleassTransferFromFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(galleassTransferFromFunction, cancellationToken);
-        }
-
-        public Task<string> GalleassTransferFromRequestAsync(string returnValue1, string returnValue2, BigInteger returnValue3)
-        {
-            var galleassTransferFromFunction = new GalleassTransferFromFunction();
-                galleassTransferFromFunction.ReturnValue1 = returnValue1;
-                galleassTransferFromFunction.ReturnValue2 = returnValue2;
-                galleassTransferFromFunction.ReturnValue3 = returnValue3;
-            
-             return ContractHandler.SendRequestAsync(galleassTransferFromFunction);
-        }
-
-        public Task<TransactionReceipt> GalleassTransferFromRequestAndWaitForReceiptAsync(string returnValue1, string returnValue2, BigInteger returnValue3, CancellationTokenSource cancellationToken = null)
-        {
-            var galleassTransferFromFunction = new GalleassTransferFromFunction();
-                galleassTransferFromFunction.ReturnValue1 = returnValue1;
-                galleassTransferFromFunction.ReturnValue2 = returnValue2;
-                galleassTransferFromFunction.ReturnValue3 = returnValue3;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(galleassTransferFromFunction, cancellationToken);
-        }
-
         public Task<string> TransferRequestAsync(TransferFunction transferFunction)
         {
              return ContractHandler.SendRequestAsync(transferFunction);
@@ -158,32 +128,32 @@ namespace Galleass3D.Contracts.StandardTokenInterface
              return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
         }
 
-        public Task<string> GalleassMintRequestAsync(GalleassMintFunction galleassMintFunction)
+        public Task<string> MintRequestAsync(MintFunction mintFunction)
         {
-             return ContractHandler.SendRequestAsync(galleassMintFunction);
+             return ContractHandler.SendRequestAsync(mintFunction);
         }
 
-        public Task<TransactionReceipt> GalleassMintRequestAndWaitForReceiptAsync(GalleassMintFunction galleassMintFunction, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> MintRequestAndWaitForReceiptAsync(MintFunction mintFunction, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(galleassMintFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(mintFunction, cancellationToken);
         }
 
-        public Task<string> GalleassMintRequestAsync(string returnValue1, BigInteger returnValue2)
+        public Task<string> MintRequestAsync(string returnValue1, BigInteger returnValue2)
         {
-            var galleassMintFunction = new GalleassMintFunction();
-                galleassMintFunction.ReturnValue1 = returnValue1;
-                galleassMintFunction.ReturnValue2 = returnValue2;
+            var mintFunction = new MintFunction();
+                mintFunction.ReturnValue1 = returnValue1;
+                mintFunction.ReturnValue2 = returnValue2;
             
-             return ContractHandler.SendRequestAsync(galleassMintFunction);
+             return ContractHandler.SendRequestAsync(mintFunction);
         }
 
-        public Task<TransactionReceipt> GalleassMintRequestAndWaitForReceiptAsync(string returnValue1, BigInteger returnValue2, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> MintRequestAndWaitForReceiptAsync(string returnValue1, BigInteger returnValue2, CancellationTokenSource cancellationToken = null)
         {
-            var galleassMintFunction = new GalleassMintFunction();
-                galleassMintFunction.ReturnValue1 = returnValue1;
-                galleassMintFunction.ReturnValue2 = returnValue2;
+            var mintFunction = new MintFunction();
+                mintFunction.ReturnValue1 = returnValue1;
+                mintFunction.ReturnValue2 = returnValue2;
             
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(galleassMintFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(mintFunction, cancellationToken);
         }
     }
 }

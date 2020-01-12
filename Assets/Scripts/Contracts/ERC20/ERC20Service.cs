@@ -59,12 +59,27 @@ namespace Galleass3D.Contracts.ERC20
         }
 
         
-        public Task<BigInteger> BalanceOfQueryAsync(string who, BlockParameter blockParameter = null)
+        public Task<BigInteger> BalanceOfQueryAsync(string owner, BlockParameter blockParameter = null)
         {
             var balanceOfFunction = new BalanceOfFunction();
-                balanceOfFunction.Who = who;
+                balanceOfFunction.Owner = owner;
             
             return ContractHandler.QueryAsync<BalanceOfFunction, BigInteger>(balanceOfFunction, blockParameter);
+        }
+
+        public Task<BigInteger> AllowanceQueryAsync(AllowanceFunction allowanceFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<AllowanceFunction, BigInteger>(allowanceFunction, blockParameter);
+        }
+
+        
+        public Task<BigInteger> AllowanceQueryAsync(string owner, string spender, BlockParameter blockParameter = null)
+        {
+            var allowanceFunction = new AllowanceFunction();
+                allowanceFunction.Owner = owner;
+                allowanceFunction.Spender = spender;
+            
+            return ContractHandler.QueryAsync<AllowanceFunction, BigInteger>(allowanceFunction, blockParameter);
         }
 
         public Task<string> TransferRequestAsync(TransferFunction transferFunction)
@@ -95,19 +110,32 @@ namespace Galleass3D.Contracts.ERC20
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferFunction, cancellationToken);
         }
 
-        public Task<BigInteger> AllowanceQueryAsync(AllowanceFunction allowanceFunction, BlockParameter blockParameter = null)
+        public Task<string> ApproveRequestAsync(ApproveFunction approveFunction)
         {
-            return ContractHandler.QueryAsync<AllowanceFunction, BigInteger>(allowanceFunction, blockParameter);
+             return ContractHandler.SendRequestAsync(approveFunction);
         }
 
-        
-        public Task<BigInteger> AllowanceQueryAsync(string owner, string spender, BlockParameter blockParameter = null)
+        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(ApproveFunction approveFunction, CancellationTokenSource cancellationToken = null)
         {
-            var allowanceFunction = new AllowanceFunction();
-                allowanceFunction.Owner = owner;
-                allowanceFunction.Spender = spender;
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
+        }
+
+        public Task<string> ApproveRequestAsync(string spender, BigInteger value)
+        {
+            var approveFunction = new ApproveFunction();
+                approveFunction.Spender = spender;
+                approveFunction.Value = value;
             
-            return ContractHandler.QueryAsync<AllowanceFunction, BigInteger>(allowanceFunction, blockParameter);
+             return ContractHandler.SendRequestAsync(approveFunction);
+        }
+
+        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(string spender, BigInteger value, CancellationTokenSource cancellationToken = null)
+        {
+            var approveFunction = new ApproveFunction();
+                approveFunction.Spender = spender;
+                approveFunction.Value = value;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
         }
 
         public Task<string> TransferFromRequestAsync(TransferFromFunction transferFromFunction)
@@ -140,32 +168,60 @@ namespace Galleass3D.Contracts.ERC20
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferFromFunction, cancellationToken);
         }
 
-        public Task<string> ApproveRequestAsync(ApproveFunction approveFunction)
+        public Task<string> IncreaseAllowanceRequestAsync(IncreaseAllowanceFunction increaseAllowanceFunction)
         {
-             return ContractHandler.SendRequestAsync(approveFunction);
+             return ContractHandler.SendRequestAsync(increaseAllowanceFunction);
         }
 
-        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(ApproveFunction approveFunction, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> IncreaseAllowanceRequestAndWaitForReceiptAsync(IncreaseAllowanceFunction increaseAllowanceFunction, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(increaseAllowanceFunction, cancellationToken);
         }
 
-        public Task<string> ApproveRequestAsync(string spender, BigInteger value)
+        public Task<string> IncreaseAllowanceRequestAsync(string spender, BigInteger addedValue)
         {
-            var approveFunction = new ApproveFunction();
-                approveFunction.Spender = spender;
-                approveFunction.Value = value;
+            var increaseAllowanceFunction = new IncreaseAllowanceFunction();
+                increaseAllowanceFunction.Spender = spender;
+                increaseAllowanceFunction.AddedValue = addedValue;
             
-             return ContractHandler.SendRequestAsync(approveFunction);
+             return ContractHandler.SendRequestAsync(increaseAllowanceFunction);
         }
 
-        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(string spender, BigInteger value, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> IncreaseAllowanceRequestAndWaitForReceiptAsync(string spender, BigInteger addedValue, CancellationTokenSource cancellationToken = null)
         {
-            var approveFunction = new ApproveFunction();
-                approveFunction.Spender = spender;
-                approveFunction.Value = value;
+            var increaseAllowanceFunction = new IncreaseAllowanceFunction();
+                increaseAllowanceFunction.Spender = spender;
+                increaseAllowanceFunction.AddedValue = addedValue;
             
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(increaseAllowanceFunction, cancellationToken);
+        }
+
+        public Task<string> DecreaseAllowanceRequestAsync(DecreaseAllowanceFunction decreaseAllowanceFunction)
+        {
+             return ContractHandler.SendRequestAsync(decreaseAllowanceFunction);
+        }
+
+        public Task<TransactionReceipt> DecreaseAllowanceRequestAndWaitForReceiptAsync(DecreaseAllowanceFunction decreaseAllowanceFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(decreaseAllowanceFunction, cancellationToken);
+        }
+
+        public Task<string> DecreaseAllowanceRequestAsync(string spender, BigInteger subtractedValue)
+        {
+            var decreaseAllowanceFunction = new DecreaseAllowanceFunction();
+                decreaseAllowanceFunction.Spender = spender;
+                decreaseAllowanceFunction.SubtractedValue = subtractedValue;
+            
+             return ContractHandler.SendRequestAsync(decreaseAllowanceFunction);
+        }
+
+        public Task<TransactionReceipt> DecreaseAllowanceRequestAndWaitForReceiptAsync(string spender, BigInteger subtractedValue, CancellationTokenSource cancellationToken = null)
+        {
+            var decreaseAllowanceFunction = new DecreaseAllowanceFunction();
+                decreaseAllowanceFunction.Spender = spender;
+                decreaseAllowanceFunction.SubtractedValue = subtractedValue;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(decreaseAllowanceFunction, cancellationToken);
         }
     }
 }

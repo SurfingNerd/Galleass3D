@@ -42,24 +42,35 @@ namespace Galleass3D.Contracts.Predecessor
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
-        public Task<string> ProductionRequestAsync(ProductionFunction productionFunction)
+        public Task<string> BuildRequestAsync(BuildFunction buildFunction)
         {
-             return ContractHandler.SendRequestAsync(productionFunction);
+             return ContractHandler.SendRequestAsync(buildFunction);
         }
 
-        public Task<string> ProductionRequestAsync()
+        public Task<string> BuildRequestAsync()
         {
-             return ContractHandler.SendRequestAsync<ProductionFunction>();
+             return ContractHandler.SendRequestAsync<BuildFunction>();
         }
 
-        public Task<TransactionReceipt> ProductionRequestAndWaitForReceiptAsync(ProductionFunction productionFunction, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> BuildRequestAndWaitForReceiptAsync(BuildFunction buildFunction, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(productionFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(buildFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> ProductionRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> BuildRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync<ProductionFunction>(null, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<BuildFunction>(null, cancellationToken);
+        }
+
+        public Task<string> DescendantQueryAsync(DescendantFunction descendantFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<DescendantFunction, string>(descendantFunction, blockParameter);
+        }
+
+        
+        public Task<string> DescendantQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<DescendantFunction, string>(null, blockParameter);
         }
 
         public Task<string> DestructRequestAsync(DestructFunction destructFunction)
@@ -82,24 +93,26 @@ namespace Galleass3D.Contracts.Predecessor
              return ContractHandler.SendRequestAndWaitForReceiptAsync<DestructFunction>(null, cancellationToken);
         }
 
-        public Task<string> RenounceOwnershipRequestAsync(RenounceOwnershipFunction renounceOwnershipFunction)
+        public Task<bool> IsOwnerQueryAsync(IsOwnerFunction isOwnerFunction, BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAsync(renounceOwnershipFunction);
+            return ContractHandler.QueryAsync<IsOwnerFunction, bool>(isOwnerFunction, blockParameter);
         }
 
-        public Task<string> RenounceOwnershipRequestAsync()
+        
+        public Task<bool> IsOwnerQueryAsync(BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAsync<RenounceOwnershipFunction>();
+            return ContractHandler.QueryAsync<IsOwnerFunction, bool>(null, blockParameter);
         }
 
-        public Task<TransactionReceipt> RenounceOwnershipRequestAndWaitForReceiptAsync(RenounceOwnershipFunction renounceOwnershipFunction, CancellationTokenSource cancellationToken = null)
+        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(renounceOwnershipFunction, cancellationToken);
+            return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
         }
 
-        public Task<TransactionReceipt> RenounceOwnershipRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        
+        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync<RenounceOwnershipFunction>(null, cancellationToken);
+            return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
         }
 
         public Task<string> PauseRequestAsync(PauseFunction pauseFunction)
@@ -122,46 +135,44 @@ namespace Galleass3D.Contracts.Predecessor
              return ContractHandler.SendRequestAndWaitForReceiptAsync<PauseFunction>(null, cancellationToken);
         }
 
-        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
+        public Task<string> ProductionRequestAsync(ProductionFunction productionFunction)
         {
-            return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
+             return ContractHandler.SendRequestAsync(productionFunction);
         }
 
-        
-        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
+        public Task<string> ProductionRequestAsync()
         {
-            return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
+             return ContractHandler.SendRequestAsync<ProductionFunction>();
         }
 
-        public Task<string> BuildRequestAsync(BuildFunction buildFunction)
+        public Task<TransactionReceipt> ProductionRequestAndWaitForReceiptAsync(ProductionFunction productionFunction, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAsync(buildFunction);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(productionFunction, cancellationToken);
         }
 
-        public Task<string> BuildRequestAsync()
+        public Task<TransactionReceipt> ProductionRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAsync<BuildFunction>();
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<ProductionFunction>(null, cancellationToken);
         }
 
-        public Task<TransactionReceipt> BuildRequestAndWaitForReceiptAsync(BuildFunction buildFunction, CancellationTokenSource cancellationToken = null)
+        public Task<string> RenounceOwnershipRequestAsync(RenounceOwnershipFunction renounceOwnershipFunction)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(buildFunction, cancellationToken);
+             return ContractHandler.SendRequestAsync(renounceOwnershipFunction);
         }
 
-        public Task<TransactionReceipt> BuildRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        public Task<string> RenounceOwnershipRequestAsync()
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync<BuildFunction>(null, cancellationToken);
+             return ContractHandler.SendRequestAsync<RenounceOwnershipFunction>();
         }
 
-        public Task<byte> StagedModeQueryAsync(StagedModeFunction stagedModeFunction, BlockParameter blockParameter = null)
+        public Task<TransactionReceipt> RenounceOwnershipRequestAndWaitForReceiptAsync(RenounceOwnershipFunction renounceOwnershipFunction, CancellationTokenSource cancellationToken = null)
         {
-            return ContractHandler.QueryAsync<StagedModeFunction, byte>(stagedModeFunction, blockParameter);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(renounceOwnershipFunction, cancellationToken);
         }
 
-        
-        public Task<byte> StagedModeQueryAsync(BlockParameter blockParameter = null)
+        public Task<TransactionReceipt> RenounceOwnershipRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
-            return ContractHandler.QueryAsync<StagedModeFunction, byte>(null, blockParameter);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<RenounceOwnershipFunction>(null, cancellationToken);
         }
 
         public Task<string> StageRequestAsync(StageFunction stageFunction)
@@ -184,15 +195,15 @@ namespace Galleass3D.Contracts.Predecessor
              return ContractHandler.SendRequestAndWaitForReceiptAsync<StageFunction>(null, cancellationToken);
         }
 
-        public Task<string> DescendantQueryAsync(DescendantFunction descendantFunction, BlockParameter blockParameter = null)
+        public Task<byte> StagedModeQueryAsync(StagedModeFunction stagedModeFunction, BlockParameter blockParameter = null)
         {
-            return ContractHandler.QueryAsync<DescendantFunction, string>(descendantFunction, blockParameter);
+            return ContractHandler.QueryAsync<StagedModeFunction, byte>(stagedModeFunction, blockParameter);
         }
 
         
-        public Task<string> DescendantQueryAsync(BlockParameter blockParameter = null)
+        public Task<byte> StagedModeQueryAsync(BlockParameter blockParameter = null)
         {
-            return ContractHandler.QueryAsync<DescendantFunction, string>(null, blockParameter);
+            return ContractHandler.QueryAsync<StagedModeFunction, byte>(null, blockParameter);
         }
 
         public Task<string> TransferOwnershipRequestAsync(TransferOwnershipFunction transferOwnershipFunction)

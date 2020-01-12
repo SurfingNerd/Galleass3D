@@ -41,19 +41,6 @@ namespace Galleass3D.Contracts.StandardTokenInterface.ContractDefinition
         public virtual BigInteger ReturnValue3 { get; set; }
     }
 
-    public partial class GalleassTransferFromFunction : GalleassTransferFromFunctionBase { }
-
-    [Function("galleassTransferFrom", "bool")]
-    public class GalleassTransferFromFunctionBase : FunctionMessage
-    {
-        [Parameter("address", "", 1)]
-        public virtual string ReturnValue1 { get; set; }
-        [Parameter("address", "", 2)]
-        public virtual string ReturnValue2 { get; set; }
-        [Parameter("uint256", "", 3)]
-        public virtual BigInteger ReturnValue3 { get; set; }
-    }
-
     public partial class TransferFunction : TransferFunctionBase { }
 
     [Function("transfer", "bool")]
@@ -76,18 +63,16 @@ namespace Galleass3D.Contracts.StandardTokenInterface.ContractDefinition
         public virtual BigInteger ReturnValue2 { get; set; }
     }
 
-    public partial class GalleassMintFunction : GalleassMintFunctionBase { }
+    public partial class MintFunction : MintFunctionBase { }
 
-    [Function("galleassMint", "bool")]
-    public class GalleassMintFunctionBase : FunctionMessage
+    [Function("mint", "bool")]
+    public class MintFunctionBase : FunctionMessage
     {
         [Parameter("address", "", 1)]
         public virtual string ReturnValue1 { get; set; }
         [Parameter("uint256", "", 2)]
         public virtual BigInteger ReturnValue2 { get; set; }
     }
-
-
 
 
 

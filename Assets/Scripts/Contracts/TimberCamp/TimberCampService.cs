@@ -53,67 +53,76 @@ namespace Galleass3D.Contracts.TimberCamp
             return ContractHandler.QueryAsync<GalleassFunction, string>(null, blockParameter);
         }
 
-        public Task<string> WithdrawRequestAsync(WithdrawFunction withdrawFunction)
+        public Task<string> GetContractQueryAsync(GetContractFunction getContractFunction, BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAsync(withdrawFunction);
-        }
-
-        public Task<TransactionReceipt> WithdrawRequestAndWaitForReceiptAsync(WithdrawFunction withdrawFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawFunction, cancellationToken);
-        }
-
-        public Task<string> WithdrawRequestAsync(BigInteger amount)
-        {
-            var withdrawFunction = new WithdrawFunction();
-                withdrawFunction.Amount = amount;
-            
-             return ContractHandler.SendRequestAsync(withdrawFunction);
-        }
-
-        public Task<TransactionReceipt> WithdrawRequestAndWaitForReceiptAsync(BigInteger amount, CancellationTokenSource cancellationToken = null)
-        {
-            var withdrawFunction = new WithdrawFunction();
-                withdrawFunction.Amount = amount;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawFunction, cancellationToken);
-        }
-
-        public Task<string> UpgradeGalleassRequestAsync(UpgradeGalleassFunction upgradeGalleassFunction)
-        {
-             return ContractHandler.SendRequestAsync(upgradeGalleassFunction);
-        }
-
-        public Task<TransactionReceipt> UpgradeGalleassRequestAndWaitForReceiptAsync(UpgradeGalleassFunction upgradeGalleassFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(upgradeGalleassFunction, cancellationToken);
-        }
-
-        public Task<string> UpgradeGalleassRequestAsync(string galleass)
-        {
-            var upgradeGalleassFunction = new UpgradeGalleassFunction();
-                upgradeGalleassFunction.Galleass = galleass;
-            
-             return ContractHandler.SendRequestAsync(upgradeGalleassFunction);
-        }
-
-        public Task<TransactionReceipt> UpgradeGalleassRequestAndWaitForReceiptAsync(string galleass, CancellationTokenSource cancellationToken = null)
-        {
-            var upgradeGalleassFunction = new UpgradeGalleassFunction();
-                upgradeGalleassFunction.Galleass = galleass;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(upgradeGalleassFunction, cancellationToken);
-        }
-
-        public Task<byte[]> ResourceQueryAsync(ResourceFunction resourceFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<ResourceFunction, byte[]>(resourceFunction, blockParameter);
+            return ContractHandler.QueryAsync<GetContractFunction, string>(getContractFunction, blockParameter);
         }
 
         
-        public Task<byte[]> ResourceQueryAsync(BlockParameter blockParameter = null)
+        public Task<string> GetContractQueryAsync(byte[] name, BlockParameter blockParameter = null)
         {
-            return ContractHandler.QueryAsync<ResourceFunction, byte[]>(null, blockParameter);
+            var getContractFunction = new GetContractFunction();
+                getContractFunction.Name = name;
+            
+            return ContractHandler.QueryAsync<GetContractFunction, string>(getContractFunction, blockParameter);
+        }
+
+        public Task<bool> HasPermissionQueryAsync(HasPermissionFunction hasPermissionFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<HasPermissionFunction, bool>(hasPermissionFunction, blockParameter);
+        }
+
+        
+        public Task<bool> HasPermissionQueryAsync(string contract, byte[] permission, BlockParameter blockParameter = null)
+        {
+            var hasPermissionFunction = new HasPermissionFunction();
+                hasPermissionFunction.Contract = contract;
+                hasPermissionFunction.Permission = permission;
+            
+            return ContractHandler.QueryAsync<HasPermissionFunction, bool>(hasPermissionFunction, blockParameter);
+        }
+
+        public Task<bool> IsOwnerQueryAsync(IsOwnerFunction isOwnerFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<IsOwnerFunction, bool>(isOwnerFunction, blockParameter);
+        }
+
+        
+        public Task<bool> IsOwnerQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<IsOwnerFunction, bool>(null, blockParameter);
+        }
+
+        public Task<string> LandOwnersQueryAsync(LandOwnersFunction landOwnersFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<LandOwnersFunction, string>(landOwnersFunction, blockParameter);
+        }
+
+        
+        public Task<string> LandOwnersQueryAsync(ushort returnValue1, ushort returnValue2, byte returnValue3, BlockParameter blockParameter = null)
+        {
+            var landOwnersFunction = new LandOwnersFunction();
+                landOwnersFunction.ReturnValue1 = returnValue1;
+                landOwnersFunction.ReturnValue2 = returnValue2;
+                landOwnersFunction.ReturnValue3 = returnValue3;
+            
+            return ContractHandler.QueryAsync<LandOwnersFunction, string>(landOwnersFunction, blockParameter);
+        }
+
+        public Task<ulong> LastBlockQueryAsync(LastBlockFunction lastBlockFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<LastBlockFunction, ulong>(lastBlockFunction, blockParameter);
+        }
+
+        
+        public Task<ulong> LastBlockQueryAsync(ushort returnValue1, ushort returnValue2, byte returnValue3, BlockParameter blockParameter = null)
+        {
+            var lastBlockFunction = new LastBlockFunction();
+                lastBlockFunction.ReturnValue1 = returnValue1;
+                lastBlockFunction.ReturnValue2 = returnValue2;
+                lastBlockFunction.ReturnValue3 = returnValue3;
+            
+            return ContractHandler.QueryAsync<LastBlockFunction, ulong>(lastBlockFunction, blockParameter);
         }
 
         public Task<byte[]> MaxQueryAsync(MaxFunction maxFunction, BlockParameter blockParameter = null)
@@ -125,6 +134,39 @@ namespace Galleass3D.Contracts.TimberCamp
         public Task<byte[]> MaxQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<MaxFunction, byte[]>(null, blockParameter);
+        }
+
+        public Task<byte> MaxCollectQueryAsync(MaxCollectFunction maxCollectFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<MaxCollectFunction, byte>(maxCollectFunction, blockParameter);
+        }
+
+        
+        public Task<byte> MaxCollectQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<MaxCollectFunction, byte>(null, blockParameter);
+        }
+
+        public Task<byte[]> MinQueryAsync(MinFunction minFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<MinFunction, byte[]>(minFunction, blockParameter);
+        }
+
+        
+        public Task<byte[]> MinQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<MinFunction, byte[]>(null, blockParameter);
+        }
+
+        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
+        }
+
+        
+        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
         }
 
         public Task<string> RenounceOwnershipRequestAsync(RenounceOwnershipFunction renounceOwnershipFunction)
@@ -147,42 +189,15 @@ namespace Galleass3D.Contracts.TimberCamp
              return ContractHandler.SendRequestAndWaitForReceiptAsync<RenounceOwnershipFunction>(null, cancellationToken);
         }
 
-        public Task<ulong> LastBlockQueryAsync(LastBlockFunction lastBlockFunction, BlockParameter blockParameter = null)
+        public Task<byte[]> ResourceQueryAsync(ResourceFunction resourceFunction, BlockParameter blockParameter = null)
         {
-            return ContractHandler.QueryAsync<LastBlockFunction, ulong>(lastBlockFunction, blockParameter);
+            return ContractHandler.QueryAsync<ResourceFunction, byte[]>(resourceFunction, blockParameter);
         }
 
         
-        public Task<ulong> LastBlockQueryAsync(ushort returnValue1, ushort returnValue2, byte returnValue3, BlockParameter blockParameter = null)
+        public Task<byte[]> ResourceQueryAsync(BlockParameter blockParameter = null)
         {
-            var lastBlockFunction = new LastBlockFunction();
-                lastBlockFunction.ReturnValue1 = returnValue1;
-                lastBlockFunction.ReturnValue2 = returnValue2;
-                lastBlockFunction.ReturnValue3 = returnValue3;
-            
-            return ContractHandler.QueryAsync<LastBlockFunction, ulong>(lastBlockFunction, blockParameter);
-        }
-
-        public Task<byte> MaxCollectQueryAsync(MaxCollectFunction maxCollectFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<MaxCollectFunction, byte>(maxCollectFunction, blockParameter);
-        }
-
-        
-        public Task<byte> MaxCollectQueryAsync(BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<MaxCollectFunction, byte>(null, blockParameter);
-        }
-
-        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
-        }
-
-        
-        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
+            return ContractHandler.QueryAsync<ResourceFunction, byte[]>(null, blockParameter);
         }
 
         public Task<BigInteger> TokenBalanceQueryAsync(TokenBalanceFunction tokenBalanceFunction, BlockParameter blockParameter = null)
@@ -200,79 +215,6 @@ namespace Galleass3D.Contracts.TimberCamp
                 tokenBalanceFunction.ReturnValue4 = returnValue4;
             
             return ContractHandler.QueryAsync<TokenBalanceFunction, BigInteger>(tokenBalanceFunction, blockParameter);
-        }
-
-        public Task<string> WithdrawTokenRequestAsync(WithdrawTokenFunction withdrawTokenFunction)
-        {
-             return ContractHandler.SendRequestAsync(withdrawTokenFunction);
-        }
-
-        public Task<TransactionReceipt> WithdrawTokenRequestAndWaitForReceiptAsync(WithdrawTokenFunction withdrawTokenFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawTokenFunction, cancellationToken);
-        }
-
-        public Task<string> WithdrawTokenRequestAsync(string token, BigInteger amount)
-        {
-            var withdrawTokenFunction = new WithdrawTokenFunction();
-                withdrawTokenFunction.Token = token;
-                withdrawTokenFunction.Amount = amount;
-            
-             return ContractHandler.SendRequestAsync(withdrawTokenFunction);
-        }
-
-        public Task<TransactionReceipt> WithdrawTokenRequestAndWaitForReceiptAsync(string token, BigInteger amount, CancellationTokenSource cancellationToken = null)
-        {
-            var withdrawTokenFunction = new WithdrawTokenFunction();
-                withdrawTokenFunction.Token = token;
-                withdrawTokenFunction.Amount = amount;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawTokenFunction, cancellationToken);
-        }
-
-        public Task<bool> HasPermissionQueryAsync(HasPermissionFunction hasPermissionFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<HasPermissionFunction, bool>(hasPermissionFunction, blockParameter);
-        }
-
-        
-        public Task<bool> HasPermissionQueryAsync(string contract, byte[] permission, BlockParameter blockParameter = null)
-        {
-            var hasPermissionFunction = new HasPermissionFunction();
-                hasPermissionFunction.Contract = contract;
-                hasPermissionFunction.Permission = permission;
-            
-            return ContractHandler.QueryAsync<HasPermissionFunction, bool>(hasPermissionFunction, blockParameter);
-        }
-
-        public Task<string> LandOwnersQueryAsync(LandOwnersFunction landOwnersFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<LandOwnersFunction, string>(landOwnersFunction, blockParameter);
-        }
-
-        
-        public Task<string> LandOwnersQueryAsync(ushort returnValue1, ushort returnValue2, byte returnValue3, BlockParameter blockParameter = null)
-        {
-            var landOwnersFunction = new LandOwnersFunction();
-                landOwnersFunction.ReturnValue1 = returnValue1;
-                landOwnersFunction.ReturnValue2 = returnValue2;
-                landOwnersFunction.ReturnValue3 = returnValue3;
-            
-            return ContractHandler.QueryAsync<LandOwnersFunction, string>(landOwnersFunction, blockParameter);
-        }
-
-        public Task<string> GetContractQueryAsync(GetContractFunction getContractFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<GetContractFunction, string>(getContractFunction, blockParameter);
-        }
-
-        
-        public Task<string> GetContractQueryAsync(byte[] name, BlockParameter blockParameter = null)
-        {
-            var getContractFunction = new GetContractFunction();
-                getContractFunction.Name = name;
-            
-            return ContractHandler.QueryAsync<GetContractFunction, string>(getContractFunction, blockParameter);
         }
 
         public Task<string> TransferOwnershipRequestAsync(TransferOwnershipFunction transferOwnershipFunction)
@@ -301,15 +243,84 @@ namespace Galleass3D.Contracts.TimberCamp
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
         }
 
-        public Task<byte[]> MinQueryAsync(MinFunction minFunction, BlockParameter blockParameter = null)
+        public Task<string> UpgradeGalleassRequestAsync(UpgradeGalleassFunction upgradeGalleassFunction)
         {
-            return ContractHandler.QueryAsync<MinFunction, byte[]>(minFunction, blockParameter);
+             return ContractHandler.SendRequestAsync(upgradeGalleassFunction);
         }
 
-        
-        public Task<byte[]> MinQueryAsync(BlockParameter blockParameter = null)
+        public Task<TransactionReceipt> UpgradeGalleassRequestAndWaitForReceiptAsync(UpgradeGalleassFunction upgradeGalleassFunction, CancellationTokenSource cancellationToken = null)
         {
-            return ContractHandler.QueryAsync<MinFunction, byte[]>(null, blockParameter);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(upgradeGalleassFunction, cancellationToken);
+        }
+
+        public Task<string> UpgradeGalleassRequestAsync(string galleass)
+        {
+            var upgradeGalleassFunction = new UpgradeGalleassFunction();
+                upgradeGalleassFunction.Galleass = galleass;
+            
+             return ContractHandler.SendRequestAsync(upgradeGalleassFunction);
+        }
+
+        public Task<TransactionReceipt> UpgradeGalleassRequestAndWaitForReceiptAsync(string galleass, CancellationTokenSource cancellationToken = null)
+        {
+            var upgradeGalleassFunction = new UpgradeGalleassFunction();
+                upgradeGalleassFunction.Galleass = galleass;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(upgradeGalleassFunction, cancellationToken);
+        }
+
+        public Task<string> WithdrawRequestAsync(WithdrawFunction withdrawFunction)
+        {
+             return ContractHandler.SendRequestAsync(withdrawFunction);
+        }
+
+        public Task<TransactionReceipt> WithdrawRequestAndWaitForReceiptAsync(WithdrawFunction withdrawFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawFunction, cancellationToken);
+        }
+
+        public Task<string> WithdrawRequestAsync(BigInteger amount)
+        {
+            var withdrawFunction = new WithdrawFunction();
+                withdrawFunction.Amount = amount;
+            
+             return ContractHandler.SendRequestAsync(withdrawFunction);
+        }
+
+        public Task<TransactionReceipt> WithdrawRequestAndWaitForReceiptAsync(BigInteger amount, CancellationTokenSource cancellationToken = null)
+        {
+            var withdrawFunction = new WithdrawFunction();
+                withdrawFunction.Amount = amount;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawFunction, cancellationToken);
+        }
+
+        public Task<string> WithdrawTokenRequestAsync(WithdrawTokenFunction withdrawTokenFunction)
+        {
+             return ContractHandler.SendRequestAsync(withdrawTokenFunction);
+        }
+
+        public Task<TransactionReceipt> WithdrawTokenRequestAndWaitForReceiptAsync(WithdrawTokenFunction withdrawTokenFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawTokenFunction, cancellationToken);
+        }
+
+        public Task<string> WithdrawTokenRequestAsync(string token, BigInteger amount)
+        {
+            var withdrawTokenFunction = new WithdrawTokenFunction();
+                withdrawTokenFunction.Token = token;
+                withdrawTokenFunction.Amount = amount;
+            
+             return ContractHandler.SendRequestAsync(withdrawTokenFunction);
+        }
+
+        public Task<TransactionReceipt> WithdrawTokenRequestAndWaitForReceiptAsync(string token, BigInteger amount, CancellationTokenSource cancellationToken = null)
+        {
+            var withdrawTokenFunction = new WithdrawTokenFunction();
+                withdrawTokenFunction.Token = token;
+                withdrawTokenFunction.Amount = amount;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawTokenFunction, cancellationToken);
         }
 
         public Task<string> OnPurchaseRequestAsync(OnPurchaseFunction onPurchaseFunction)
