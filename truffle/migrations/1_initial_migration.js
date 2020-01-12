@@ -9,13 +9,9 @@ module.exports = async function(deployer) {
   //console.log('start Deploy...');
   const __deployer = deployer;
 
-  
-
-  
   var accounts = await web3.eth.getAccounts();
   var deploymentAccount = accounts[0];
   console.log('deploying main contract with account:' + deploymentAccount); 
-
 
   //var registry = await Registry.at('0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16');
   //var registry = await deployer.deploy(Registry);
@@ -38,8 +34,8 @@ module.exports = async function(deployer) {
     const contractArtifact = artifacts.require(contractName);
     const deployedContract = await deployer.deploy(contractArtifact, galleas.address);
     const setContractResult = await galleas.setContract.sendTransaction(web3.utils.fromAscii(contractName), deployedContract.address);
-  
     if (setContractResult) {
+      deployedContract.contractName = contractName;
       return deployedContract;
     } else {
       return null;
@@ -73,7 +69,7 @@ module.exports = async function(deployer) {
   const village = await deployContract('Village');
   const market = await deployContract('Market');
   const sea = await deployContract('Sea');
-  // const catfish = await deployContract('Catfish');
+  const catfish = await deployContract('Catfish');
 
   setPermission(bay, 'transferDogger');
   setPermission(bay, 'updateExperience');
@@ -107,7 +103,7 @@ module.exports = async function(deployer) {
 
   setPermission(market, 'transferTimber');
 
-  // catfish.mint.sendTransaction(deploymentAccount, 10);
+  catfish.mint.sendTransaction(deploymentAccount, 10);
   
 
   //console.log(copper);

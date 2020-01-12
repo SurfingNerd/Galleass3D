@@ -488,10 +488,10 @@ public class EthKeyManager : MonoBehaviour {
 
         if (string.IsNullOrEmpty(RpcUrl))
         {
-            //RpcUrl = "http://localhost:9545";
+            RpcUrl = "http://localhost:8545";
             //RpcUrl = "http://116.203.118.82:8545";
             //RpcUrl = "https://rpc.tau1.artis.network";
-            RpcUrl = "http://40.71.213.163:8545";
+            //RpcUrl = "http://40.71.213.163:8545";
         }
 
         //if (!string.IsNullOrEmpty(PreselectedPrivateKey))
