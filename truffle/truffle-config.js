@@ -30,7 +30,6 @@ const mnemonic = fs.readFileSync(".mnemonic").toString().trim();
 
 const mnemonicDevChain = 'swallow crucial satisfy cruel what rail taste aim connect correct immense focus';
 
-console.log(mnemonic);
 
 module.exports = {
   /**
@@ -88,9 +87,9 @@ module.exports = {
      artistau1: {
       provider: () => new HDWalletProvider(mnemonic, `https://rpc.tau1.artis.network`),
       //host: "116.203.118.82",     // Localhost (default: none)
-      host: "127.0.0.1",
-      port: 9545,            
-      network_id: "*",       // Any network (default: none)
+      //host: "127.0.0.1",
+      //port: 9545,            
+      network_id: "246785",       // Any network (default: none)
       //gas: 7999999,
       gasPrice: 1000000000
      }

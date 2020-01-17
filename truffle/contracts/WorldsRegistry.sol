@@ -12,9 +12,9 @@ contract WorldsRegistry is Ownable {
 
     //bytes32[][] public worldNames;
     //event SetPermission(address _account,bytes32 _permission,bool _value);
-    event GalleasWorldRegistered(address galeassContract, address initiator, bytes32 indexed name, uint timestamp);
+    event GalleasWorldRegistered(address galeassContract, bytes32 indexed name, uint timestamp);
 
-    function registerGalleasWorld(address galleasContract, address initiator, bytes32 name)
+    function registerGalleasWorld(address galleasContract, bytes32 name)
     public
     onlyOwner
     returns (bool)
@@ -24,7 +24,7 @@ contract WorldsRegistry is Ownable {
         lastCreatedWorldName = name;
         lastCreatedWorldsAddress = galleasContract;
         worlds[name] = galleasContract;
-        emit GalleasWorldRegistered(galleasContract, initiator, name, now);
+        emit GalleasWorldRegistered(galleasContract, name, block.timestamp);
 
         return true;
     }

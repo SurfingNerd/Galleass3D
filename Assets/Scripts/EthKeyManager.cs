@@ -232,7 +232,7 @@ public class EthKeyManager : MonoBehaviour {
 
     // Nethereum.Web3.Web3 web3 = new Nethereum.Web3.Web3(new Nethereum.HdWallet.Wallet("", ""));
 
-    //private string WorldsRegistryAddress = "0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16";
+    private string WorldsRegistryAddress = "0x04De35F91EAcB0F48f818979d658328bF81fF4B0";
 
     //    private string LastKnownGalleassAddress = "0x7BDcCd4bF7Cd764C20b6Da0AD1f91520A64641DC";
 
@@ -245,8 +245,14 @@ public class EthKeyManager : MonoBehaviour {
     {
         Debug.Log("Starting Blockchain Communication");
         //byte[] bytes = new byte[32];
-        //string x = await WorldsRegistry.WorldsQueryAsync(null);
+        byte[] lastCreatedWorldNameBytes = await WorldsRegistry.LastCreatedWorldNameQueryAsync();
+        string lastCreatedWorldName = Encoding.ASCII.GetString(lastCreatedWorldNameBytes);
+        
+        Debug.Log("Last Created World: " + lastCreatedWorldName);
 
+        string lastCreatedWorldAddress = await WorldsRegistry.LastCreatedWorldsAddressQueryAsync();
+
+        //Nethereum.
         //Task updatePanelTask = UpdateUIPanel();
         //updatePanelTask.Start();
 

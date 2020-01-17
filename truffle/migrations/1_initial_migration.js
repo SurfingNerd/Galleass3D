@@ -1,6 +1,6 @@
 //const Migrations = artifacts.require("Migrations");
 
-const process = require('process');
+
 const Registry = artifacts.require("WorldsRegistry");
 const Galleass =  artifacts.require("Galleass");
 
@@ -14,10 +14,13 @@ module.exports = async function(deployer) {
   console.log('deploying main contract with account:' + deploymentAccount); 
 
   //var registry = await Registry.at('0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16');
-  //var registry = await deployer.deploy(Registry);
+  var registry = await deployer.deploy(Registry);
+  console.log('deployed a WorldRegistry at ' + registry.address);
 
   var galleas = await deployer.deploy(Galleass);
-  console.log('main account deployed!'); 
+  console.log('first Galleas world deployed at ' + galleas.address);
+
+  await registry.registerGalleasWorld.sendTransaction(galleas.address, web3.utils.fromAscii('Root World'));
 
   var seconds = Math.round(new Date() / 1000);
 

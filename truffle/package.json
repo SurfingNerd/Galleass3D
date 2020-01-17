@@ -14,7 +14,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "ganache" : "ganache-cli -m \"$(cat .mnemonic)\"",
-    "deploy-local": "truffle deploy --network=local"
+    "deploy-local": "truffle deploy --network=local",
+    "deploy-artistau": "truffle deploy --network=artistau1"
   },
   "author": "",
   "license": "ISC"
