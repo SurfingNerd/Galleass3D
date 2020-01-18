@@ -59,6 +59,9 @@ module.exports = async function(deployer) {
 
   await deployEip1820(accounts[0]);
 
+  //console.log('Registry: ', new Registry());
+  
+
   return;
 
   //var registry = await Registry.at('0x6EB0fadc34060AF5EfB053b4cB413CE5809b6f16');

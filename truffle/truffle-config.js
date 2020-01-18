@@ -92,7 +92,18 @@ module.exports = {
       network_id: "246785",       // Any network (default: none)
       //gas: 7999999,
       gasPrice: 1000000000
-     }
+     },
+
+     artissigma1: {
+      provider: () => new HDWalletProvider(mnemonic, `https://rpc.sigma1.artis.network`),
+      //host: "116.203.118.82",     // Localhost (default: none)
+      //host: "127.0.0.1",
+      //port: 9545,            
+      network_id: "246529",       // Any network (default: none)
+      //gas: 7999999,
+      gasPrice: 1000000000
+     },
+     
 
     // Another network with more advanced options...
     // advanced: {
