@@ -232,136 +232,149 @@ public class EthKeyManager : MonoBehaviour {
 
     // Nethereum.Web3.Web3 web3 = new Nethereum.Web3.Web3(new Nethereum.HdWallet.Wallet("", ""));
 
-    private string WorldsRegistryAddress = "0x04De35F91EAcB0F48f818979d658328bF81fF4B0";
+    private string WorldsRegistryAddress = "0x4ec3a75903be5B7483cE2c4DF96fffa0CFd49BB2";
 
     //    private string LastKnownGalleassAddress = "0x7BDcCd4bF7Cd764C20b6Da0AD1f91520A64641DC";
 
-    private string LastKnownGalleassAddress = "0x79583ADFEA5Ac6E7CEc839E1cBDA7dfaaAddfb45";
+    //private string LastKnownGalleassAddress = "0x79583ADFEA5Ac6E7CEc839E1cBDA7dfaaAddfb45";
 
     bool ShallRun = true;
 
 
     private async Task<bool> StartBlockchainCommunication()
     {
-        Debug.Log("Starting Blockchain Communication");
-        //byte[] bytes = new byte[32];
-        byte[] lastCreatedWorldNameBytes = await WorldsRegistry.LastCreatedWorldNameQueryAsync();
-        string lastCreatedWorldName = Encoding.ASCII.GetString(lastCreatedWorldNameBytes);
+
+        // try 
+
+        // {
+            Debug.Log("Starting Blockchain Communication");
+
+            //byte[] bytes = new byte[32];
+            byte[] lastCreatedWorldNameBytes = await WorldsRegistry.LastCreatedWorldNameQueryAsync();
+            string lastCreatedWorldName = "";
+            if (lastCreatedWorldNameBytes != null && lastCreatedWorldNameBytes.Length > 0) 
+            {
+                lastCreatedWorldName = Encoding.ASCII.GetString(lastCreatedWorldNameBytes);
+            }
+            
+            string lastCreatedWorldAddress = await WorldsRegistry.LastCreatedWorldsAddressQueryAsync();
+
+            Debug.Log("Last Created World: " + lastCreatedWorldName + " => " + lastCreatedWorldAddress);
+
+            //Nethereum.
+            //Task updatePanelTask = UpdateUIPanel();
+            //updatePanelTask.Start();
+
+
+            System.Threading.Thread thread = new System.Threading.Thread(new ThreadStart(UpdateUIPanel));
+            thread.Start();
+
+
+            Galleass = new Galleass3D.Contracts.Galleass.GalleassService(Web3, lastCreatedWorldAddress);
+
+            Timber = await GetContract<Galleass3D.Contracts.Timber.TimberService>();
+            Copper = await GetContract<Galleass3D.Contracts.Copper.CopperService>();
+            Fillet = await GetContract<Galleass3D.Contracts.Fillet.FilletService>();
+            Dogger = await GetContract < Galleass3D.Contracts.Dogger.DoggerService>();
+            Bay =   await GetContract<Galleass3D.Contracts.Bay.BayService>();
+            Citizens = await GetContract<Galleass3D.Contracts.Citizens.CitizensService>();
+            CitizensLib = await GetContract<Galleass3D.Contracts.CitizensLib.CitizensLibService>();
+            Land = await GetContract<Galleass3D.Contracts.Land.LandService>();
+            TimberCamp = await GetContract<Galleass3D.Contracts.TimberCamp.TimberCampService>();
+            LandLib = await GetContract<Galleass3D.Contracts.LandLib.LandLibService>();
+            Harbor = await GetContract<Galleass3D.Contracts.Harbor.HarborService>();
+            Fishmonger = await GetContract<Galleass3D.Contracts.Fishmonger.FishmongerService>();
+            Village = await GetContract < Galleass3D.Contracts.Village.VillageService>();
+            Market = await GetContract<Galleass3D.Contracts.Market.MarketService>();
+            Sea = await GetContract<Galleass3D.Contracts.Sea.SeaService>();
+
+            //fishes
+            Catfish = await GetContract<Galleass3D.Contracts.Catfish.CatfishService>();
+
+            Bay_FishEventHandler = Bay.ContractHandler.GetEvent<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
+
+
+
+            UpdateBalances();
+
+            MainIslandX = await Land.MainXQueryAsync();
+            MainIslandY = await Land.MainYQueryAsync();
+
+            Debug.Log("MainIsland:" + MainIslandX.ToString() + " - " + MainIslandY.ToString());
+
+            bool stockCatfish = false;
         
-        Debug.Log("Last Created World: " + lastCreatedWorldName);
 
-        string lastCreatedWorldAddress = await WorldsRegistry.LastCreatedWorldsAddressQueryAsync();
+            if (stockCatfish)
+            {
+                Debug.Log("Minting Catfish");
+                TransactionReceipt mintedCatfish = await Catfish.MintRequestAndWaitForReceiptAsync(Account.Address, 10);
 
-        //Nethereum.
-        //Task updatePanelTask = UpdateUIPanel();
-        //updatePanelTask.Start();
+                var catFishBalance = await Catfish.BalanceOfQueryAsync(Account.Address);
+                Debug.Log("CatfishBalance:" + catFishBalance.ToString());
 
+                Debug.Log("Allowing Catfish in Bay");
+                TransactionReceipt allowCatfishInBay = await Bay.AllowSpeciesRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress);
+                Debug.Log("Stocking Catfish in Bay");
+                TransactionReceipt stockCatfishInBay = await Bay.StockRequestAndWaitForReceiptAsync(new Galleass3D.Contracts.Bay.ContractDefinition.StockFunction() { Gas = DefaultGas, GasPrice = DefaultGasPrice, X = 5, Y = 5, Species = Catfish.ContractHandler.ContractAddress });
+                Bay.ContractHandler.EthApiContractService.TransactionManager.DefaultGas = new BigInteger(1000000);
+                Debug.Log("Stocking Catfish in Bay -finished!");
+                DebugTransactionReceipt(stockCatfishInBay);
+            }
 
-        System.Threading.Thread thread = new System.Threading.Thread(new ThreadStart(UpdateUIPanel));
-        thread.Start();
-
-
-        Galleass = new Galleass3D.Contracts.Galleass.GalleassService(Web3, LastKnownGalleassAddress);
-
-        Timber = await GetContract<Galleass3D.Contracts.Timber.TimberService>();
-        Copper = await GetContract<Galleass3D.Contracts.Copper.CopperService>();
-        Fillet = await GetContract<Galleass3D.Contracts.Fillet.FilletService>();
-        Dogger = await GetContract < Galleass3D.Contracts.Dogger.DoggerService>();
-        Bay =   await GetContract<Galleass3D.Contracts.Bay.BayService>();
-        Citizens = await GetContract<Galleass3D.Contracts.Citizens.CitizensService>();
-        CitizensLib = await GetContract<Galleass3D.Contracts.CitizensLib.CitizensLibService>();
-        Land = await GetContract<Galleass3D.Contracts.Land.LandService>();
-        TimberCamp = await GetContract<Galleass3D.Contracts.TimberCamp.TimberCampService>();
-        LandLib = await GetContract<Galleass3D.Contracts.LandLib.LandLibService>();
-        Harbor = await GetContract<Galleass3D.Contracts.Harbor.HarborService>();
-        Fishmonger = await GetContract<Galleass3D.Contracts.Fishmonger.FishmongerService>();
-        Village = await GetContract < Galleass3D.Contracts.Village.VillageService>();
-        Market = await GetContract<Galleass3D.Contracts.Market.MarketService>();
-        Sea = await GetContract<Galleass3D.Contracts.Sea.SeaService>();
-
-        //fishes
-        Catfish = await GetContract<Galleass3D.Contracts.Catfish.CatfishService>();
-
-        Bay_FishEventHandler = Bay.ContractHandler.GetEvent<Galleass3D.Contracts.Bay.ContractDefinition.FishEventDTO>();
+            //Debug.Log("Minting Timber");
+            //var timberReceipt = await Timber.MintRequestAndWaitForReceiptAsync(Account.Address, new BigInteger(100));
 
 
+            bool mineDogger = false;
 
-        UpdateBalances();
+            var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
+            //var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
 
-        MainIslandX = await Land.MainXQueryAsync();
-        MainIslandY = await Land.MainYQueryAsync();
+            if (mineDogger)
+            {
+                var doggerSupply = await Dogger.TotalSupplyQueryAsync();
+                Debug.Log("Total Supply Doggers:" + doggerSupply.ToString());
 
-        Debug.Log("MainIsland:" + MainIslandX.ToString() + " - " + MainIslandY.ToString());
-
-        bool stockCatfish = false;
-       
-
-        if (stockCatfish)
-        {
-            Debug.Log("Minting Catfish");
-            TransactionReceipt mintedCatfish = await Catfish.MintRequestAndWaitForReceiptAsync(Account.Address, 10);
-
-            var catFishBalance = await Catfish.BalanceOfQueryAsync(Account.Address);
-            Debug.Log("CatfishBalance:" + catFishBalance.ToString());
-
-            Debug.Log("Allowing Catfish in Bay");
-            TransactionReceipt allowCatfishInBay = await Bay.AllowSpeciesRequestAndWaitForReceiptAsync(5, 5, Catfish.ContractHandler.ContractAddress);
-            Debug.Log("Stocking Catfish in Bay");
-            TransactionReceipt stockCatfishInBay = await Bay.StockRequestAndWaitForReceiptAsync(new Galleass3D.Contracts.Bay.ContractDefinition.StockFunction() { Gas = DefaultGas, GasPrice = DefaultGasPrice, X = 5, Y = 5, Species = Catfish.ContractHandler.ContractAddress });
-            Bay.ContractHandler.EthApiContractService.TransactionManager.DefaultGas = new BigInteger(1000000);
-            Debug.Log("Stocking Catfish in Bay -finished!");
-            DebugTransactionReceipt(stockCatfishInBay);
-        }
-
-        //Debug.Log("Minting Timber");
-        //var timberReceipt = await Timber.MintRequestAndWaitForReceiptAsync(Account.Address, new BigInteger(100));
+                //var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
+                var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
 
 
-        bool mineDogger = false;
+                //CancellationTokenSource s = new CancellationTokenSource(1500); 
+                Debug.Log("Building Dogger");
+                var buildDoggerReceipt = await Dogger.BuildRequestAndWaitForReceiptAsync(new Galleass3D.Contracts.Dogger.ContractDefinition.BuildFunction() { Gas = DefaultGas, GasPrice = DefaultGasPrice });
 
-        var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
-        //var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
-
-        if (mineDogger)
-        {
-            var doggerSupply = await Dogger.TotalSupplyQueryAsync();
-            Debug.Log("Total Supply Doggers:" + doggerSupply.ToString());
-
-            //var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
-            var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
+                Debug.Log("Dogger: <<");
+                DebugTransactionReceipt(buildDoggerReceipt);
+            }
 
 
-            //CancellationTokenSource s = new CancellationTokenSource(1500); 
-            Debug.Log("Building Dogger");
-            var buildDoggerReceipt = await Dogger.BuildRequestAndWaitForReceiptAsync(new Galleass3D.Contracts.Dogger.ContractDefinition.BuildFunction() { Gas = DefaultGas, GasPrice = DefaultGasPrice });
-
-            Debug.Log("Dogger: <<");
-            DebugTransactionReceipt(buildDoggerReceipt);
-        }
-
-
-        if (MainIslandX  > 0 && MainIslandY > 0)
-        {
+            if (MainIslandX  > 0 && MainIslandY > 0)
+            {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            LandManager.LoadIsland(MainIslandX, MainIslandY);
+                LandManager.LoadIsland(MainIslandX, MainIslandY);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        }
+            }
+
+            var stageMode = await Galleass.StagedModeQueryAsync();
+
+            CurrentStageMode = (StageMode)stageMode;
 
 
+            //TODO: for some reason, for this Reiceipt we have to wait forever!!
+            //but it seems to go throught.
 
-        var stageMode = await Galleass.StagedModeQueryAsync();
+            //Bay.FishQueryAsync()
 
-        CurrentStageMode = (StageMode)stageMode;
+            return true;
 
-
-        //TODO: for some reason, for this Reiceipt we have to wait forever!!
-        //but it seems to go throught.
-
-        //Bay.FishQueryAsync()
-
-
-
-        return true;
+        // } catch(Exception exception) 
+        // {
+        //     Debug.LogError("Failed Blockchain Communication: " + exception.Message);
+        //     Debug.LogException(exception);
+        //     return false;
+        // }
+        
     }
 
     void HandleParameterizedThreadStart(object obj)
@@ -523,7 +536,7 @@ public class EthKeyManager : MonoBehaviour {
         Web3.Eth.TransactionManager.DefaultGasPrice = new BigInteger(1000000000);
         // Account.TransactionManager.DefaultGas
 
-        //WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
+        WorldsRegistry = new Galleass3D.Contracts.WorldsRegistry.WorldsRegistryService(Web3, WorldsRegistryAddress);
 
       
 
