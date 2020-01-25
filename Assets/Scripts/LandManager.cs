@@ -28,7 +28,6 @@ namespace Galleass3D
         {
             MappingNameToID.Add("MainHills", 1);
             MappingNameToID.Add("MainGrass", 2);
-
             MappingNameToID.Add("MainStream", 30);
 
             MappingNameToID.Add("Grass", 50);

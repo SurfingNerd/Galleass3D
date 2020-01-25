@@ -27,8 +27,7 @@ const fs = require('fs');
 //var prototype93provider = new PrivateKeyProvider(pk, "http://rpc.tau1.artis.network");
  
 const mnemonic = fs.readFileSync(".mnemonic").toString().trim();
-
-const mnemonicDevChain = 'swallow crucial satisfy cruel what rail taste aim connect correct immense focus';
+//const mnemonic_prod = fs.readFileSync("~/.mnemonic").toString().trim();
 
 
 module.exports = {
@@ -66,21 +65,6 @@ module.exports = {
       //port: 8545,            
       network_id: "*",       // Any network (default: none)
       gas: 7999999,
-      gasPrice: 1000000000
-     },
-
-    prod: {
-      provider: () => new HDWalletProvider(mnemonic, `http://40.71.213.163:8545`),       
-      network_id: "*",       // Any network (default: none)
-      gas: 799999900,
-      gasPrice: 1000000000
-      //gas: 7999999,
-     },
-
-     prototype93: {
-      provider: () => new HDWalletProvider(mnemonic, `http://116.203.118.82:8545`),       
-      network_id: "*",       // Any network (default: none)
-      gas: 799999900,
       gasPrice: 1000000000
      },
 
