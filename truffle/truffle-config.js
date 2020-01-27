@@ -75,7 +75,7 @@ module.exports = {
       //port: 9545,            
       network_id: "246785",       // Any network (default: none)
       //gas: 7999999,
-      gasPrice: 1000000000
+      gasPrice: 100000000000
      },
 
      artissigma1: {
