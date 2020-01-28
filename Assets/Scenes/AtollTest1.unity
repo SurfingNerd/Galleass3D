@@ -440,6 +440,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ad8880572c304f6b98d82905bfae89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_RaycastCheckDistance: 10000
+  surfaceOffset: 0.1
 --- !u!195 &533444857
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -593,7 +595,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1204677143}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -634,6 +636,14 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
+      propertyPath: m_TagString
+      value: Water
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
+      propertyPath: m_Layer
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
       propertyPath: m_LocalPosition.x
