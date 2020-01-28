@@ -53,11 +53,11 @@ namespace Galleass3D
         #endregion
 
 
-        public GameObject DialogeBaseObject;
+        //public GameObject DialogeBaseObject;
 
 
         public EthKeyManager EthKeyManager { get; private set; }
-        LandTileDialoge LandTileDialoge;
+        private LandTileDialoge LandTileDialoge;
 
 
 
@@ -67,36 +67,48 @@ namespace Galleass3D
 
         List<LandTileLogic> LandTileLogics;
 
+        public static readonly int EXPECTED_NUMBER_ISLANDS = 18;
+
         // Start is called before the first frame update
         void Start()
         {
             EthKeyManager = GetComponent<EthKeyManager>();
 
-            LandTileDialoge = DialogeBaseObject.GetComponentInChildren<LandTileDialoge>();
+            LandTileDialoge = gameObject.GetComponentInChildren<LandTileDialoge>();
+            
 
             if (LandTileDialoge == null)
             {
                 Debug.LogError("LandTileDialog not found.");
             }
 
+            List<LandTileLogic> landTileLogics = new  List<LandTileLogic>();
+
+            foreach(GameObject rootObject in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+            {
+                landTileLogics.AddRange(rootObject.GetComponentsInChildren<LandTileLogic>());
+
+                
+            }
+
             //NOTE: this works if everything is setup correct.
-            LandTileLogic[] landTileLogics = GetComponentsInChildren<LandTileLogic>();
+            //LandTileLogic[] landTileLogics = GetComponentsInChildren<LandTileLogic>();
             LandTileLogics = landTileLogics.OrderBy(x => x.IslandNumber).ToList();
 
-            if (LandTileLogics.Count != 18)
+            if (LandTileLogics.Count != EXPECTED_NUMBER_ISLANDS)
             {
-                Debug.LogError("Expected to have 18 LandTileLogics as children!");
+                Debug.LogError("Expected to have " + EXPECTED_NUMBER_ISLANDS + " LandTileLogics as children! found: " + LandTileLogics.Count);
             }
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (CurrentLandDetails != null)
+            if (CurrentLandDetails != null && LandTileLogics.Count == EXPECTED_NUMBER_ISLANDS)
             {
                 if (CurrentLandDetailsDirty)
                 {
-                    for (int i = 0; i < 18; i++)
+                    for (int i = 0; i < EXPECTED_NUMBER_ISLANDS; i++)
                     {
                         LandTileLogics[i].SetTileInfo(CurrentLandDetails.TileInfoRaw[i], CurrentLandDetails.X, CurrentLandDetails.Y);
                     }
@@ -127,12 +139,12 @@ namespace Galleass3D
             List<Task<Contracts.Land.ContractDefinition.GetTileOutputDTO>> getTileTasks =
                 new List<Task<Contracts.Land.ContractDefinition.GetTileOutputDTO>>();
 
-            for (byte i = 0; i < 18; i++)
+            for (byte i = 0; i < EXPECTED_NUMBER_ISLANDS; i++)
             {
                 getTileTasks.Add(EthKeyManager.Land.GetTileQueryAsync(x, y, i));
             }
 
-            for (byte i = 0; i < 18; i++)
+            for (byte i = 0; i < EXPECTED_NUMBER_ISLANDS; i++)
             {
                 var tileOutput = await getTileTasks[i];
                 result.TileInfoRaw.Add(tileOutput);

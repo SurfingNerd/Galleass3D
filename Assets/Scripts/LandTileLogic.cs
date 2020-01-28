@@ -58,8 +58,8 @@ namespace Galleass3D
 
         void Start()
         {
-            EthKeyManager = GetComponentInParent<EthKeyManager>();
-            LandManager = GetComponentInParent<LandManager>();
+            EthKeyManager =  Galleass3D.EthKeyManager.GetInstanceFromActiveScene();
+            LandManager = Galleass3D.EthKeyManager.GetSingleComponentFromActiveScene<LandManager>();
 
             Text = GetComponentInChildren<TextMesh>();
             Terrain = GetComponentInChildren<Terrain>();

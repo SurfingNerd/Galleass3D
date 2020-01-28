@@ -57,6 +57,7 @@ public class MoveShip : MonoBehaviour
             if (Camera.main == null) 
             {
                 Debug.LogWarning("There is no main camera!");
+                return;
             }
 
             

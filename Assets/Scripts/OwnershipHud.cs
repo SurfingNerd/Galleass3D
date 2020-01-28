@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Galleass3D
-
 {
     public class OwnershipHud : MonoBehaviour
     {
         [SerializeField]
-        EthKeyManager EthKeyManager;
+        Galleass3D.EthKeyManager EthKeyManager;
 
         //Ownership Ownership;
 
@@ -24,6 +23,7 @@ namespace Galleass3D
 
         public void Start() 
         {
+            this.EthKeyManager  = Galleass3D.EthKeyManager.GetInstanceFromActiveScene();
             //Transform transform = GetComponent<Transform>();
             EtherText = GetText("Text_Eth");
             EtherText.text = "Hallo";
@@ -56,6 +56,11 @@ namespace Galleass3D
 
         public void Update()
         {
+            if (EthKeyManager == null)
+            {
+                Debug.LogWarning("EthKeyManager is still null");
+                return;
+            }
             //System.Numerics.BigInteger eth = EthKeyManager.CurrentOwnership.Ether / new System.Numerics.BigInteger(System.Math.Pow(10,18));
             var fullEther = double.Parse(EthKeyManager.CurrentOwnership.Ether.ToString()) / System.Math.Pow( 10, 18);
 
@@ -74,7 +79,5 @@ namespace Galleass3D
         {
             textComponent.text = value.ToString("0.00000");
         }
-
-
     }
 }

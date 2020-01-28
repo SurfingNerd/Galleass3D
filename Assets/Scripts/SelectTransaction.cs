@@ -2,38 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelectTransaction : MonoBehaviour
+namespace Galleass3D
 {
-    private TransactionDetails TransactionDetails;
-    private EthKeyManager EthKeyManager;
-
-
-    public void SetTransactionDetails(EthKeyManager keyManager, TransactionDetails details)
+    public class SelectTransaction : MonoBehaviour
     {
-        UnityEngine.UI.Text text = GetComponentInChildren<UnityEngine.UI.Text>();
-        text.text = (details.ContractName != null ? details.ContractName  + " - " : "" ) + details.TransactionReceipt.TransactionHash;
-        TransactionDetails = details;
-        EthKeyManager = keyManager;
+        private TransactionDetails TransactionDetails;
+        private EthKeyManager EthKeyManager;
+
+
+        public void SetTransactionDetails(EthKeyManager keyManager, TransactionDetails details)
+        {
+            UnityEngine.UI.Text text = GetComponentInChildren<UnityEngine.UI.Text>();
+            text.text = (details.ContractName != null ? details.ContractName  + " - " : "" ) + details.TransactionReceipt.TransactionHash;
+            TransactionDetails = details;
+            EthKeyManager = keyManager;
+        }
+
+        // Start is called before the first frame update
+        void Start()
+        {
+            
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            
+        }
+
+        public void OnButtonClick()
+        {
+            EthKeyManager.SelectTransactionDetail(TransactionDetails);
+        }
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void OnButtonClick()
-    {
-        EthKeyManager.SelectTransactionDetail(TransactionDetails);
-    }
-
-
-
-
 }
