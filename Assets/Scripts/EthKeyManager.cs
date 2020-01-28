@@ -355,7 +355,8 @@ namespace Galleass3D
 
                 bool mineDogger = false;
 
-                var setPermission = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
+
+                //var setPermissionResult = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("buildDogger"), true);
                 //var setPermission2 = await Galleass.SetPermissionRequestAndWaitForReceiptAsync(Account.Address, Encoding.ASCII.GetBytes("transferDogger"), true);
 
                 if (mineDogger)
