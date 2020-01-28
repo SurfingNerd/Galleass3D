@@ -21,7 +21,7 @@ public class MoveShip : MonoBehaviour
     {
         m_target = GameObject.FindWithTag("Finish");
         m_navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        m_navMeshAgent.SetDestination(m_target.transform.position);
+        //m_navMeshAgent.SetDestination(m_target.transform.position);
         m_water = GameObject.FindGameObjectWithTag("Water");
 
         m_waterayerMask = LayerMask.GetMask("Default");
