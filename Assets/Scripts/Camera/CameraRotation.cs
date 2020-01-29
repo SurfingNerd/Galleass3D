@@ -10,6 +10,16 @@ public class CameraRotation : MonoBehaviour
          
     }
 
+    bool IsGameObjectRootedActive(GameObject go) 
+    {
+        if (go == null)
+        {
+            return true;
+        }
+
+        return go.activeInHierarchy;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -27,7 +37,18 @@ public class CameraRotation : MonoBehaviour
             List<Camera> listCameras = new List<Camera>();
             foreach(GameObject rootObject in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
             {
-                listCameras.AddRange(rootObject.GetComponentsInChildren<Camera>(true));
+                foreach(Camera inSceneCamera in rootObject.GetComponentsInChildren<Camera>(true)) 
+                {
+                    if (inSceneCamera.gameObject.transform.parent == null /*~ all root cameras*/ 
+                        || IsGameObjectRootedActive(inSceneCamera.gameObject.transform.parent.gameObject))
+                    {
+                        listCameras.Add(inSceneCamera);
+                        //inSceneCamera.gameObject.transform.parent
+                    }
+                    //we only pick up cameras that are rooted under active objects
+                    //if ()
+
+                }
             }
 
             Debug.Log("#Cameras: " + listCameras.Count);
