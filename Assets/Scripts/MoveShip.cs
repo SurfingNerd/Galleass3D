@@ -53,7 +53,13 @@ public class MoveShip : MonoBehaviour
             //     return;
             // }
 
-            Camera cam = Camera.main;
+            // problem: there might be more than 1 active cameras in the scene. 
+            // i could not find a decent way on hour to get the camera that was used for clicking.
+
+            Camera cam = Galleass3D.MonoBehaviourExtensions.GetSingleComponentFromActiveScene<Galleass3D.Camera.CameraRotation>().activeCam;
+            
+
+            //Camera cam = Galleass3D.MonoBehaviourExtensions.GetSingleComponentFromActiveScene<Camera>();
 
             if (cam == null) 
             {

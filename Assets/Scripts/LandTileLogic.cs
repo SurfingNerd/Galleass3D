@@ -59,7 +59,7 @@ namespace Galleass3D
         void Start()
         {
             EthKeyManager =  Galleass3D.EthKeyManager.GetInstanceFromActiveScene();
-            LandManager = Galleass3D.EthKeyManager.GetSingleComponentFromActiveScene<LandManager>();
+            LandManager = MonoBehaviourExtensions.GetSingleComponentFromActiveScene<LandManager>();
 
             Text = GetComponentInChildren<TextMesh>();
             Terrain = GetComponentInChildren<Terrain>();

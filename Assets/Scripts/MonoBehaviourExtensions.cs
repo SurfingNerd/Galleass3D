@@ -24,5 +24,31 @@ namespace Galleass3D
 
             return null;
         }
+
+        
+        public static T GetSingleComponentFromActiveScene<T>(bool includeInactive = false)
+        where T : class
+        {
+            T result = null;
+
+            foreach(GameObject rootObject in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+            {
+                T potentialResult = rootObject.GetComponentInChildren<T>(includeInactive);
+                if (potentialResult != null)
+                {
+                    if (result != null)
+                    {
+                        Debug.LogError("More than one Component of type: " + typeof(T).Name + " found. This could result in expected behavior.");
+                    }
+                    else
+                    {
+                        result = potentialResult;
+                    }
+                }
+            }
+            return result;
+        }
     }
+
+
 }
