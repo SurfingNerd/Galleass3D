@@ -12,7 +12,7 @@ public class MoveShip : MonoBehaviour
 
     public float m_RaycastCheckDistance = 10000000;
 
-    public float surfaceOffset = 0.1f;
+    //public float surfaceOffset = 0.1f;
 
     private LayerMask m_waterayerMask;
 
@@ -21,7 +21,7 @@ public class MoveShip : MonoBehaviour
     {
         m_target = GameObject.FindWithTag("Finish");
         m_navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        //m_navMeshAgent.SetDestination(m_target.transform.position);
+        m_navMeshAgent.SetDestination(m_target.transform.position);
         m_water = GameObject.FindGameObjectWithTag("Water");
 
         m_waterayerMask = LayerMask.GetMask("Default");
@@ -53,26 +53,27 @@ public class MoveShip : MonoBehaviour
             //     return;
             // }
 
-            
-            if (Camera.main == null) 
+            Camera cam = Camera.main;
+
+            if (cam == null) 
             {
-                Debug.LogWarning("There is no main camera!");
+                Debug.LogWarning("There is no current camera!");
                 return;
             }
 
-            
-
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Debug.Log("Current Camera: " + cam.name);
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
 #if UNITY_EDITOR
 			// helper to visualise the ground check ray in the scene view
-			Debug.DrawLine( ray.origin, ray.direction * 1000, Color.green, 1.5f);
+			Debug.DrawLine(ray.origin, ray.direction * m_RaycastCheckDistance, Color.green, 1.5f);
 #endif  
 
             foreach(RaycastHit hit in Physics.RaycastAll(ray, m_RaycastCheckDistance, m_waterayerMask.value, QueryTriggerInteraction.Ignore))
             {
-                Debug.Log("Sailing to position: " +  hit.transform.position);
-                bool setDestinationResult = m_navMeshAgent.SetDestination(new Vector3(hit.point.x, m_water.transform.position.y, hit.point.z));
+                Vector3 finalPos = new Vector3(hit.point.x, m_water.transform.position.y, hit.point.z);
+                Debug.Log("Sailing to position: " + finalPos);
+                bool setDestinationResult = m_navMeshAgent.SetDestination(finalPos);
 
                 if (!setDestinationResult) 
                 {
