@@ -892,5 +892,14 @@ namespace Galleass3D
             Copper.MintRequestAsync(Account.Address, new BigInteger(10));
         }
 
+        public void StockCatfish()
+        {
+            string contractAddress = Catfish.ContractHandler.ContractAddress;
+            ushort x = System.Convert.ToUInt16(MainIslandX);
+            ushort y = System.Convert.ToUInt16(MainIslandY);
+
+            Bay.StockRequestAsync(x, y, contractAddress, 1);
+        }
+
     }
 }

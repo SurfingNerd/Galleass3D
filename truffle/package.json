@@ -16,7 +16,8 @@
     "ganache" : "ganache-cli -m \"$(cat .mnemonic)\"",
     "deploy-local": "truffle deploy --network=local",
     "deploy-artistau": "truffle deploy --network=artistau1",
-    "deploy-artissigma": "truffle deploy --network=artissigma1"
+    "deploy-artissigma": "truffle deploy --network=artissigma1",
+    "compile": "truffle compile"
   },
   "author": "",
   "license": "ISC"

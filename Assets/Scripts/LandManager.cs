@@ -43,6 +43,8 @@ namespace Galleass3D
             MappingNameToID.Add("TimberCamp", 150);
 
             MappingNameToID.Add("Village", 2000);
+            MappingNameToID.Add("Castle", 2010);
+            
 
 
             foreach (var dictItem in MappingNameToID)

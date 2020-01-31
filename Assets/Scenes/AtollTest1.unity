@@ -777,6 +777,7 @@ GameObject:
   m_Component:
   - component: {fileID: 480166653}
   - component: {fileID: 480166654}
+  - component: {fileID: 480166655}
   m_Layer: 0
   m_Name: GameLogic
   m_TagString: Untagged
@@ -811,6 +812,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeCam: {fileID: 0}
+--- !u!114 &480166655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 480166652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfa780bd18836f7c6ad5b26d59904175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &480269056
 GameObject:
   m_ObjectHideFlags: 0
@@ -947,7 +960,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 533444854}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6715, y: 317.22, z: 4964}
+  m_LocalPosition: {x: 2649, y: 317.22, z: 3291}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 306817867}
@@ -990,7 +1003,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1
-  m_BaseOffset: -7
+  m_BaseOffset: -6.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!1 &580045823
@@ -6146,6 +6159,10 @@ PrefabInstance:
       propertyPath: waterMode
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
+      propertyPath: textureSize
+      value: 1024
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
 --- !u!1 &1387592212
@@ -6643,13 +6660,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2136915823}
-  m_LocalRotation: {x: 0.2102838, y: -0, z: -0, w: 0.97764045}
-  m_LocalPosition: {x: -29, y: 59, z: -90}
+  m_LocalRotation: {x: -0.054543495, y: -0, z: -0, w: 0.9985114}
+  m_LocalPosition: {x: -29, y: 8.2, z: -81.54004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 533444855}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 24.278002, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -6.2530003, y: 0, z: 0}
 --- !u!81 &2136915825
 AudioListener:
   m_ObjectHideFlags: 0
