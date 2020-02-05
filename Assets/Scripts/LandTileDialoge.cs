@@ -42,7 +42,16 @@ public class LandTileDialoge : MonoBehaviour
         BuyButton = childTransform.Find("BuyButton").GetComponent<Button>();
 
         BuyAmountText = BuyButton.GetComponentInChildren<Text>();
+
+        
     }
+    
+    void Reset()
+    {
+        //explore strategy: Maybe use Object Names within the Hierachy
+        //HaborSpecificOptions = this.transform.Find("Harbor").gameObject;
+    }
+
 
     // Update is called once per frame
     void Update()

@@ -81,7 +81,11 @@ namespace Galleass3D
 
             if (LandTileDialoge == null)
             {
-                Debug.LogError("LandTileDialog not found.");
+                LandTileDialoge = FindObjectOfType<LandTileDialoge>();
+                if (LandTileDialoge == null)
+                {
+                    Debug.LogError("LandTileDialog not found.");
+                }
             }
 
             List<LandTileLogic> landTileLogics = new  List<LandTileLogic>();
