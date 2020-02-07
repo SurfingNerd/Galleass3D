@@ -28,22 +28,23 @@ namespace Galleass3D
         {
             MappingNameToID.Add("MainHills", 1);
             MappingNameToID.Add("MainGrass", 2);
-            MappingNameToID.Add("MainStream", 30);
 
+
+            MappingNameToID.Add("MainStream", 30);
             MappingNameToID.Add("Grass", 50);
             MappingNameToID.Add("Forest", 51);
             MappingNameToID.Add("Mountain", 52);
             MappingNameToID.Add("CopperMountain", 53);
             MappingNameToID.Add("SilverMountain", 54);
 
-            MappingNameToID.Add("Harbor", 100);
-            MappingNameToID.Add("Fishmonger", 101);
-            MappingNameToID.Add("Market", 102);
+            MappingNameToID.Add("Harbor", 100); //??? there seems to be no way currently to build a new Harbor ?!
+            MappingNameToID.Add("Fishmonger", 101); /// Fishmonger requires a citizen.  but there seems to be no way currently to build a new Fishmonger ?!
+            MappingNameToID.Add("Market", 102); /// ??? there is now way to build a market yet
 
-            MappingNameToID.Add("TimberCamp", 150);
+            MappingNameToID.Add("TimberCamp", 150); // MUST be built on a forest tile
 
-            MappingNameToID.Add("Village", 2000);
-            MappingNameToID.Add("Castle", 2010);
+            MappingNameToID.Add("Village", 2000); // Village can be build on MainHills and MainGrass.
+            MappingNameToID.Add("Castle", 2010); // A Castle can be build on Village, but require some stones.
             
 
 

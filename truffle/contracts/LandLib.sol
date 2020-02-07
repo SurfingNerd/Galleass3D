@@ -270,7 +270,7 @@ contract LandLib is Galleasset, DataParser {
     Land landContract = Land(getContract("Land"));
     //build timber camp
     address copperContractAddress = getContract("Copper");
-    require(msg.sender == copperContractAddress, 'sneder must be copper contract.');
+    require(msg.sender == copperContractAddress, 'sender must be copper contract.');
     uint16 _x = getX(_data);
     uint16 _y = getY(_data);
     uint8 _tile = getTile(_data);
