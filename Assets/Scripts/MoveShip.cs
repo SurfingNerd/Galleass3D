@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -23,7 +24,11 @@ public class MoveShip : MonoBehaviour
         m_navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         m_navMeshAgent.SetDestination(m_target.transform.position);
         m_water = GameObject.FindGameObjectWithTag("Water");
-
+        if (m_water == null)
+        {
+            throw new UnityException("Expected to find a GameObject with Tag Water for Navigation.");
+        }
+    
         m_waterayerMask = LayerMask.GetMask("Default");
         Debug.Log("Water: " + m_waterayerMask.value);
 
