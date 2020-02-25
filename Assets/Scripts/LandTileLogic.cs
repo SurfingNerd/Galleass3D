@@ -24,7 +24,7 @@ namespace Galleass3D
         private int LandY;
 
         private UnityEngine.TextMesh Text;
-        private UnityEngine.Terrain Terrain;
+        private UnityEngine.GameObject IslandUI;
 
         [SerializeField]
         public int IslandNumber;
@@ -39,20 +39,24 @@ namespace Galleass3D
             TileInfo = tileInfo;
             LandX = landX;
             LandY = landY;
-
+            
             // TileInfo.Tile
             string islandType = "Unknown " + TileInfo.Tile.ToString();
 
             if (LandManager.MappingIDToName.ContainsKey(TileInfo.Tile))
             {
                 islandType = LandManager.MappingIDToName[TileInfo.Tile];
-
+                
+                IslandUI = UnityEngine.Resources.Load<GameObject>($"Islands/{islandType}" );
+                // maybe keep the rotation of the parent. maybe random rotation is nice as well ? 
+                IslandUI.transform.SetPositionAndRotation(this.transform.position, UnityEngine.Quaternion.identity); 
+                IslandUI.transform.SetParent(this.transform);
             }
 
             Text.text = islandType;
 
             bool showTile = (TileInfo.Tile != 0);
-            Terrain.gameObject.SetActive(showTile);
+            
             Text.gameObject.SetActive(showTile);
         }
 
@@ -62,10 +66,7 @@ namespace Galleass3D
             LandManager = MonoBehaviourExtensions.GetSingleComponentFromActiveScene<LandManager>();
 
             Text = GetComponentInChildren<TextMesh>();
-            Terrain = GetComponentInChildren<Terrain>();
-
             Text.gameObject.SetActive(false);
-            Terrain.gameObject.SetActive(false);
         }
 
         void Update()

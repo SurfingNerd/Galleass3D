@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public class MoveShip : MonoBehaviour
 {
     UnityEngine.AI.NavMeshAgent m_navMeshAgent;
-    UnityEngine.GameObject m_target;
+    
 
     GameObject m_water;
 
@@ -15,22 +15,25 @@ public class MoveShip : MonoBehaviour
 
     //public float surfaceOffset = 0.1f;
 
-    private LayerMask m_waterayerMask;
+    private LayerMask m_waterlayerMask;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_target = GameObject.FindWithTag("Finish");
         m_navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        m_navMeshAgent.SetDestination(m_target.transform.position);
+        if (m_navMeshAgent == null)
+        {
+            throw  new UnityException("MoveShip Script is expected to be place on a GameObject containing a NavMeshAgent.");
+        }
+
         m_water = GameObject.FindGameObjectWithTag("Water");
         if (m_water == null)
         {
             throw new UnityException("Expected to find a GameObject with Tag Water for Navigation.");
         }
     
-        m_waterayerMask = LayerMask.GetMask("Default");
-        Debug.Log("Water: " + m_waterayerMask.value);
+        m_waterlayerMask = LayerMask.GetMask("Default");
+        Debug.Log("Water: " + m_waterlayerMask.value);
 
     }
 
@@ -80,7 +83,7 @@ public class MoveShip : MonoBehaviour
 			Debug.DrawLine(ray.origin, ray.direction * m_RaycastCheckDistance, Color.green, 1.5f);
 #endif  
 
-            foreach(RaycastHit hit in Physics.RaycastAll(ray, m_RaycastCheckDistance, m_waterayerMask.value, QueryTriggerInteraction.Ignore))
+            foreach(RaycastHit hit in Physics.RaycastAll(ray, m_RaycastCheckDistance, m_waterlayerMask.value, QueryTriggerInteraction.Ignore))
             {
                 Vector3 finalPos = new Vector3(hit.point.x, m_water.transform.position.y, hit.point.z);
                 Debug.Log("Sailing to position: " + finalPos);

@@ -91,12 +91,13 @@ namespace Galleass3D
 
             List<LandTileLogic> landTileLogics = new  List<LandTileLogic>();
 
-            foreach(GameObject rootObject in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
-            {
-                landTileLogics.AddRange(rootObject.GetComponentsInChildren<LandTileLogic>());
+            landTileLogics.AddRange(GameObject.FindObjectsOfType<LandTileLogic>());
 
-                
-            }
+            Debug.LogWarning("# " + landTileLogics.Count);
+            //foreach(GameObject rootObject in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+            //{
+            //    landTileLogics.AddRange(rootObject.GetComponentsInChildren<LandTileLogic>());
+            //}
 
             //NOTE: this works if everything is setup correct.
             //LandTileLogic[] landTileLogics = GetComponentsInChildren<LandTileLogic>();

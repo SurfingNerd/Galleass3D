@@ -26,3 +26,10 @@ Village => Castle
 
 
 # UI for different Island Types.
+
+
+
+# Blockchain Management
+
+- What if blockchain not reachable ?
+- Display Blockchain Meta Informations.
